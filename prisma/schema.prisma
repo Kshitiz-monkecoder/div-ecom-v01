@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  NEW
+  CONTACTED
+  CONFIRMED
+  INSTALLED
+  CANCELLED
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+model User {
+  id          String   @id @default(cuid())
+  clerkUserId String   @unique
+  name        String
+  email       String   @unique
+  phone       String?
+  role        Role     @default(USER)
+  createdAt   DateTime @default(now())
+  orders      Order[]
+  tickets     Ticket[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  price       Int      // Price in paise (₹ * 100)
+  capacity    String   // e.g., "3kW", "5kW"
+  category    String   // "Residential" or "Commercial"
+  images      String   // Cloudinary URLs stored as JSON array string
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  orders      Order[]
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  userId    String
+  productId String
+  status    OrderStatus @default(NEW)
+  address   String
+  phone     String
+  notes     String?
+  createdAt DateTime    @default(now())
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tickets   Ticket[]
+}
+
+model Ticket {
+  id          String       @id @default(cuid())
+  userId      String
+  orderId     String?
+  category    String
+  description String
+  status      TicketStatus @default(OPEN)
+  createdAt   DateTime     @default(now())
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order       Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
+}
+
