@@ -10,10 +10,11 @@ import { Button } from "@/components/ui/button";
 export default async function OrderDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   await requireAuth();
-  const order = await getOrder(params.id).catch(() => null);
+  const { id } = await params;
+  const order = await getOrder(id).catch(() => null);
 
   if (!order) {
     notFound();

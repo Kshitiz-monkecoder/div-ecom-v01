@@ -1,15 +1,23 @@
 import { getAllUsers } from "@/app/actions/admin";
+import { getCurrentUser } from "@/lib/auth";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 import { format } from "date-fns";
+import { CreateUserForm } from "@/components/create-user-form";
+import { UserActions } from "@/components/user-actions";
 
 export default async function AdminUsersPage() {
-  const users = await getAllUsers();
+  const [users, currentUser] = await Promise.all([
+    getAllUsers(),
+    getCurrentUser(),
+  ]);
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Users</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Users</h1>
+        <CreateUserForm />
+      </div>
 
       <div className="bg-white dark:bg-gray-900 rounded-lg border">
         <Table>
@@ -40,9 +48,11 @@ export default async function AdminUsersPage() {
                   {format(new Date(user.createdAt), "MMM dd, yyyy")}
                 </TableCell>
                 <TableCell>
-                  <Link href={`/admin/users/${user.id}`}>
-                    <span className="text-primary hover:underline">View</span>
-                  </Link>
+                  <UserActions
+                    userId={user.id}
+                    userName={user.name}
+                    currentUserId={currentUser?.id}
+                  />
                 </TableCell>
               </TableRow>
             ))}

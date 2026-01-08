@@ -2,25 +2,47 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useUser, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function Navbar() {
-  const { isSignedIn, user } = useUser();
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [user, setUser] = useState<{ name: string; phone: string } | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    if (isSignedIn) {
-      // Check admin status
-      fetch("/api/check-admin")
-        .then((res) => res.json())
-        .then((data) => setIsAdmin(data.isAdmin))
-        .catch(() => setIsAdmin(false));
+    // Check if user is logged in
+    fetch("/api/check-admin")
+      .then((res) => res.json())
+      .then((data) => {
+        setIsSignedIn(!!data.user);
+        setIsAdmin(data.isAdmin || false);
+        if (data.user) {
+          setUser(data.user);
+        }
+      })
+      .catch(() => {
+        setIsSignedIn(false);
+        setIsAdmin(false);
+      });
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await fetch("/api/auth/signout", { method: "POST" });
+      setIsSignedIn(false);
+      setUser(null);
+      setIsAdmin(false);
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Error signing out:", error);
     }
-  }, [isSignedIn]);
+  };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -47,9 +69,10 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/products">
+            {/* Products link removed - users see assigned products on orders page */}
+            {/* <Link href="/products">
               <Button variant="ghost">Products</Button>
-            </Link>
+            </Link> */}
 
             {isSignedIn ? (
               <>
@@ -67,16 +90,20 @@ export function Navbar() {
                     <Button variant="ghost">Admin</Button>
                   </Link>
                 )}
-                <UserButton afterSignOutUrl="/" />
+                <Button
+                  variant="ghost"
+                  onClick={handleSignOut}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </Button>
               </>
             ) : (
               <>
-                <SignInButton mode="modal">
-                  <Button variant="ghost">Sign In</Button>
-                </SignInButton>
-                <SignUpButton mode="modal">
-                  <Button>Sign Up</Button>
-                </SignUpButton>
+                <Link href="/login">
+                  <Button>Sign In</Button>
+                </Link>
               </>
             )}
           </div>
@@ -99,11 +126,12 @@ export function Navbar() {
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t pt-4">
             <div className="flex flex-col gap-2">
-              <Link href="/products" onClick={closeMobileMenu}>
+              {/* Products link removed - users see assigned products on orders page */}
+              {/* <Link href="/products" onClick={closeMobileMenu}>
                 <Button variant="ghost" className="w-full justify-start">
                   Products
                 </Button>
-              </Link>
+              </Link> */}
 
               {isSignedIn ? (
                 <>
@@ -129,20 +157,23 @@ export function Navbar() {
                       </Button>
                     </Link>
                   )}
-                  <div className="flex items-center justify-start px-2 py-1">
-                    <UserButton afterSignOutUrl="/" />
-                  </div>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => {
+                      closeMobileMenu();
+                      handleSignOut();
+                    }}
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
                 </>
               ) : (
                 <>
-                  <SignInButton mode="modal">
-                    <Button variant="ghost" className="w-full justify-start">
-                      Sign In
-                    </Button>
-                  </SignInButton>
-                  <SignUpButton mode="modal">
-                    <Button className="w-full justify-start">Sign Up</Button>
-                  </SignUpButton>
+                  <Link href="/login" onClick={closeMobileMenu}>
+                    <Button className="w-full justify-start">Sign In</Button>
+                  </Link>
                 </>
               )}
             </div>

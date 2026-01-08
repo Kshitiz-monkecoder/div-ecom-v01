@@ -30,28 +30,29 @@ enum TicketStatus {
 }
 
 model User {
-  id          String   @id @default(cuid())
-  clerkUserId String   @unique
+  id          String        @id @default(cuid())
   name        String
-  email       String   @unique
-  phone       String?
-  role        Role     @default(USER)
-  createdAt   DateTime @default(now())
+  email       String?
+  phone       String        @unique
+  role        Role          @default(USER)
+  createdAt   DateTime      @default(now())
   orders      Order[]
   tickets     Ticket[]
+  products    UserProduct[] @relation("UserProducts")
 }
 
 model Product {
-  id          String   @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String
   description String
-  price       Int      // Price in paise (₹ * 100)
-  capacity    String   // e.g., "3kW", "5kW"
-  category    String   // "Residential" or "Commercial"
-  images      String   // Cloudinary URLs stored as JSON array string
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
+  price       Int           // Price in paise (₹ * 100)
+  capacity    String        // e.g., "3kW", "5kW"
+  category    String        // "Residential" or "Commercial"
+  images      String        // Cloudinary URLs stored as JSON array string
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
   orders      Order[]
+  users       UserProduct[] @relation("ProductUsers")
 }
 
 model Order {
@@ -78,5 +79,16 @@ model Ticket {
   createdAt   DateTime     @default(now())
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   order       Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
+}
+
+model UserProduct {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  user      User     @relation("UserProducts", fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation("ProductUsers", fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
 }
 

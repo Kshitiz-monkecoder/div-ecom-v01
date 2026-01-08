@@ -64,6 +64,10 @@ export async function getUserOrders() {
 }
 
 export async function getOrder(id: string) {
+  if (!id) {
+    throw new Error("Order ID is required");
+  }
+
   const user = await getCurrentUser();
   if (!user) {
     throw new Error("Unauthorized");
@@ -108,6 +112,10 @@ export async function getAllOrders(status?: OrderStatus) {
 }
 
 export async function updateOrderStatus(id: string, status: OrderStatus) {
+  if (!id) {
+    throw new Error("Order ID is required");
+  }
+
   await requireAdmin();
 
   const order = await prisma.order.update({

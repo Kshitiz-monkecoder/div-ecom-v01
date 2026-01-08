@@ -1,42 +1,50 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { cookies } from "next/headers";
 import { prisma } from "./prisma";
 import { Role } from "@prisma/client";
+import { redirect } from "next/navigation";
+
+const SESSION_COOKIE_NAME = "auth_session";
+
+interface SessionData {
+  userId: string;
+  token: string;
+}
+
+async function getSession(): Promise<SessionData | null> {
+  try {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
+    
+    if (!sessionCookie?.value) {
+      return null;
+    }
+
+    const session = JSON.parse(sessionCookie.value) as SessionData;
+    return session;
+  } catch {
+    return null;
+  }
+}
 
 export async function getCurrentUser() {
-  const { userId } = await auth();
-  if (!userId) return null;
+  const session = await getSession();
+  if (!session) return null;
 
-  const clerkUser = await currentUser();
-  if (!clerkUser) return null;
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: session.userId },
+    });
 
-  // Sync user from Clerk to database
-  const user = await prisma.user.upsert({
-    where: { clerkUserId: userId },
-    update: {
-      name: clerkUser.firstName && clerkUser.lastName
-        ? `${clerkUser.firstName} ${clerkUser.lastName}`
-        : clerkUser.firstName || clerkUser.lastName || clerkUser.emailAddresses[0]?.emailAddress || "User",
-      email: clerkUser.emailAddresses[0]?.emailAddress || "",
-      phone: clerkUser.phoneNumbers[0]?.phoneNumber || null,
-    },
-    create: {
-      clerkUserId: userId,
-      name: clerkUser.firstName && clerkUser.lastName
-        ? `${clerkUser.firstName} ${clerkUser.lastName}`
-        : clerkUser.firstName || clerkUser.lastName || clerkUser.emailAddresses[0]?.emailAddress || "User",
-      email: clerkUser.emailAddresses[0]?.emailAddress || "",
-      phone: clerkUser.phoneNumbers[0]?.phoneNumber || null,
-      role: Role.USER,
-    },
-  });
-
-  return user;
+    return user;
+  } catch {
+    return null;
+  }
 }
 
 export async function requireAuth() {
   const user = await getCurrentUser();
   if (!user) {
-    throw new Error("Unauthorized");
+    redirect("/login");
   }
   return user;
 }
@@ -54,3 +62,8 @@ export async function isAdmin() {
   return user?.role === Role.ADMIN;
 }
 
+export async function signOut() {
+  const cookieStore = await cookies();
+  cookieStore.delete(SESSION_COOKIE_NAME);
+  redirect("/login");
+}

@@ -2,7 +2,6 @@ import { Navbar } from "@/components/navbar";
 import { getCurrentUser } from "@/lib/auth";
 import { requireAuth } from "@/lib/middleware";
 import { format } from "date-fns";
-import { UserButton } from "@clerk/nextjs";
 
 export default async function AccountPage() {
   await requireAuth();
@@ -20,12 +19,9 @@ export default async function AccountPage() {
         <h1 className="text-3xl font-bold mb-8">My Account</h1>
 
         <div className="bg-white dark:bg-gray-900 rounded-lg border p-6 space-y-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-semibold">{user.name}</h2>
-              <p className="text-gray-500">{user.email}</p>
-            </div>
-            <UserButton />
+          <div>
+            <h2 className="text-2xl font-semibold">{user.name}</h2>
+            <p className="text-gray-500">{user.email || "Not provided"}</p>
           </div>
 
           <div className="space-y-4">

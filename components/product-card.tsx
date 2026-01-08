@@ -14,7 +14,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Card className="flex flex-col h-full">
-      <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
+      <div className="relative w-full h-52 overflow-hidden rounded-t-lg">
         {product.images.length > 0 ? (
           <Image
             src={product.images[0]}
@@ -41,7 +41,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </p>
       </CardContent>
       <CardFooter className="flex justify-between items-center">
-        <span className="text-2xl font-bold">₹{priceInRupees}</span>
+        <span className="text-md">₹{priceInRupees}</span>
         <Link href={`/products/${product.id}`}>
           <Button>View Details</Button>
         </Link>

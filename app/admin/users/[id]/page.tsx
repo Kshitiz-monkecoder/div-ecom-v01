@@ -1,21 +1,28 @@
-import { getUserDetails } from "@/app/actions/admin";
+import { getUserDetails, getAllProducts } from "@/app/actions/admin";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { StatusBadge } from "@/components/status-badge";
+import { AssignProductsForm } from "@/components/assign-products-form";
 
 export default async function AdminUserDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const user = await getUserDetails(params.id);
+  const { id } = await params;
+  const [user, allProducts] = await Promise.all([
+    getUserDetails(id),
+    getAllProducts(),
+  ]);
 
   if (!user) {
     notFound();
   }
+
+  const assignedProductIds = user.products?.map((up) => up.product.id) || [];
 
   return (
     <div>
@@ -26,16 +33,25 @@ export default async function AdminUserDetailPage({
       </div>
 
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">{user.name}</h1>
-          <div className="flex gap-2 items-center">
-            <Badge variant={user.role === "ADMIN" ? "default" : "secondary"}>
-              {user.role}
-            </Badge>
-            <span className="text-gray-500">
-              Joined {format(new Date(user.createdAt), "MMMM dd, yyyy")}
-            </span>
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">{user.name}</h1>
+            <div className="flex gap-2 items-center">
+              <Badge variant={user.role === "ADMIN" ? "default" : "secondary"}>
+                {user.role}
+              </Badge>
+              <span className="text-gray-500">
+                Joined {format(new Date(user.createdAt), "MMMM dd, yyyy")}
+              </span>
+            </div>
           </div>
+          {user.role !== "ADMIN" && (
+            <AssignProductsForm
+              userId={user.id}
+              assignedProductIds={assignedProductIds}
+              allProducts={allProducts}
+            />
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -78,6 +94,28 @@ export default async function AdminUserDetailPage({
             ))}
             {user.orders.length === 0 && (
               <p className="text-gray-500">No orders yet.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-lg border p-6">
+          <h2 className="text-xl font-semibold mb-4">Assigned Products</h2>
+          <div className="space-y-2">
+            {user.products && user.products.length > 0 ? (
+              user.products.map((userProduct) => (
+                <div
+                  key={userProduct.product.id}
+                  className="p-3 border rounded hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
+                  <p className="font-medium">{userProduct.product.name}</p>
+                  <p className="text-sm text-gray-500">
+                    {userProduct.product.capacity} - ₹
+                    {(userProduct.product.price / 100).toFixed(2)}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500">No products assigned yet.</p>
             )}
           </div>
         </div>

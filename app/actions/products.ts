@@ -5,6 +5,7 @@ import { requireAdmin, getCurrentUser } from "@/lib/auth";
 import { parseImages, stringifyImages } from "@/lib/product-helpers";
 import { uploadImage } from "@/lib/cloudinary";
 import { z } from "zod";
+import { Role } from "@prisma/client";
 
 const productSchema = z.object({
   name: z.string().min(1),
@@ -17,21 +18,52 @@ const productSchema = z.object({
 });
 
 export async function getProducts(category?: string) {
-  const products = await prisma.product.findMany({
-    where: {
-      isActive: true,
-      ...(category && { category }),
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const user = await getCurrentUser();
 
-  // Convert images JSON string to array
-  return products.map((product) => ({
-    ...product,
-    images: parseImages(product.images),
-  }));
+  // If user is admin, show all active products
+  if (user?.role === Role.ADMIN) {
+    const products = await prisma.product.findMany({
+      where: {
+        isActive: true,
+        ...(category && { category }),
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return products.map((product) => ({
+      ...product,
+      images: parseImages(product.images),
+    }));
+  }
+
+  // If user is logged in (regular user), show only assigned products
+  if (user) {
+    const userProducts = await prisma.userProduct.findMany({
+      where: { userId: user.id },
+      include: {
+        product: true,
+      },
+    });
+
+    let products = userProducts
+      .map((up) => up.product)
+      .filter((p) => p.isActive === true);
+
+    // Filter by category if specified
+    if (category) {
+      products = products.filter((p) => p.category === category);
+    }
+
+    return products.map((product) => ({
+      ...product,
+      images: parseImages(product.images),
+    }));
+  }
+
+  // If not logged in, return empty array
+  return [];
 }
 
 export async function getProduct(id: string) {
@@ -98,6 +130,10 @@ export async function createProduct(data: unknown) {
 }
 
 export async function updateProduct(id: string, data: unknown) {
+  if (!id) {
+    throw new Error("Product ID is required");
+  }
+
   await requireAdmin();
 
   const validated = productSchema.partial().parse(data);
@@ -119,6 +155,10 @@ export async function updateProduct(id: string, data: unknown) {
 }
 
 export async function toggleProductStatus(id: string) {
+  if (!id) {
+    throw new Error("Product ID is required");
+  }
+
   await requireAdmin();
 
   const product = await prisma.product.findUnique({
@@ -139,6 +179,10 @@ export async function toggleProductStatus(id: string) {
 }
 
 export async function deleteProduct(id: string) {
+  if (!id) {
+    throw new Error("Product ID is required");
+  }
+
   await requireAdmin();
 
   await prisma.product.delete({

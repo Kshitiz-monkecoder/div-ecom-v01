@@ -1,12 +1,11 @@
-import { Navbar } from "@/components/navbar";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { getProduct } from "@/app/actions/products";
-import { notFound } from "next/navigation";
+import { Navbar } from "@/components/navbar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { getCurrentUser } from "@/lib/auth";
 import Image from "next/image";
 import Link from "next/link";
-import { OrderForm } from "@/components/order-form";
-import { getCurrentUser } from "@/lib/auth";
+import { notFound } from "next/navigation";
 
 export default async function ProductDetailPage({
   params,
@@ -65,9 +64,6 @@ export default async function ProductDetailPage({
               </p>
             </div>
 
-            {user && (
-              <OrderForm productId={product.id} />
-            )}
 
             {!user && (
               <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-900">

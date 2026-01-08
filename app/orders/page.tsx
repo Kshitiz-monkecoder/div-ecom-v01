@@ -1,20 +1,17 @@
-import { Navbar } from "@/components/navbar";
-import { OrderCard } from "@/components/order-card";
 import { getUserOrders } from "@/app/actions/orders";
+import { getProducts } from "@/app/actions/products";
+import { Navbar } from "@/components/navbar";
+import { ProductCard } from "@/components/product-card";
 import { requireAuth } from "@/lib/middleware";
-import { ORDER_STATUSES } from "@/types";
-import Link from "next/link";
+import { ParsedProduct } from "@/types";
 
-export default async function OrdersPage({
-  searchParams,
-}: {
-  searchParams: { status?: string };
-}) {
+export default async function OrdersPage() {
   await requireAuth();
-  const orders = await getUserOrders();
-  const filteredOrders = searchParams.status
-    ? orders.filter((o) => o.status === searchParams.status)
-    : orders;
+  const [___,assignedProducts] = await Promise.all([
+    getUserOrders(),
+    getProducts(),
+  ]);
+
 
   return (
     <div className="min-h-screen">
@@ -23,47 +20,17 @@ export default async function OrdersPage({
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">My Orders</h1>
 
-        {/* Status Filter */}
-        <div className="mb-8 flex gap-4 flex-wrap">
-          <Link
-            href="/orders"
-            className={`px-4 py-2 rounded ${
-              !searchParams.status
-                ? "bg-primary text-primary-foreground"
-                : "bg-gray-200 dark:bg-gray-800"
-            }`}
-          >
-            All
-          </Link>
-          {ORDER_STATUSES.map((status) => (
-            <Link
-              key={status}
-              href={`/orders?status=${status}`}
-              className={`px-4 py-2 rounded ${
-                searchParams.status === status
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-gray-200 dark:bg-gray-800"
-              }`}
-            >
-              {status.replace("_", " ")}
-            </Link>
-          ))}
-        </div>
-
-        {/* Orders List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredOrders.map((order) => (
-            <OrderCard key={order.id} order={order} />
-          ))}
-        </div>
-
-        {filteredOrders.length === 0 && (
-          <p className="text-center text-gray-500 py-12">
-            {orders.length === 0
-              ? "You haven't placed any orders yet."
-              : "No orders found with this status."}
-          </p>
+        {/* Assigned Products Section */}
+        {assignedProducts.length > 0 && (
+          <div className="mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {assignedProducts.map((product: ParsedProduct) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
         )}
+
       </div>
     </div>
   );

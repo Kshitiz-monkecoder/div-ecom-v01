@@ -1,3 +1,16 @@
+// Commented out products page - users will see assigned products on orders page
+import { notFound } from "next/navigation";
+
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  notFound();
+}
+
+// OLD PRODUCTS PAGE CODE - COMMENTED OUT
+/*
 import { Navbar } from "@/components/navbar";
 import { ProductCard } from "@/components/product-card";
 import { getProducts } from "@/app/actions/products";
@@ -19,8 +32,8 @@ export default async function ProductsPage({
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Our Products</h1>
 
-        {/* Category Filter */}
-        <div className="mb-8 flex gap-4">
+        {/* Category Filter */
+/*        <div className="mb-8 flex gap-4">
           <Link
             href="/products"
             className={`px-4 py-2 rounded ${
@@ -46,8 +59,8 @@ export default async function ProductsPage({
           ))}
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Products Grid */
+/*        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -62,4 +75,5 @@ export default async function ProductsPage({
     </div>
   );
 }
+*/
 

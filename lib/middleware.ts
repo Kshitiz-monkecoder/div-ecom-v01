@@ -1,28 +1,27 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "./prisma";
 import { Role } from "@prisma/client";
+import { getCurrentUser } from "./auth";
 
 export async function requireAuth() {
-  const { userId } = await auth();
-  if (!userId) {
-    redirect("/sign-in");
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect("/login");
   }
-  return userId;
+  return user;
 }
 
 export async function requireAdmin() {
-  const userId = await requireAuth();
+  const user = await requireAuth();
   
-  const user = await prisma.user.findUnique({
-    where: { clerkUserId: userId },
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
     select: { role: true },
   });
 
-  if (!user || user.role !== Role.ADMIN) {
+  if (!dbUser || dbUser.role !== Role.ADMIN) {
     redirect("/");
   }
 
-  return userId;
+  return user;
 }
-

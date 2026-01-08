@@ -73,6 +73,10 @@ export async function getUserTickets() {
 }
 
 export async function getTicket(id: string) {
+  if (!id) {
+    throw new Error("Ticket ID is required");
+  }
+
   const user = await getCurrentUser();
   if (!user) {
     throw new Error("Unauthorized");
@@ -124,6 +128,10 @@ export async function getAllTickets(status?: TicketStatus) {
 }
 
 export async function updateTicketStatus(id: string, status: TicketStatus) {
+  if (!id) {
+    throw new Error("Ticket ID is required");
+  }
+
   await requireAdmin();
 
   const ticket = await prisma.ticket.update({

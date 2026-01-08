@@ -1,3 +1,12 @@
+// Commented out home page - redirecting to orders instead
+import { redirect } from "next/navigation";
+
+export default async function Home() {
+  redirect("/orders");
+}
+
+// OLD HOME PAGE CODE - COMMENTED OUT
+/*
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -17,8 +26,8 @@ export default async function Home() {
       <HeroCarousel />
 
 
-      {/* Featured Products */}
-      <section className="container mx-auto px-4 py-16">
+      {/* Featured Products */
+/*      <section className="container mx-auto px-4 py-16">
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-gray-900 dark:text-white">Our Products</h2>
         <p className="text-center text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto">
           Explore our range of solar solutions designed for homes, businesses, and industries.
@@ -29,16 +38,16 @@ export default async function Home() {
     key={product.id}
     className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 transition-all hover:shadow-md"
   >
-    {/* Image */}
-    <div className="relative w-full h-56 bg-gray-100 dark:bg-gray-800 rounded-t-xl overflow-hidden">
+    {/* Image */
+/*    <div className="relative w-full h-56 bg-gray-100 dark:bg-gray-800 rounded-t-xl overflow-hidden">
       <ProductImageCarousel
         images={product.images || []}
         alt={product.name}
       />
     </div>
 
-    {/* Content */}
-    <div className="p-5">
+    {/* Content */
+/*    <div className="p-5">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
         {product.name}
       </h3>
@@ -80,8 +89,8 @@ export default async function Home() {
         )}
       </section>
 
-            {/* Why Choose Us Section */}
-            <section className="bg-gray-50 dark:bg-gray-900 py-16">
+            {/* Why Choose Us Section */
+/*            <section className="bg-gray-50 dark:bg-gray-900 py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-gray-900 dark:text-white">
             Why Choose Divy Power?
@@ -133,14 +142,14 @@ export default async function Home() {
             </Button>
           </a>
         </div>
-      </section> */}
+      </section> */
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 mt-auto">
+/*      {/* Footer */
+/*      <footer className="bg-gray-900 text-gray-300 mt-auto">
         <div className="container mx-auto px-4 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            {/* Company Info */}
-            <div>
+            {/* Company Info */
+/*            <div>
               <h3 className="text-white text-lg font-semibold mb-4">DIVY Power</h3>
               <p className="mb-4 text-sm">
                 53, Ramte Ram Rd, Ekta Vihar, Arjun Nagar, Nai Basti Dundaher<br />
@@ -148,8 +157,8 @@ export default async function Home() {
               </p>
             </div>
 
-            {/* Contact Info */}
-            <div>
+            {/* Contact Info */
+/*            <div>
               <h3 className="text-white text-lg font-semibold mb-4">Contact Info</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2">
@@ -171,8 +180,8 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Useful Links */}
-            <div>
+            {/* Useful Links */
+/*            <div>
               <h3 className="text-white text-lg font-semibold mb-4">Useful Links</h3>
               <ul className="space-y-2 text-sm">
                 <li>
@@ -193,8 +202,8 @@ export default async function Home() {
               </ul>
             </div>
 
-            {/* Our Solutions */}
-            <div>
+            {/* Our Solutions */
+/*            <div>
               <h3 className="text-white text-lg font-semibold mb-4">Our Solutions</h3>
               <ul className="space-y-2 text-sm">
                 <li>
@@ -232,3 +241,4 @@ export default async function Home() {
     </div>
   );
 }
+*/

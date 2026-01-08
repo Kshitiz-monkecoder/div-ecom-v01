@@ -10,10 +10,11 @@ import { Button } from "@/components/ui/button";
 export default async function TicketDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   await requireAuth();
-  const ticket = await getTicket(params.id).catch(() => null);
+  const { id } = await params;
+  const ticket = await getTicket(id).catch(() => null);
 
   if (!ticket) {
     notFound();
