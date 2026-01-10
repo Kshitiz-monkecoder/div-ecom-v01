@@ -1,8 +1,7 @@
-import { Navbar } from "@/components/navbar";
+import CustomerLayout from "@/components/customer-layout";
 import { TicketCard } from "@/components/ticket-card";
 import { Button } from "@/components/ui/button";
 import { getUserTickets } from "@/app/actions/tickets";
-import { requireAuth } from "@/lib/middleware";
 import Link from "next/link";
 import { TICKET_STATUSES, TICKET_CATEGORIES } from "@/types";
 
@@ -11,7 +10,6 @@ export default async function TicketsPage({
 }: {
   searchParams: { status?: string; category?: string };
 }) {
-  await requireAuth();
   const tickets = await getUserTickets();
   
   let filteredTickets = tickets;
@@ -23,10 +21,8 @@ export default async function TicketsPage({
   }
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      
-      <div className="container mx-auto px-4 py-8">
+    <CustomerLayout>
+      <div>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Support Tickets</h1>
           <Link href="/tickets/new">
@@ -110,7 +106,7 @@ export default async function TicketsPage({
           </p>
         )}
       </div>
-    </div>
+    </CustomerLayout>
   );
 }
 

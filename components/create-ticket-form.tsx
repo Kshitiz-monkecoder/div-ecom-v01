@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -16,11 +15,12 @@ import {
 } from "@/components/ui/select";
 import { createTicket } from "@/app/actions/tickets";
 import { TICKET_CATEGORIES } from "@/types";
-import { Order } from "@prisma/client";
-import { Product } from "@prisma/client";
+import { Order, OrderItem, Product } from "@prisma/client";
 
 interface CreateTicketFormProps {
-  orders: (Order & { product: Product })[];
+  orders: (Order & {
+    items: Array<OrderItem & { product: Product | null }>;
+  })[];
 }
 
 export function CreateTicketForm({ orders }: CreateTicketFormProps) {
@@ -89,7 +89,9 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
             <SelectItem value="none">None</SelectItem>
             {orders.map((order) => (
               <SelectItem key={order.id} value={order.id}>
-                {order.product.name} - {new Date(order.createdAt).toLocaleDateString()}
+                {order.items.length === 1
+                  ? order.items[0]?.product?.name || order.items[0]?.name || "Order"
+                  : `${order.items.length} items`} - {new Date(order.createdAt).toLocaleDateString()}
               </SelectItem>
             ))}
           </SelectContent>

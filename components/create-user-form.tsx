@@ -49,7 +49,7 @@ export function CreateUserForm() {
       setFormData({ name: "", phone: "", email: "" });
       setOpen(false);
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Failed to create user");
     } finally {
       setLoading(false);

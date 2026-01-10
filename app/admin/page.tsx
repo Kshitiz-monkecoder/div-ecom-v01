@@ -45,7 +45,7 @@ export default async function AdminDashboard() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Product</TableHead>
+                <TableHead>Order Number</TableHead>
                 <TableHead>Customer</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Date</TableHead>
@@ -53,23 +53,36 @@ export default async function AdminDashboard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {stats.recentOrders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell>{order.product.name}</TableCell>
-                  <TableCell>{order.user.name}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={order.status} type="order" />
-                  </TableCell>
-                  <TableCell>
-                    {format(new Date(order.createdAt), "MMM dd, yyyy")}
-                  </TableCell>
-                  <TableCell>
-                    <Link href={`/admin/orders/${order.id}`}>
-                      <span className="text-primary hover:underline">View</span>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {stats.recentOrders.map((order) => {
+                const totalAmount = order.items.reduce(
+                  (sum, item) => sum + item.unitPrice * item.quantity,
+                  0
+                );
+                const itemCount = order.items.length;
+                return (
+                  <TableRow key={order.id}>
+                    <TableCell>
+                      {order.orderNumber}
+                      <div className="text-sm text-gray-500">
+                        {itemCount} product{itemCount !== 1 ? "s" : ""} • ₹
+                        {(totalAmount / 100).toFixed(2)}
+                      </div>
+                    </TableCell>
+                    <TableCell>{order.user.name}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={order.status} type="order" />
+                    </TableCell>
+                    <TableCell>
+                      {format(new Date(order.createdAt), "MMM dd, yyyy")}
+                    </TableCell>
+                    <TableCell>
+                      <Link href={`/admin/orders/${order.id}`}>
+                        <span className="text-primary hover:underline">View</span>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
           {stats.recentOrders.length === 0 && (

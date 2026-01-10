@@ -40,7 +40,6 @@ export function UserActions({ userId, userName, currentUserId }: UserActionsProp
   const [loading, setLoading] = useState(false);
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
-  const [assignedProductIds, setAssignedProductIds] = useState<string[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [productsLoaded, setProductsLoaded] = useState(false);
   const [assignmentsLoaded, setAssignmentsLoaded] = useState(false);
@@ -71,11 +70,9 @@ export function UserActions({ userId, userName, currentUserId }: UserActionsProp
         .then((res) => res.json())
         .then((data) => {
           if (data.productIds && Array.isArray(data.productIds)) {
-            setAssignedProductIds(data.productIds);
             setSelectedProducts(data.productIds);
             setAssignmentsLoaded(true);
           } else {
-            setAssignedProductIds([]);
             setSelectedProducts([]);
             setAssignmentsLoaded(true);
           }
@@ -124,7 +121,7 @@ export function UserActions({ userId, userName, currentUserId }: UserActionsProp
       toast.success("Products assigned successfully");
       setAssignDialogOpen(false);
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Failed to assign products");
     } finally {
       setLoading(false);
@@ -141,7 +138,7 @@ export function UserActions({ userId, userName, currentUserId }: UserActionsProp
       await deleteUser(userId);
       toast.success("User deleted successfully!");
       router.refresh();
-    } catch (error) {
+    } catch (error: unknown) {
       toast.error(error instanceof Error ? error.message : "Failed to delete user");
     } finally {
       setLoading(false);

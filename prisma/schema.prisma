@@ -51,22 +51,41 @@ model Product {
   images      String        // Cloudinary URLs stored as JSON array string
   isActive    Boolean       @default(true)
   createdAt   DateTime      @default(now())
-  orders      Order[]
+  orderItems  OrderItem[]
   users       UserProduct[] @relation("ProductUsers")
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  userId    String
-  productId String
-  status    OrderStatus @default(NEW)
-  address   String
-  phone     String
-  notes     String?
-  createdAt DateTime    @default(now())
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  tickets   Ticket[]
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique // e.g., "ORD-2024-001"
+  userId          String
+  status          OrderStatus @default(NEW)
+  address         String
+  phone           String
+  notes           String?
+  warrantyCardUrl String?     // Cloudinary URL
+  invoiceUrl      String?     // Cloudinary URL
+  additionalFiles String?     // JSON array of Cloudinary URLs
+  createdAt       DateTime    @default(now())
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+  tickets         Ticket[]
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  productId   String?  // Reference to original product (optional - can be null if product is deleted)
+  quantity    Int      @default(1)
+  unitPrice   Int      // Price in paise (editable)
+  name        String   // Editable product name
+  description String   // Editable description
+  capacity    String   // Editable capacity
+  createdAt   DateTime @default(now())
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  
+  @@index([orderId])
 }
 
 model Ticket {

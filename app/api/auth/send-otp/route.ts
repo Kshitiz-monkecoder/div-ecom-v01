@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getOTP, setOTP } from "@/lib/otp-store";
+import { setOTP } from "@/lib/otp-store";
 
 // OTP expires in 10 minutes
 const OTP_EXPIRY = 10 * 60 * 1000;

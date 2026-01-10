@@ -41,7 +41,6 @@ export function ProductActions({ product, assignedUserIds = [], allUsers = [] }:
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<User[]>(allUsers);
-  const [userIds, setUserIds] = useState<string[]>(assignedUserIds);
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<string[]>(assignedUserIds);
   const [usersLoaded, setUsersLoaded] = useState(false);
@@ -80,17 +79,14 @@ export function ProductActions({ product, assignedUserIds = [], allUsers = [] }:
         .then((data) => {
           console.log("Assigned users data:", data); // Debug log
           if (data.userIds && Array.isArray(data.userIds)) {
-            setUserIds(data.userIds);
             setSelectedUsers(data.userIds);
           } else {
-            setUserIds([]);
             setSelectedUsers([]);
           }
           setUserIdsLoaded(true);
         })
         .catch((error) => {
           console.error("Error loading assigned users:", error);
-          setUserIds([]);
           setSelectedUsers([]);
           setUserIdsLoaded(true);
         });
@@ -133,9 +129,8 @@ export function ProductActions({ product, assignedUserIds = [], allUsers = [] }:
 
       toast.success("Users assigned successfully");
       setAssignDialogOpen(false);
-      setUserIds(selectedUsers);
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Failed to assign users");
     } finally {
       setLoading(false);
@@ -148,7 +143,7 @@ export function ProductActions({ product, assignedUserIds = [], allUsers = [] }:
       await toggleProductStatus(product.id);
       toast.success(`Product ${product.isActive ? "deactivated" : "activated"} successfully!`);
       router.refresh();
-    } catch (error) {
+    } catch (error: unknown) {
       toast.error(error instanceof Error ? error.message : "Failed to update status");
     } finally {
       setLoading(false);
@@ -164,7 +159,7 @@ export function ProductActions({ product, assignedUserIds = [], allUsers = [] }:
       await deleteProduct(product.id);
       toast.success("Product deleted successfully!");
       router.refresh();
-    } catch (error) {
+    } catch (error: unknown) {
       toast.error(error instanceof Error ? error.message : "Failed to delete product");
     } finally {
       setLoading(false);

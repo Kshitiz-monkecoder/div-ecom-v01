@@ -1,10 +1,8 @@
-import { Navbar } from "@/components/navbar";
+import CustomerLayout from "@/components/customer-layout";
 import { getCurrentUser } from "@/lib/auth";
-import { requireAuth } from "@/lib/middleware";
 import { format } from "date-fns";
 
 export default async function AccountPage() {
-  await requireAuth();
   const user = await getCurrentUser();
 
   if (!user) {
@@ -12,10 +10,8 @@ export default async function AccountPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <CustomerLayout>
+      <div className="max-w-2xl">
         <h1 className="text-3xl font-bold mb-8">My Account</h1>
 
         <div className="bg-white dark:bg-gray-900 rounded-lg border p-6 space-y-6">
@@ -42,7 +38,7 @@ export default async function AccountPage() {
           </div>
         </div>
       </div>
-    </div>
+    </CustomerLayout>
   );
 }
 

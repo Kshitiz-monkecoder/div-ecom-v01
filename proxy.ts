@@ -1,6 +1,61 @@
-// Middleware for authentication (if needed in the future)
-export default function middleware() {
-  // No middleware needed for now
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { Role } from "@prisma/client";
+
+const SESSION_COOKIE_NAME = "auth_session";
+
+function getSession(request: NextRequest): { userId: string; token: string } | null {
+  try {
+    const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME);
+    
+    if (!sessionCookie?.value) {
+      return null;
+    }
+
+    const session = JSON.parse(sessionCookie.value) as { userId: string; token: string };
+    return session;
+  } catch {
+    return null;
+  }
+}
+
+export default async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Allow access to login page, API routes, and admin routes without redirecting
+  if (
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/static") ||
+    pathname.includes(".")
+  ) {
+    return NextResponse.next();
+  }
+
+  // Check if user is authenticated and is an admin
+  try {
+    const session = getSession(request);
+
+    if (session) {
+      const user = await prisma.user.findUnique({
+        where: { id: session.userId },
+        select: { role: true },
+      });
+
+      // If user is admin and trying to access non-admin routes, redirect to /admin
+      if (user && user.role === Role.ADMIN) {
+        return NextResponse.redirect(new URL("/admin", request.url));
+      }
+    }
+  } catch (error) {
+    // If there's an error, continue with the request
+    console.error("Middleware error:", error);
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {

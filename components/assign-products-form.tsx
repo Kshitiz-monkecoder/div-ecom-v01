@@ -74,7 +74,7 @@ export function AssignProductsForm({
       toast.success("Products assigned successfully");
       setOpen(false);
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Failed to assign products");
     } finally {
       setLoading(false);

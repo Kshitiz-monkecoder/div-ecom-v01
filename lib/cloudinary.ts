@@ -40,3 +40,96 @@ export async function deleteImage(publicId: string): Promise<void> {
   await cloudinary.uploader.destroy(publicId);
 }
 
+/**
+ * Upload a document (PDF, etc.) to Cloudinary
+ * @param file - The file to upload
+ * @param folder - Optional folder path (default: "order-documents")
+ * @returns Promise resolving to the secure URL of the uploaded document
+ */
+export async function uploadDocument(file: File, folder: string = "order-documents"): Promise<string> {
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+
+  // Get original filename and preserve extension
+  const originalFilename = file.name;
+  
+  // Clean base name for public_id (alphanumeric, hyphens, underscores only)
+  const baseName = originalFilename
+    .replace(/\.[^/.]+$/, '') // Remove extension
+    .replace(/[^a-zA-Z0-9_-]/g, '_') // Replace special chars
+    .substring(0, 100); // Limit length
+
+  // Generate unique public_id with timestamp
+  // Format: folder/baseName_timestamp
+  const timestamp = Date.now();
+  const publicId = `${folder}/${baseName}_${timestamp}`;
+
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "raw", // Use "raw" for PDFs and other documents (per Cloudinary docs)
+        public_id: publicId, // Explicit public_id for control
+        folder: folder, // Organize in folder
+        use_filename: false, // We're setting public_id explicitly
+        unique_filename: true, // Ensure uniqueness
+        overwrite: false, // Don't overwrite
+        // Note: format is auto-detected from file content for raw files
+      },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary upload error:", error);
+          reject(error);
+        } else if (result?.secure_url) {
+          // Return the secure URL - this is the direct download URL for raw files
+          // Format: https://res.cloudinary.com/{cloud_name}/raw/upload/v{version}/{public_id}
+          // Cloudinary automatically appends the format extension
+          resolve(result.secure_url);
+        } else {
+          reject(new Error("Document upload failed: No URL returned"));
+        }
+      }
+    );
+
+    uploadStream.end(buffer);
+  });
+}
+
+/**
+ * Upload multiple files to Cloudinary
+ * @param files - Array of files to upload
+ * @param folder - Optional folder path (default: "order-documents")
+ * @param resourceType - "image" or "raw" (default: "raw" for documents)
+ * @returns Promise resolving to an array of secure URLs
+ */
+export async function uploadMultipleFiles(
+  files: File[],
+  folder: string = "order-documents",
+  resourceType: "image" | "raw" = "raw"
+): Promise<string[]> {
+  const uploadPromises = files.map((file) => {
+    if (resourceType === "image") {
+      return uploadImage(file);
+    } else {
+      return uploadDocument(file, folder);
+    }
+  });
+
+  return Promise.all(uploadPromises);
+}
+
+/**
+ * Upload a file with automatic resource type detection
+ * @param file - The file to upload
+ * @param folder - Optional folder path
+ * @returns Promise resolving to the secure URL
+ */
+export async function uploadFile(file: File, folder: string = "order-documents"): Promise<string> {
+  const fileType = file.type;
+  
+  // Determine resource type based on MIME type
+  if (fileType.startsWith("image/")) {
+    return uploadImage(file);
+  } else {
+    return uploadDocument(file, folder);
+  }
+}

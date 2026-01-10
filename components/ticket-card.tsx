@@ -8,9 +8,12 @@ import { format } from "date-fns";
 interface TicketCardProps {
   ticket: Ticket & {
     order?: {
-      product: {
+      items: Array<{
+        product?: {
+          name: string;
+        } | null;
         name: string;
-      };
+      }>;
     } | null;
   };
 }
@@ -32,9 +35,11 @@ export function TicketCard({ ticket }: TicketCardProps) {
         </CardHeader>
         <CardContent>
           <p className="text-sm line-clamp-2 mb-2">{ticket.description}</p>
-          {ticket.order && (
+          {ticket.order && ticket.order.items.length > 0 && (
             <Badge variant="outline">
-              Related to: {ticket.order.product.name}
+              Related to: {ticket.order.items.length === 1
+                ? ticket.order.items[0]?.product?.name || ticket.order.items[0]?.name
+                : `${ticket.order.items.length} items`}
             </Badge>
           )}
         </CardContent>

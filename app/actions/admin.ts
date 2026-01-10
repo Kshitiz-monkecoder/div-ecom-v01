@@ -18,7 +18,11 @@ export async function getDashboardStats() {
     prisma.order.findMany({
       take: 10,
       include: {
-        product: true,
+        items: {
+          include: {
+            product: true,
+          },
+        },
         user: true,
       },
       orderBy: {
@@ -31,7 +35,11 @@ export async function getDashboardStats() {
         user: true,
         order: {
           include: {
-            product: true,
+            items: {
+              include: {
+                product: true,
+              },
+            },
           },
         },
       },
@@ -81,7 +89,11 @@ export async function getUserDetails(id: string) {
     include: {
       orders: {
         include: {
-          product: true,
+          items: {
+            include: {
+              product: true,
+            },
+          },
         },
         orderBy: {
           createdAt: "desc",
@@ -91,7 +103,11 @@ export async function getUserDetails(id: string) {
         include: {
           order: {
             include: {
-              product: true,
+              items: {
+                include: {
+                  product: true,
+                },
+              },
             },
           },
         },

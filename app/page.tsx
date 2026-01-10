@@ -1,7 +1,16 @@
 // Commented out home page - redirecting to orders instead
 import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/auth";
+import { Role } from "@prisma/client";
 
 export default async function Home() {
+  const user = await getCurrentUser();
+  
+  // Redirect admin users to admin panel, regular users to orders
+  if (user?.role === Role.ADMIN) {
+    redirect("/admin");
+  }
+  
   redirect("/orders");
 }
 

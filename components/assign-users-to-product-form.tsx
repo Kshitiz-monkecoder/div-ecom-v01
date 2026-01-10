@@ -77,7 +77,7 @@ export function AssignUsersToProductForm({
       toast.success("Users assigned successfully");
       setOpen(false);
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Failed to assign users");
     } finally {
       setLoading(false);

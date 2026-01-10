@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 
 export function LoginForm() {
@@ -37,7 +37,7 @@ export function LoginForm() {
 
       toast.success("OTP sent successfully to your WhatsApp");
       setStep("otp");
-    } catch (error) {
+    } catch {
       toast.error("Failed to send OTP. Please try again.");
     } finally {
       setLoading(false);
@@ -65,9 +65,15 @@ export function LoginForm() {
       }
 
       toast.success("Login successful!");
-      router.push("/");
+      
+      // Redirect admin users to admin panel, regular users to orders
+      if (data.user?.role === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push("/orders");
+      }
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Failed to verify OTP. Please try again.");
     } finally {
       setLoading(false);

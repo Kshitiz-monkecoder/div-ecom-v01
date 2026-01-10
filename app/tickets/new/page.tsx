@@ -1,19 +1,15 @@
-import { Navbar } from "@/components/navbar";
+import CustomerLayout from "@/components/customer-layout";
 import { CreateTicketForm } from "@/components/create-ticket-form";
-import { requireAuth } from "@/lib/middleware";
 import { getUserOrders } from "@/app/actions/orders";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default async function CreateTicketPage() {
-  await requireAuth();
   const orders = await getUserOrders();
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <CustomerLayout>
+      <div className="max-w-2xl">
         <div className="mb-6">
           <Link href="/tickets">
             <Button variant="ghost">← Back to Tickets</Button>
@@ -25,7 +21,7 @@ export default async function CreateTicketPage() {
           <CreateTicketForm orders={orders} />
         </div>
       </div>
-    </div>
+    </CustomerLayout>
   );
 }
 

@@ -1,4 +1,4 @@
-import { getTicket, updateTicketStatus } from "@/app/actions/tickets";
+import { getTicket } from "@/app/actions/tickets";
 import { notFound } from "next/navigation";
 import { StatusBadge } from "@/components/status-badge";
 import { TicketStatusForm } from "@/components/ticket-status-form";
@@ -60,14 +60,18 @@ export default async function AdminTicketDetailPage({
           </p>
         </div>
 
-        {ticket.order && (
+        {ticket.order && ticket.order.items.length > 0 && (
           <div className="bg-white dark:bg-gray-900 rounded-lg border p-6">
             <h2 className="text-xl font-semibold mb-4">Related Order</h2>
             <Link
               href={`/admin/orders/${ticket.order.id}`}
               className="block p-4 border rounded hover:bg-gray-50 dark:hover:bg-gray-800"
             >
-              <p className="font-medium">{ticket.order.product.name}</p>
+              <p className="font-medium">
+                {ticket.order.items.length === 1
+                  ? ticket.order.items[0]?.product?.name || ticket.order.items[0]?.name
+                  : `${ticket.order.items.length} items`}
+              </p>
               <p className="text-sm text-gray-500">
                 Order placed on {format(new Date(ticket.order.createdAt), "MMM dd, yyyy")}
               </p>

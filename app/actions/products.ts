@@ -74,8 +74,11 @@ export async function getProduct(id: string) {
   const product = await prisma.product.findUnique({
     where: { id },
     include: {
-      orders: {
+      orderItems: {
         take: 5,
+        include: {
+          order: true,
+        },
         orderBy: { createdAt: "desc" },
       },
     },

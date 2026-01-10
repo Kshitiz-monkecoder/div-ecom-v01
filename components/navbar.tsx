@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 
 export function Navbar() {
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [user, setUser] = useState<{ name: string; phone: string } | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
@@ -21,9 +20,6 @@ export function Navbar() {
       .then((data) => {
         setIsSignedIn(!!data.user);
         setIsAdmin(data.isAdmin || false);
-        if (data.user) {
-          setUser(data.user);
-        }
       })
       .catch(() => {
         setIsSignedIn(false);
@@ -35,7 +31,6 @@ export function Navbar() {
     try {
       await fetch("/api/auth/signout", { method: "POST" });
       setIsSignedIn(false);
-      setUser(null);
       setIsAdmin(false);
       router.push("/login");
       router.refresh();

@@ -1,11 +1,7 @@
 // Commented out products page - users will see assigned products on orders page
 import { notFound } from "next/navigation";
 
-export default async function ProductsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ category?: string }>;
-}) {
+export default async function ProductsPage() {
   notFound();
 }
 

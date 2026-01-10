@@ -1,7 +1,6 @@
-import { Navbar } from "@/components/navbar";
+import CustomerLayout from "@/components/customer-layout";
 import { StatusBadge } from "@/components/status-badge";
 import { getTicket } from "@/app/actions/tickets";
-import { requireAuth } from "@/lib/middleware";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -12,7 +11,6 @@ export default async function TicketDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireAuth();
   const { id } = await params;
   const ticket = await getTicket(id).catch(() => null);
 
@@ -21,10 +19,8 @@ export default async function TicketDetailPage({
   }
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <CustomerLayout>
+      <div className="max-w-4xl">
         <div className="mb-6">
           <Link href="/tickets">
             <Button variant="ghost">← Back to Tickets</Button>
@@ -56,7 +52,11 @@ export default async function TicketDetailPage({
                 href={`/orders/${ticket.order.id}`}
                 className="block p-4 border rounded hover:bg-gray-50 dark:hover:bg-gray-800"
               >
-                <p className="font-medium">{ticket.order.product.name}</p>
+                <p className="font-medium">
+                  {ticket.order.items.length === 1
+                    ? ticket.order.items[0]?.product?.name || ticket.order.items[0]?.name
+                    : `${ticket.order.items.length} items`}
+                </p>
                 <p className="text-sm text-gray-500">
                   Order placed on {format(new Date(ticket.order.createdAt), "MMM dd, yyyy")}
                 </p>
@@ -65,7 +65,7 @@ export default async function TicketDetailPage({
           )}
         </div>
       </div>
-    </div>
+    </CustomerLayout>
   );
 }
 

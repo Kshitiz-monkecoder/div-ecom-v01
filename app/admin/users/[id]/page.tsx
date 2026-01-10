@@ -83,7 +83,11 @@ export default async function AdminUserDetailPage({
               >
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="font-medium">{order.product.name}</p>
+                    <p className="font-medium">
+                      {order.items.length === 1
+                        ? order.items[0]?.product?.name || order.items[0]?.name || "Order"
+                        : `${order.items.length} items`}
+                    </p>
                     <p className="text-sm text-gray-500">
                       {format(new Date(order.createdAt), "MMM dd, yyyy")}
                     </p>

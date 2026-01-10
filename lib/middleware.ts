@@ -20,7 +20,7 @@ export async function requireAdmin() {
   });
 
   if (!dbUser || dbUser.role !== Role.ADMIN) {
-    redirect("/");
+    redirect("/orders");
   }
 
   return user;

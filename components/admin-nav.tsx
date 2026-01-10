@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
 
 const navItems = [
@@ -18,6 +18,7 @@ const navItems = [
 
 export function AdminNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -28,40 +29,57 @@ export function AdminNav() {
     setIsMobileMenuOpen(false);
   };
 
+  const handleSignOut = async () => {
+    try {
+      await fetch("/api/auth/signout", { method: "POST" });
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
     <>
       {/* Desktop Sidebar */}
-      <nav className="hidden md:block w-64 border-r bg-gray-50 dark:bg-gray-900 p-4">
-        <div className="space-y-2">
-          <Link href="/" className="block mb-4">
-            <Image
-              src="/divy-power-logo.png"
-              alt="DIVY Power"
-              width={120}
-              height={40}
-              className="h-10 w-auto"
-              priority
-            />
-          </Link>
-          <h2 className="text-lg font-semibold mb-4">Admin Panel</h2>
-          {navItems.map((item) => (
-            <Link key={item.href} href={item.href}>
-              <Button
-                variant={pathname === item.href ? "default" : "ghost"}
-                className={cn(
-                  "w-full justify-start",
-                  pathname === item.href && "bg-primary"
-                )}
-              >
-                {item.label}
-              </Button>
+      <nav className="hidden md:flex md:flex-col w-64 border-r bg-gray-50 dark:bg-gray-900 min-h-screen">
+        <div className="flex flex-col h-full max-h-screen p-4">
+          <div className="space-y-2 flex-1">
+            <Link href="/" className="block mb-4">
+              <Image
+                src="/divy-power-logo.png"
+                alt="DIVY Power"
+                width={120}
+                height={40}
+                className="h-10 w-auto"
+                priority
+              />
             </Link>
-          ))}
-          <Link href="/">
-            <Button variant="outline" className="w-full justify-start mt-4">
-              Back to Store
+            <h2 className="text-lg font-semibold mb-4">Admin Panel</h2>
+            {navItems.map((item) => (
+              <Link key={item.href} href={item.href}>
+                <Button
+                  variant={pathname === item.href ? "default" : "ghost"}
+                  className={cn(
+                    "w-full justify-start",
+                    pathname === item.href && "bg-primary"
+                  )}
+                >
+                  {item.label}
+                </Button>
+              </Link>
+            ))}
+          </div>
+          <div className="mt-auto pt-4 border-t">
+            <Button
+              variant="ghost"
+              onClick={handleSignOut}
+              className="w-full justify-start text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
             </Button>
-          </Link>
+          </div>
         </div>
       </nav>
 
@@ -109,11 +127,19 @@ export function AdminNav() {
                   </Button>
                 </Link>
               ))}
-              <Link href="/" onClick={closeMobileMenu}>
-                <Button variant="outline" className="w-full justify-start mt-4">
-                  Back to Store
+              <div className="pt-4 mt-4 border-t">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                  onClick={() => {
+                    closeMobileMenu();
+                    handleSignOut();
+                  }}
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
                 </Button>
-              </Link>
+              </div>
             </div>
           </div>
         )}

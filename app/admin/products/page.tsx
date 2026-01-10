@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { toggleProductStatus, deleteProduct } from "@/app/actions/products";
 import { ProductActions } from "@/components/product-actions";
 
 export default async function AdminProductsPage() {

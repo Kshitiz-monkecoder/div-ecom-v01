@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth, requireAdmin, getCurrentUser } from "@/lib/auth";
 import { TicketStatus } from "@prisma/client";
 import { z } from "zod";
-import { TICKET_CATEGORIES } from "@/types";
 
 const createTicketSchema = z.object({
   category: z.enum(["Installation Issue", "Product Issue", "Billing / Payment", "General Query"]),
@@ -43,7 +42,11 @@ export async function createTicket(data: unknown) {
     include: {
       order: {
         include: {
-          product: true,
+          items: {
+            include: {
+              product: true,
+            },
+          },
         },
       },
     },
@@ -60,7 +63,11 @@ export async function getUserTickets() {
     include: {
       order: {
         include: {
-          product: true,
+          items: {
+            include: {
+              product: true,
+            },
+          },
         },
       },
     },
@@ -88,7 +95,11 @@ export async function getTicket(id: string) {
       user: true,
       order: {
         include: {
-          product: true,
+          items: {
+            include: {
+              product: true,
+            },
+          },
         },
       },
     },
@@ -115,7 +126,11 @@ export async function getAllTickets(status?: TicketStatus) {
       user: true,
       order: {
         include: {
-          product: true,
+          items: {
+            include: {
+              product: true,
+            },
+          },
         },
       },
     },
@@ -141,7 +156,11 @@ export async function updateTicketStatus(id: string, status: TicketStatus) {
       user: true,
       order: {
         include: {
-          product: true,
+          items: {
+            include: {
+              product: true,
+            },
+          },
         },
       },
     },
