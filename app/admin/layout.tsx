@@ -1,4 +1,4 @@
-import { AdminNav } from "@/components/admin-nav";
+import { AdminNav, AdminHeader } from "@/components/admin-nav";
 import { requireAdmin } from "@/lib/middleware";
 
 export default async function AdminLayout({
@@ -9,10 +9,12 @@ export default async function AdminLayout({
   await requireAdmin();
 
   return (
-    <div className="min-h-screen flex">
-      <AdminNav />
-      <main className="flex-1 p-8">{children}</main>
+    <div className="min-h-screen flex flex-col">
+      <AdminHeader />
+      <div className="flex flex-1">
+        <AdminNav />
+        <main className="flex-1 p-8">{children}</main>
+      </div>
     </div>
   );
 }
-

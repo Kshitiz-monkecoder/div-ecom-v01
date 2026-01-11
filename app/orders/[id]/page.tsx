@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Download, ExternalLink, Shield, Receipt, Paperclip } from "lucide-react";
+import { FileText, ExternalLink, Shield, Receipt, Paperclip } from "lucide-react";
 
 export default async function OrderDetailPage({
   params,
@@ -120,28 +120,16 @@ export default async function OrderDetailPage({
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                      >
-                        <a href={order.warrantyCardUrl} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          View
-                        </a>
-                      </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        asChild
-                      >
-                        <a href={`/api/download-document?url=${encodeURIComponent(order.warrantyCardUrl)}`}>
-                          <Download className="w-4 h-4 mr-2" />
-                          Download
-                        </a>
-                      </Button>
-                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      asChild
+                    >
+                      <a href={order.warrantyCardUrl} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        View
+                      </a>
+                    </Button>
                   </div>
                 </div>
               )}
@@ -160,28 +148,16 @@ export default async function OrderDetailPage({
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                      >
-                        <a href={order.invoiceUrl} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          View
-                        </a>
-                      </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        asChild
-                      >
-                        <a href={`/api/download-document?url=${encodeURIComponent(order.invoiceUrl)}`}>
-                          <Download className="w-4 h-4 mr-2" />
-                          Download
-                        </a>
-                      </Button>
-                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      asChild
+                    >
+                      <a href={order.invoiceUrl} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        View
+                      </a>
+                    </Button>
                   </div>
                 </div>
               )}
@@ -202,28 +178,16 @@ export default async function OrderDetailPage({
                           <FileText className="w-5 h-5 text-gray-500" />
                           <span className="text-sm font-medium">File {index + 1}</span>
                         </div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            asChild
-                          >
-                            <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="w-4 h-4 mr-2" />
-                              View
-                            </a>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            asChild
-                          >
-                            <a href={`/api/download-document?url=${encodeURIComponent(fileUrl)}`}>
-                              <Download className="w-4 h-4 mr-2" />
-                              Download
-                            </a>
-                          </Button>
-                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          asChild
+                        >
+                          <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            View
+                          </a>
+                        </Button>
                       </div>
                     ))}
                   </div>

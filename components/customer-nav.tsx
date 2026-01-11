@@ -14,9 +14,46 @@ const navItems = [
   { href: "/account", label: "Account", icon: User },
 ];
 
+export function CustomerHeader() {
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    try {
+      await fetch("/api/auth/signout", { method: "POST" });
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  return (
+    <header className="w-full border-b bg-gray-50 dark:bg-gray-900 px-4 md:px-6 py-4 flex items-center justify-between">
+      <Link href="/" className="flex items-center">
+        <Image
+          src="/divy-power-logo.png"
+          alt="DIVY Power"
+          width={120}
+          height={40}
+          className="h-8 w-auto"
+          priority
+        />
+      </Link>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={handleSignOut}
+        className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+      >
+        <LogOut className="h-4 w-4 mr-2" />
+        Sign Out
+      </Button>
+    </header>
+  );
+}
+
 export function CustomerNav() {
   const pathname = usePathname();
-  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
     if (typeof window !== "undefined") {
@@ -66,16 +103,6 @@ export function CustomerNav() {
     setIsMobileMenuOpen(false);
   };
 
-  const handleSignOut = async () => {
-    try {
-      await fetch("/api/auth/signout", { method: "POST" });
-      router.push("/login");
-      router.refresh();
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-  };
-
   return (
     <>
       {/* Desktop Sidebar */}
@@ -84,64 +111,37 @@ export function CustomerNav() {
         isCollapsed ? "w-16" : "w-64"
       )}>
         <div className="flex flex-col h-full p-4">
-          <div className={cn("flex items-center mb-4", isCollapsed ? "justify-center" : "justify-between")}>
+          <div className={cn("flex items-center mb-4", isCollapsed ? "justify-center" : "justify-end")}>
             {!isCollapsed && isMounted ? (
-              <>
-                <Link href="/" className="block">
-                  <Image
-                    src="/divy-power-logo.png"
-                    alt="DIVY Power"
-                    width={120}
-                    height={40}
-                    className="h-10 w-auto"
-                    priority
-                  />
-                </Link>
-                <button
-                  onClick={() => {
-                    setIsCollapsed(true);
-                    if (typeof window !== "undefined") {
-                      localStorage.setItem("sidebar-collapsed", "true");
-                    }
-                  }}
-                  className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
-                  aria-label="Collapse sidebar"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </>
+              <button
+                onClick={() => {
+                  setIsCollapsed(true);
+                  if (typeof window !== "undefined") {
+                    localStorage.setItem("sidebar-collapsed", "true");
+                  }
+                }}
+                className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
+                aria-label="Collapse sidebar"
+              >
+                <X className="h-4 w-4" />
+              </button>
             ) : isCollapsed && isMounted ? (
-              <div className="w-full flex flex-col items-center space-y-2">
-                <Link href="/" className="block mb-2">
-                  <Image
-                    src="/divy-power-logo.png"
-                    alt="DIVY Power"
-                    width={40}
-                    height={40}
-                    className="h-10 w-10"
-                    priority
-                  />
-                </Link>
-                <button
-                  onClick={() => {
-                    setIsCollapsed(false);
-                    if (typeof window !== "undefined") {
-                      localStorage.setItem("sidebar-collapsed", "false");
-                    }
-                  }}
-                  className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
-                  aria-label="Expand sidebar"
-                >
-                  <Menu className="h-4 w-4" />
-                </button>
-              </div>
+              <button
+                onClick={() => {
+                  setIsCollapsed(false);
+                  if (typeof window !== "undefined") {
+                    localStorage.setItem("sidebar-collapsed", "false");
+                  }
+                }}
+                className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
+                aria-label="Expand sidebar"
+              >
+                <Menu className="h-4 w-4" />
+              </button>
             ) : null}
           </div>
 
           <div className="space-y-2 flex-1">
-            {!isCollapsed && isMounted && (
-              <h2 className="text-lg font-semibold mb-4 px-2">Dashboard</h2>
-            )}
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -179,18 +179,6 @@ export function CustomerNav() {
                 </Button>
               </Link>
             )}
-            <Button
-              variant="ghost"
-              onClick={handleSignOut}
-              className={cn(
-                "w-full justify-start text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300",
-                isCollapsed && "justify-center px-2"
-              )}
-              title={isCollapsed ? "Sign Out" : undefined}
-            >
-              <LogOut className={cn("h-4 w-4", !isCollapsed && "mr-2")} />
-              {(!isCollapsed || !isMounted) && "Sign Out"}
-            </Button>
           </div>
         </div>
       </nav>
@@ -198,16 +186,6 @@ export function CustomerNav() {
       {/* Mobile Top Navigation */}
       <nav className="md:hidden border-b bg-gray-50 dark:bg-gray-900">
         <div className="flex items-center justify-between p-4">
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/divy-power-logo.png"
-              alt="DIVY Power"
-              width={120}
-              height={40}
-              className="h-10 w-auto"
-              priority
-            />
-          </Link>
           <button
             onClick={toggleMobileMenu}
             className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -251,19 +229,6 @@ export function CustomerNav() {
                   </Button>
                 </Link>
               )}
-            </div>
-            <div className="border-t pt-4 px-4 pb-4">
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                onClick={() => {
-                  closeMobileMenu();
-                  handleSignOut();
-                }}
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
             </div>
           </div>
         )}

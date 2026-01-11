@@ -50,7 +50,7 @@ export async function uploadDocument(file: File, folder: string = "order-documen
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
-  // Get original filename and preserve extension
+  // Get original filename
   const originalFilename = file.name;
   
   // Clean base name for public_id (alphanumeric, hyphens, underscores only)
@@ -61,28 +61,28 @@ export async function uploadDocument(file: File, folder: string = "order-documen
 
   // Generate unique public_id with timestamp
   // Format: folder/baseName_timestamp
+  // Cloudinary will handle file type detection automatically
   const timestamp = Date.now();
   const publicId = `${folder}/${baseName}_${timestamp}`;
 
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        resource_type: "raw", // Use "raw" for PDFs and other documents (per Cloudinary docs)
-        public_id: publicId, // Explicit public_id for control
-        folder: folder, // Organize in folder
+        resource_type: "auto", // Let Cloudinary decide - often results in better metadata for PDFs
+        public_id: publicId, // Explicit public_id with full path (includes folder)
+        access_mode: "public", // Ensure deliverable (publicly accessible)
         use_filename: false, // We're setting public_id explicitly
         unique_filename: true, // Ensure uniqueness
         overwrite: false, // Don't overwrite
-        // Note: format is auto-detected from file content for raw files
+        // Note: Don't set 'folder' when public_id already includes the full path to avoid duplication
       },
       (error, result) => {
         if (error) {
           console.error("Cloudinary upload error:", error);
           reject(error);
         } else if (result?.secure_url) {
-          // Return the secure URL - this is the direct download URL for raw files
-          // Format: https://res.cloudinary.com/{cloud_name}/raw/upload/v{version}/{public_id}
-          // Cloudinary automatically appends the format extension
+          // Return the secure URL - this is the direct download URL
+          // With resource_type: "auto", Cloudinary may store PDFs as images with metadata
           resolve(result.secure_url);
         } else {
           reject(new Error("Document upload failed: No URL returned"));

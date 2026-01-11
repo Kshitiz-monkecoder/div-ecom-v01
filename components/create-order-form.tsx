@@ -234,7 +234,7 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
       });
 
       toast.success(`Order ${order.orderNumber} created successfully!`);
-      router.push(`/admin/orders/${order.id}`);
+      router.push("/admin/orders");
       router.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to create order");
