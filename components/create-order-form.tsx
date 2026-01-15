@@ -61,6 +61,8 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
   const [warrantyFile, setWarrantyFile] = useState<File | null>(null);
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
   const [additionalFiles, setAdditionalFiles] = useState<File[]>([]);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
 
   // Load users and products on mount if not provided
   useEffect(() => {
@@ -234,6 +236,7 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
       });
 
       toast.success(`Order ${order.orderNumber} created successfully!`);
+      setIsSubmitted(true); 
       router.push("/admin/orders");
       router.refresh();
     } catch (error) {
@@ -667,7 +670,7 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
                 <Button variant="outline" onClick={() => setStep(4)}>
                   Back
                 </Button>
-                <Button onClick={handleSubmit} disabled={loading}>
+                <Button onClick={handleSubmit}   disabled={loading || isSubmitted} >
                   {loading ? "Creating Order..." : "Create Order"}
                 </Button>
               </div>
