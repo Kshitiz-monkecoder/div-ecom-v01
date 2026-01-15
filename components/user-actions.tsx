@@ -100,7 +100,7 @@ export function UserActions({ userId, userName, currentUserId }: UserActionsProp
     );
   };
 
-  const handleAssignProducts = async () => {
+  /*const handleAssignProducts = async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/admin/users/${userId}/assign-products`, {
@@ -127,6 +127,7 @@ export function UserActions({ userId, userName, currentUserId }: UserActionsProp
       setLoading(false);
     }
   };
+  */
 
   const handleDelete = async () => {
     if (!confirm(`Are you sure you want to delete user "${userName}"? This action cannot be undone.`)) {
@@ -160,9 +161,9 @@ export function UserActions({ userId, userName, currentUserId }: UserActionsProp
           <DropdownMenuItem asChild>
             <Link href={`/admin/users/${userId}/edit`}>Edit</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setAssignDialogOpen(true)}>
+       {/*   <DropdownMenuItem onClick={() => setAssignDialogOpen(true)}>
             Assign Products
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           {!isCurrentUser && (
             <DropdownMenuItem onClick={handleDelete} className="text-red-600">
               Delete
@@ -175,7 +176,7 @@ export function UserActions({ userId, userName, currentUserId }: UserActionsProp
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-
+{ /*
       <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
@@ -218,13 +219,14 @@ export function UserActions({ userId, userName, currentUserId }: UserActionsProp
               >
                 Cancel
               </Button>
-              <Button onClick={handleAssignProducts} disabled={loading}>
+        <Button onClick={handleAssignProducts} disabled={loading}>
                 {loading ? "Saving..." : "Save Assignments"}
               </Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
+       */}
     </>
   );
 }
