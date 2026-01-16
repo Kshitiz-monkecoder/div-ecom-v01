@@ -3,7 +3,7 @@ import { prisma } from "./prisma";
 import { Role } from "@prisma/client";
 import { getCurrentUser } from "./auth";
 
-export async function requireAuth() {
+export async function requireAuth(){
   const user = await getCurrentUser();
   if (!user) {
     redirect("/login");
