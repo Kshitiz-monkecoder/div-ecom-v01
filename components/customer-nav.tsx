@@ -5,12 +5,13 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Menu, X, LogOut, LayoutDashboard, HelpCircle, User, Package } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, HelpCircle, User, Package, Gift } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const navItems = [
   { href: "/orders", label: "My Orders", icon: Package },
   { href: "/tickets", label: "Support", icon: HelpCircle },
+    { href: "/referrals", label: "Referrals & Tokens", icon: Gift },
   { href: "/account", label: "Account", icon: User },
 ];
 
