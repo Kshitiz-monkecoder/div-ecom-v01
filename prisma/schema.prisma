@@ -11,7 +11,7 @@ model User {
   name      String
   email     String?
   phone     String        @unique
-  role      Role          @default(USER)
+  role      Role          @default("USER")
   createdAt DateTime      @default(now())
   orders    Order[]
   tickets   Ticket[]
@@ -36,7 +36,7 @@ model Order {
   id              String      @id @default(cuid())
   orderNumber     String      @unique
   userId          String
-  status          OrderStatus @default(NEW)
+  status          OrderStatus @default("NEW")
   address         String
   phone           String
   notes           String?
@@ -59,8 +59,8 @@ model OrderItem {
   description String
   capacity    String
   createdAt   DateTime @default(now())
-  product     Product? @relation(fields: [productId], references: [id])
   order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product? @relation(fields: [productId], references: [id])
 
   @@index([orderId])
 }
@@ -71,10 +71,10 @@ model Ticket {
   orderId     String?
   category    String
   description String
-  status      TicketStatus @default(OPEN)
+  status      TicketStatus @default("OPEN")
   createdAt   DateTime     @default(now())
-  order       Order?       @relation(fields: [orderId], references: [id])
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order       Order?       @relation(fields: [orderId], references: [id])
 }
 
 model UserProduct {
@@ -82,8 +82,8 @@ model UserProduct {
   userId    String
   productId String
   createdAt DateTime @default(now())
-  product   Product  @relation("ProductUsers", fields: [productId], references: [id], onDelete: Cascade)
   user      User     @relation("UserProducts", fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation("ProductUsers", fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
 }
@@ -98,8 +98,6 @@ model Referral {
   status        String   @default("pending")
   tokensAwarded Int      @default(0)
   submittedAt   DateTime @default(now())
-
-  @@map("referrals")
 }
 
 enum Role {

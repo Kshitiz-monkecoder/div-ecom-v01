@@ -49,6 +49,18 @@ CREATE TABLE "Ticket" (
     CONSTRAINT "Ticket_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
+CREATE TABLE "Referral" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "product" TEXT NOT NULL,
+    "referralCode" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'pending',
+    "tokensAwarded" INTEGER NOT NULL DEFAULT 0,
+    "submittedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_clerkUserId_key" ON "User"("clerkUserId");
 
