@@ -26,7 +26,7 @@ export default function ReferralsPage() {
     .filter((t) => t.status === "Unused")
     .reduce((sum, t) => sum + t.amount, 0);
 
-  const handleCopy = async () => {
+  const handleCopy = async () =>  { 
     await navigator.clipboard.writeText(referralCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
