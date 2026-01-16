@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { StatusBadge } from "@/components/status-badge";
-import { AssignProductsForm } from "@/components/assign-products-form";
+//import { AssignProductsForm } from "@/components/assign-products-form";
 
 export default async function AdminUserDetailPage({
   params,
@@ -22,7 +22,7 @@ export default async function AdminUserDetailPage({
     notFound();
   }
 
-  const assignedProductIds = user.products?.map((up) => up.product.id) || [];
+  //const assignedProductIds = user.products?.map((up) => up.product.id) || [];
 
   return (
     <div>
@@ -45,14 +45,14 @@ export default async function AdminUserDetailPage({
               </span>
             </div>
           </div>
-          {user.role !== "ADMIN" && (
+          {/*user.role !== "ADMIN" && (
             <AssignProductsForm
               userId={user.id}
               assignedProductIds={assignedProductIds}
               allProducts={allProducts}
             />
-          )}
-        </div>
+          ) */}
+        </div> 
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white dark:bg-gray-900 rounded-lg border p-6">
@@ -101,6 +101,7 @@ export default async function AdminUserDetailPage({
             )}
           </div>
         </div>
+{ /*
 
         <div className="bg-white dark:bg-gray-900 rounded-lg border p-6">
           <h2 className="text-xl font-semibold mb-4">Assigned Products</h2>
@@ -123,6 +124,7 @@ export default async function AdminUserDetailPage({
             )}
           </div>
         </div>
+*/}
 
         <div className="bg-white dark:bg-gray-900 rounded-lg border p-6">
           <h2 className="text-xl font-semibold mb-4">Tickets</h2>

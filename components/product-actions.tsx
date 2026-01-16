@@ -181,17 +181,17 @@ export function ProductActions({ product, assignedUserIds = [], allUsers = [] }:
           <DropdownMenuItem onClick={handleToggleStatus}>
             {product.isActive ? "Deactivate" : "Activate"}
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => {
+          {/*<DropdownMenuItem onClick={() => {
             setAssignDialogOpen(true);
           }}>
             Assign to Users
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem onClick={handleDelete} className="text-red-600">
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
+{/*
       <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
@@ -241,6 +241,8 @@ export function ProductActions({ product, assignedUserIds = [], allUsers = [] }:
           </div>
         </DialogContent>
       </Dialog>
+
+      */}
     </>
   );
 }
