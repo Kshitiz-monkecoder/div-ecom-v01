@@ -1,16 +1,106 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
-
 }
 
+model User {
+  id        String        @id @default(cuid())
+  name      String
+  email     String?
+  phone     String        @unique
+  role      Role          @default(USER)
+  createdAt DateTime      @default(now())
+  orders    Order[]
+  tickets   Ticket[]
+  products  UserProduct[] @relation("UserProducts")
+}
 
+model Product {
+  id          String        @id @default(cuid())
+  name        String
+  description String
+  price       Int
+  capacity    String
+  category    String
+  images      String
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  orderItems  OrderItem[]
+  users       UserProduct[] @relation("ProductUsers")
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  userId          String
+  status          OrderStatus @default(NEW)
+  address         String
+  phone           String
+  notes           String?
+  warrantyCardUrl String?
+  invoiceUrl      String?
+  additionalFiles String?
+  createdAt       DateTime    @default(now())
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+  tickets         Ticket[]
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  productId   String?
+  quantity    Int      @default(1)
+  unitPrice   Int
+  name        String
+  description String
+  capacity    String
+  createdAt   DateTime @default(now())
+  product     Product? @relation(fields: [productId], references: [id])
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model Ticket {
+  id          String       @id @default(cuid())
+  userId      String
+  orderId     String?
+  category    String
+  description String
+  status      TicketStatus @default(OPEN)
+  createdAt   DateTime     @default(now())
+  order       Order?       @relation(fields: [orderId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserProduct {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  product   Product  @relation("ProductUsers", fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation("UserProducts", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+model Referral {
+  id            Int      @id @default(autoincrement())
+  name          String
+  phone         String
+  email         String
+  product       String
+  referralCode  String?
+  status        String   @default("pending")
+  tokensAwarded Int      @default(0)
+  submittedAt   DateTime @default(now())
+
+  @@map("referrals")
+}
 
 enum Role {
   USER
@@ -31,109 +121,3 @@ enum TicketStatus {
   RESOLVED
   CLOSED
 }
-
-model User {
-  id          String        @id @default(cuid())
-  name        String
-  email       String?
-  phone       String        @unique
-  role        Role          @default(USER)
-  createdAt   DateTime      @default(now())
-  orders      Order[]
-  tickets     Ticket[]
-  products    UserProduct[] @relation("UserProducts")
-}
-
-model Product {
-  id          String        @id @default(cuid())
-  name        String
-  description String
-  price       Int           // Price in paise (₹ * 100)
-  capacity    String        // e.g., "3kW", "5kW"
-  category    String        // "Residential" or "Commercial"
-  images      String        // Cloudinary URLs stored as JSON array string
-  isActive    Boolean       @default(true)
-  createdAt   DateTime      @default(now())
-  orderItems  OrderItem[]
-  users       UserProduct[] @relation("ProductUsers")
-}
-
-model Order {
-  id              String      @id @default(cuid())
-  orderNumber     String      @unique // e.g., "ORD-2024-001"
-  userId          String
-  status          OrderStatus @default(NEW)
-  address         String
-  phone           String
-  notes           String?
-  warrantyCardUrl String?     // Cloudinary URL
-  invoiceUrl      String?     // Cloudinary URL
-  additionalFiles String?     // JSON array of Cloudinary URLs
-  createdAt       DateTime    @default(now())
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items           OrderItem[]
-  tickets         Ticket[]
-}
-
-model OrderItem {
-  id          String   @id @default(cuid())
-  orderId     String
-  productId   String?  // Reference to original product (optional - can be null if product is deleted)
-  quantity    Int      @default(1)
-  unitPrice   Int      // Price in paise (editable)
-  name        String   // Editable product name
-  description String   // Editable description
-  capacity    String   // Editable capacity
-  createdAt   DateTime @default(now())
-  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
-  
-  @@index([orderId])
-}
-
-model Ticket {
-  id          String       @id @default(cuid())
-  userId      String
-  orderId     String?
-  category    String
-  description String
-  status      TicketStatus @default(OPEN)
-  createdAt   DateTime     @default(now())
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  order       Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
-}
-
-model UserProduct {
-  id        String   @id @default(cuid())
-  userId    String
-  productId String
-  createdAt DateTime @default(now())
-  user      User     @relation("UserProducts", fields: [userId], references: [id], onDelete: Cascade)
-  product   Product  @relation("ProductUsers", fields: [productId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, productId])
-}
-
-
-model Referral {
-  id            Int      @id @default(autoincrement())
-
-  // referred person's details
-  name          String
-  phone         String
-  email         String
-  product       String
-
-  // referral info
-  referralCode  String?
-  status        String   @default("pending")
-
-  // reward info
-  tokensAwarded Int      @default(0)
-
-  // system fields
-  submittedAt   DateTime @default(now())
-
-  @@map("referrals")
-}
-
