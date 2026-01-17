@@ -2,14 +2,14 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 interface Body {
-  amount: number; // must be positive
-  adminId: string; // logged-in admin ID
+  amount: number; 
+  adminId: string; 
   reason?: string;
 }
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } } // userId
+  { params }: { params: { id: string } }   // userId
 ) {
   try {
     const body: Body = await req.json();
@@ -31,12 +31,12 @@ export async function POST(
 
     if (!body.adminId) {
       return NextResponse.json(
-        { error: "Admin ID is missing" },
+        { error: "Admin ID is missing" } ,
         { status: 400 }
       );
     }
 
-    // Ensure user exists
+     // Ensure  user exists
     const user = await prisma.user.findUnique({
       where: { id: userId },
     });
@@ -65,7 +65,7 @@ export async function POST(
     console.error("Error adjusting tokens:", err);
     return NextResponse.json(
       { error: "Failed to adjust tokens" },
-      { status: 500 }
+      { status: 500   }
     );
   }
 }
