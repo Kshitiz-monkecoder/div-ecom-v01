@@ -3,10 +3,12 @@ import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } } // keep typing
 ) {
   try {
-    const referralId = Number(params.id);
+    // UNWRAP params
+    const actualParams = await params;
+    const referralId = parseInt(actualParams.id, 10);
 
     if (isNaN(referralId)) {
       return NextResponse.json(
@@ -16,7 +18,7 @@ export async function POST(
     }
 
     const referral = await prisma.referral.update({
-      where: { id: referralId }, // ✅ number
+      where: { id: referralId },
       data: { status: "APPROVED" },
     });
 

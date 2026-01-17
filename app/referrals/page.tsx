@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,28 +5,66 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Gift, Copy, CheckCircle } from "lucide-react";
 
+interface Referral {
+  id: number;
+  name: string;
+  product: string;
+  status: "Pending" | "Successful" | "Rejected";
+}
+
+interface Token {
+  id: string;
+  amount: number;
+  status: "Used" | "Unused";
+}
+
 export default function ReferralsPage() {
   const [copied, setCopied] = useState(false);
+  const [referrals, setReferrals] = useState<Referral[]>([]);
+  const [tokens, setTokens] = useState<Token[]>([]);
+  const [referralCode, setReferralCode] = useState("");
 
-  // Mock data (replace with API calls)
-  const referralCode = "REF0021";
-  const referralLink = `${typeof window !== "undefined" ? window.location.origin : ""}/refer?code=${referralCode}`;
+  // Fetch referrals, tokens, and referral code from backend
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch referrals
+     const resReferrals = await fetch("/api/user/referrals");
+  
+    if (!resReferrals.ok) throw new Error("Failed to fetch referrals");
+        const referralsData = await resReferrals.json();
+        setReferrals(referralsData);
 
-  const referrals = [
-    { name: "Rahul Sharma", product: "Residential", status: "Pending" },
-    { name: "Anita Verma", product: "Commercial", status: "Successful" },
-  ];
+     // Fetch tokens for current user
+     const resTokens = await fetch("/api/user/tokens");
+        if (!resTokens.ok) throw new Error("Failed to fetch tokens");
+        const tokensData = await resTokens.json();
+        setTokens(tokensData);
 
-  const tokens = [
-    { id: "TOK001", amount: 100, status: "Unused" },
-    { id: "TOK002", amount: 200, status: "Used" },
-  ];
+        // Fetch current user referral code
+        const resCode = await fetch("/api/user/referral-code");
+        if (!resCode.ok) throw new Error("Failed to fetch referral code");
+        const codeData = await resCode.json();
+        setReferralCode(codeData.code);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const referralLink =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/refer?code=${referralCode}`
+      : "";
 
   const totalTokens = tokens
     .filter((t) => t.status === "Unused")
     .reduce((sum, t) => sum + t.amount, 0);
 
   const handleCopy = async () => {
+    if (!referralCode) return;
     await navigator.clipboard.writeText(referralCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
@@ -37,7 +74,7 @@ export default function ReferralsPage() {
     <div className="p-4 md:p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Referrals & Tokens</h1>
 
-      {/* SECTION 1: Referral Code */}
+      {/* Referral Code */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -48,9 +85,9 @@ export default function ReferralsPage() {
         <CardContent className="space-y-3">
           <div className="flex flex-wrap items-center gap-3">
             <div className="px-4 py-2 rounded-md border text-lg font-mono bg-gray-50">
-              {referralCode}
+              {referralCode || "Loading..."}
             </div>
-            <Button size="sm" onClick={handleCopy}>
+            <Button size="sm" onClick={handleCopy} disabled={!referralCode}>
               {copied ? (
                 <>
                   <CheckCircle className="h-4 w-4 mr-2" />
@@ -64,14 +101,13 @@ export default function ReferralsPage() {
               )}
             </Button>
           </div>
-
           <p className="text-sm text-muted-foreground break-all">
-            Share link: <span className="font-medium">{referralLink}</span>
+            Share link: <span className="font-medium">{referralLink || "Loading..."}</span>
           </p>
         </CardContent>
       </Card>
 
-      {/* SECTION 2: Referred Customers */}
+      {/* Referred Customers */}
       <Card>
         <CardHeader>
           <CardTitle>Referred Customers</CardTitle>
@@ -94,8 +130,8 @@ export default function ReferralsPage() {
                     </td>
                   </tr>
                 ) : (
-                  referrals.map((r, i) => (
-                    <tr key={i} className="border-b text-sm">
+                  referrals.map((r) => (
+                    <tr key={r.id} className="border-b text-sm">
                       <td className="py-3">{r.name}</td>
                       <td className="py-3">{r.product}</td>
                       <td className="py-3">
@@ -120,7 +156,7 @@ export default function ReferralsPage() {
         </CardContent>
       </Card>
 
-      {/* SECTION 3: Tokens */}
+      {/* Tokens */}
       <Card>
         <CardHeader>
           <CardTitle>Tokens</CardTitle>

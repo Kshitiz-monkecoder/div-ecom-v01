@@ -1,35 +1,30 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-type Context = {
-  params: {
-    id: string;
-  };
-};
-
 export async function POST(
   req: Request,
-  context: Context
+  { params }: { params: { id: string } } // keep typing
 ) {
   try {
-    const id = Number(context.params.id);
+    // UNWRAP params
+    const actualParams = await params;
+    const referralId = parseInt(actualParams.id, 10);
 
-    if (Number.isNaN(id)) {
+    if (isNaN(referralId)) {
       return NextResponse.json(
         { error: "Invalid referral ID" },
         { status: 400 }
       );
     }
 
-    await prisma.referral.update({
-      where: { id },
-      data: { status: "rejected" },
+    const referral = await prisma.referral.update({
+      where: { id: referralId },
+      data: { status: "REJECTED" }, // only difference from approve
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json(referral);
   } catch (error) {
-    console.error("Reject referral error:", error);
-
+    console.error(error);
     return NextResponse.json(
       { error: "Failed to reject referral" },
       { status: 500 }
