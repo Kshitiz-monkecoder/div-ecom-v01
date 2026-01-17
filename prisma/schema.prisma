@@ -18,6 +18,7 @@ model User {
   referralCode String   @unique
   products  UserProduct[] @relation("UserProducts")
   tokens        Token[]
+  adminTokens Token[] @relation("AdminTokens")
 }
 
 model Product {
@@ -106,11 +107,15 @@ model Token {
   id        String      @id @default(cuid())
   amount    Int
   status    TokenStatus @default(UNUSED)
-  userId    String
+  userId    String      // user who gets the token
+  adminId   String      // admin who approves the referral
   createdAt DateTime    @default(now())
+  usedAt    DateTime?   // optional, when redeemed
 
   user      User        @relation(fields: [userId], references: [id])
+  admin     User        @relation("AdminTokens", fields: [adminId], references: [id])
 }
+
 enum TokenStatus {
   UNUSED
   USED

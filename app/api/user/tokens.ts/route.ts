@@ -10,7 +10,7 @@ const cookieStore = await cookies();
 
     const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
 
-    // ✅ FIX: explicit check (removes TS red line)
+    //  FIX: explicit check (removes TS red line)
     if (!sessionCookie) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
