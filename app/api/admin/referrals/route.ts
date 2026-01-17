@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   const referrals = await prisma.referral.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: { submittedAt: "desc" },
   });
 
   return NextResponse.json(referrals);

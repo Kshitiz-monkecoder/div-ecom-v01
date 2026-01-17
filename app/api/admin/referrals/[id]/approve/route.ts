@@ -5,10 +5,27 @@ export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const referral = await prisma.referral.update({
-    where: { id: params.id },
-    data: { status: "APPROVED" },
-  });
+  try {
+    const referralId = Number(params.id);
 
-  return NextResponse.json(referral);
+    if (isNaN(referralId)) {
+      return NextResponse.json(
+        { error: "Invalid referral ID" },
+        { status: 400 }
+      );
+    }
+
+    const referral = await prisma.referral.update({
+      where: { id: referralId }, // ✅ number
+      data: { status: "APPROVED" },
+    });
+
+    return NextResponse.json(referral);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Failed to approve referral" },
+      { status: 500 }
+    );
+  }
 }
