@@ -14,6 +14,7 @@ const navItems = [
   { href: "/admin/orders", label: "Orders" },
   { href: "/admin/tickets", label: "Tickets" },
   { href: "/admin/users", label: "Users" },
+   { href: "/admin/referrals", label: "Referrals" },
 ];
 
 export function AdminHeader() {
