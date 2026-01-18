@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * CREATE REFERRAL
+ * POST /api/referrals
+ */
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { name, phone, email, product, referralCode } = body;
 
-    // Validate required fields
+    // 1️⃣ Validate required fields
     if (!name || !phone || !email || !product) {
       return NextResponse.json(
         { error: "All fields except referral code are required." },
@@ -14,9 +18,9 @@ export async function POST(req: Request) {
       );
     }
 
-    // Fetch referrer user based on referralCode
+    // 2️⃣ Find referrer by referralCode
     const referrerUser = await prisma.user.findUnique({
-      where: { referralCode: referralCode || "" }, // or however you store codes
+      where: { referralCode: referralCode || "" },
     });
 
     if (!referrerUser) {
@@ -26,15 +30,16 @@ export async function POST(req: Request) {
       );
     }
 
-    // Create referral
+    // 3️⃣ Create referral with default tokensAwarded
     await prisma.referral.create({
       data: {
         name,
         phone,
         email,
         product,
-        referrerId: referrerUser.id, // now this is always defined
-        status: "pending",
+        referrerId: referrerUser.id,
+        status: "PENDING",       // ✅ consistent status
+        tokensAwarded: 0,        // ✅ IMPORTANT
       },
     });
 
@@ -50,10 +55,32 @@ export async function POST(req: Request) {
   }
 }
 
+/**
+ * FETCH REFERRALS
+ * GET /api/referrals
+ */
 export async function GET() {
   try {
     const referrals = await prisma.referral.findMany({
       orderBy: { submittedAt: "desc" },
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        email: true,
+        product: true,
+        status: true,
+        tokensAwarded: true, // ✅ REQUIRED FOR UI
+        submittedAt: true,
+        referrer: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+            email: true,
+          },
+        },
+      },
     });
 
     return NextResponse.json(referrals);
