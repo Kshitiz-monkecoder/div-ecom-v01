@@ -17,9 +17,10 @@ type Referral = {
 export default function AdminApproveReferral() {
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "approved" | "rejected">("pending");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "pending" | "approved" | "rejected"
+  >("pending");
 
-  // Track which referral has input open and token amount
   const [showInput, setShowInput] = useState<{ [id: number]: boolean }>({});
   const [tokenAmounts, setTokenAmounts] = useState<{ [id: number]: number }>({});
 
@@ -34,8 +35,8 @@ export default function AdminApproveReferral() {
   }, []);
 
   const confirmApproval = async (id: number) => {
-    const tokenAmount = tokenAmounts[id] || 100; // default 100 if admin didn’t edit
-    const adminId = "admin123"; // replace with real adminId from session/auth
+    const tokenAmount = tokenAmounts[id] || 100;
+    const adminId = "admin123"; // replace with session/auth value
 
     try {
       await fetch(`/api/admin/referrals/${id}/approve`, {
@@ -44,8 +45,10 @@ export default function AdminApproveReferral() {
         body: JSON.stringify({ tokenAmount, adminId }),
       });
 
-      // Remove from UI
-      setReferrals((prev) => prev.filter((r) => r.id !== id));
+      // Update referral status immediately
+      setReferrals((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, status: "Approved" } : r))
+      );
       setShowInput((prev) => ({ ...prev, [id]: false }));
     } catch (err) {
       console.error("Failed to approve referral:", err);
@@ -53,8 +56,14 @@ export default function AdminApproveReferral() {
   };
 
   const rejectReferral = async (id: number) => {
-    await fetch(`/api/admin/referrals/${id}/reject`, { method: "POST" });
-    setReferrals((prev) => prev.filter((r) => r.id !== id));
+    try {
+      await fetch(`/api/admin/referrals/${id}/reject`, { method: "POST" });
+      setReferrals((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, status: "Rejected" } : r))
+      );
+    } catch (err) {
+      console.error("Failed to reject referral:", err);
+    }
   };
 
   const filteredReferrals = referrals.filter((r) =>
@@ -104,57 +113,73 @@ export default function AdminApproveReferral() {
                 </p>
               </div>
 
-              {/* Approve / Reject with optional token input */}
-              {ref.status.toLowerCase() === "pending" && (
-                <div className="flex gap-2 items-center">
-                  {!showInput[ref.id] ? (
-                    <Button
-                      className="flex items-center gap-2"
-                      onClick={() => {
-                        setShowInput((prev) => ({ ...prev, [ref.id]: true }));
-                        setTokenAmounts((prev) => ({ ...prev, [ref.id]: 100 })); // default 100
-                      }}
-                    >
-                      <Check size={16} /> Approve
-                    </Button>
-                  ) : (
-                    <div className="flex gap-2 items-center">
-                      <input
-                        type="number"
-                        placeholder="Tokens to award"
-                        className="border rounded px-2 w-20"
-                        value={tokenAmounts[ref.id]}
-                        onChange={(e) =>
-                          setTokenAmounts((prev) => ({
-                            ...prev,
-                            [ref.id]: parseInt(e.target.value),
-                          }))
-                        }
-                      />
-                      
+              {/* Approve / Reject Section */}
+              <div className="flex flex-col md:flex-row gap-2 items-start md:items-center">
+                {ref.status.toLowerCase() === "pending" ? (
+                  <>
+                    {!showInput[ref.id] ? (
+                      <div className="flex gap-2">
+                        <Button
+                          className="flex items-center gap-2 bg-green-600 text-white hover:bg-green-700"
+                          onClick={() => {
+                            setShowInput((prev) => ({ ...prev, [ref.id]: true }));
+                            setTokenAmounts((prev) => ({ ...prev, [ref.id]: 100 }));
+                          }}
+                        >
+                          <Check size={16} /> Approve
+                        </Button>
 
-
-                      <Button onClick={() => confirmApproval(ref.id)}>Confirm</Button>
-                      <Button
-                        variant="outline"
-                        onClick={() =>
-                          setShowInput((prev) => ({ ...prev, [ref.id]: false }))
-                        }
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  )}
-
-                  <Button
-                    variant="outline"
-                    className="flex items-center gap-2"
-                    onClick={() => rejectReferral(ref.id)}
-                  >
-                    <X size={16} /> Reject
-                  </Button>
-                </div>
-              )}
+                        <Button
+                          variant="outline"
+                          className="flex items-center gap-2 border-red-500 text-red-600 hover:bg-red-50"
+                          onClick={() => rejectReferral(ref.id)}
+                        >
+                          <X size={16} /> Reject
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col md:flex-row gap-2 items-start md:items-center bg-gray-50 p-3 rounded-lg border">
+                        <h3 className="text-sm font-medium text-gray-700 mb-1 md:mb-0 md:mr-2">
+                          Award Tokens:
+                        </h3>
+                        <input
+                          type="number"
+                          value={tokenAmounts[ref.id]}
+                          onChange={(e) =>
+                            setTokenAmounts((prev) => ({
+                              ...prev,
+                              [ref.id]: parseInt(e.target.value) || 0,
+                            }))
+                          }
+                          className="w-20 text-center border rounded px-2 py-1"
+                        />
+                        <Button
+                          className="bg-blue-600 text-white hover:bg-blue-700"
+                          onClick={() => confirmApproval(ref.id)}
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() =>
+                            setShowInput((prev) => ({ ...prev, [ref.id]: false }))
+                          }
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                ) : ref.status.toLowerCase() === "approved" ? (
+                  <span className="px-2 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded">
+                    Approved
+                  </span>
+                ) : (
+                  <span className="px-2 py-1 text-xs font-semibold bg-red-100 text-red-700 rounded">
+                    Rejected
+                  </span>
+                )}
+              </div>
             </CardContent>
           </Card>
         ))}
