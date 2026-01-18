@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 interface Body {
   amount: number; 
   adminId: string; 
-  reason?: string;
+  
 }
 
 export async function POST(

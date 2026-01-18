@@ -20,49 +20,88 @@ interface Token {
 
 export default function ReferralsPage() {
   const [copied, setCopied] = useState(false);
-  const [referrals, setReferrals] = useState<Referral[]>([]);
-  const [tokens, setTokens] = useState<Token[]>([]);
+
+  // Referral code
   const [referralCode, setReferralCode] = useState("");
+  const [loadingCode, setLoadingCode] = useState(true);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
 
-  // Fetch referrals, tokens, and referral code from backend
+  // Referrals
+  const [referrals, setReferrals] = useState<Referral[]>([]);
+  const [loadingReferrals, setLoadingReferrals] = useState(true);
+  const [errorReferrals, setErrorReferrals] = useState<string | null>(null);
+
+  // Tokens
+  const [tokens, setTokens] = useState<Token[]>([]);
+  const [loadingTokens, setLoadingTokens] = useState(true);
+  const [errorTokens, setErrorTokens] = useState<string | null>(null);
+
+  // Fetch referral code independently
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchReferralCode = async () => {
       try {
-        // Fetch referrals
-     const resReferrals = await fetch("/api/user/referrals");
-  
-    if (!resReferrals.ok) throw new Error("Failed to fetch referrals");
-        const referralsData = await resReferrals.json();
-        setReferrals(referralsData);
-
-     // Fetch tokens for current user
-     const resTokens = await fetch("/api/user/tokens");
-        if (!resTokens.ok) throw new Error("Failed to fetch tokens");
-        const tokensData = await resTokens.json();
-        setTokens(tokensData);
-
-        // Fetch current user referral code
-        const resCode = await fetch("/api/user/referral-code");
-        if (!resCode.ok) throw new Error("Failed to fetch referral code");
-        const codeData = await resCode.json();
-        setReferralCode(codeData.code);
-      } catch (err) {
+        const res = await fetch("/api/user/referral-code");
+        if (!res.ok) throw new Error("Failed to fetch referral code");
+        const data = await res.json();
+        setReferralCode(data.code);
+      } catch (err: any) {
         console.error(err);
+        setErrorCode(err.message || "Something went wrong");
+      } finally {
+        setLoadingCode(false);
       }
     };
-
-    fetchData();
+    fetchReferralCode();
   }, []);
 
+  // Fetch referrals independently
+  useEffect(() => {
+    const fetchReferrals = async () => {
+      try {
+        const res = await fetch("/api/user/referrals");
+        if (!res.ok) throw new Error("Failed to fetch referrals");
+        const data = await res.json();
+        setReferrals(data);
+      } catch (err: any) {
+        console.error(err);
+        setErrorReferrals(err.message || "Something went wrong");
+      } finally {
+        setLoadingReferrals(false);
+      }
+    };
+    fetchReferrals();
+  }, []);
+
+  // Fetch tokens independently
+  useEffect(() => {
+    const fetchTokens = async () => {
+      try {
+        const res = await fetch("/api/user/tokens");
+        if (!res.ok) throw new Error("Failed to fetch tokens");
+        const data = await res.json();
+        setTokens(data);
+      } catch (err: any) {
+        console.error(err);
+        setErrorTokens(err.message || "Something went wrong");
+      } finally {
+        setLoadingTokens(false);
+      }
+    };
+    fetchTokens();
+  }, []);
+
+  // Referral link
   const referralLink =
     typeof window !== "undefined"
       ? `${window.location.origin}/refer?code=${referralCode}`
       : "";
 
+  // Calculate total unused tokens
   const totalTokens = tokens
     .filter((t) => t.status === "Unused")
     .reduce((sum, t) => sum + t.amount, 0);
 
+  // Copy referral code
   const handleCopy = async () => {
     if (!referralCode) return;
     await navigator.clipboard.writeText(referralCode);
@@ -85,7 +124,11 @@ export default function ReferralsPage() {
         <CardContent className="space-y-3">
           <div className="flex flex-wrap items-center gap-3">
             <div className="px-4 py-2 rounded-md border text-lg font-mono bg-gray-50">
-              {referralCode || "Loading..."}
+              {loadingCode
+                ? "Loading..."
+                : errorCode
+                ? `Error: ${errorCode}`
+                : referralCode}
             </div>
             <Button size="sm" onClick={handleCopy} disabled={!referralCode}>
               {copied ? (
@@ -102,7 +145,10 @@ export default function ReferralsPage() {
             </Button>
           </div>
           <p className="text-sm text-muted-foreground break-all">
-            Share link: <span className="font-medium">{referralLink || "Loading..."}</span>
+            Share link:{" "}
+            <span className="font-medium">
+              {loadingCode ? "Loading..." : referralLink}
+            </span>
           </p>
         </CardContent>
       </Card>
@@ -123,7 +169,19 @@ export default function ReferralsPage() {
                 </tr>
               </thead>
               <tbody>
-                {referrals.length === 0 ? (
+                {loadingReferrals ? (
+                  <tr>
+                    <td colSpan={3} className="py-6 text-center text-sm">
+                      Loading...
+                    </td>
+                  </tr>
+                ) : errorReferrals ? (
+                  <tr>
+                    <td colSpan={3} className="py-6 text-center text-sm text-red-500">
+                      {errorReferrals}
+                    </td>
+                  </tr>
+                ) : referrals.length === 0 ? (
                   <tr>
                     <td colSpan={3} className="py-6 text-center text-sm">
                       No referrals yet.
@@ -177,7 +235,19 @@ export default function ReferralsPage() {
                 </tr>
               </thead>
               <tbody>
-                {tokens.length === 0 ? (
+                {loadingTokens ? (
+                  <tr>
+                    <td colSpan={3} className="py-6 text-center text-sm">
+                      Loading...
+                    </td>
+                  </tr>
+                ) : errorTokens ? (
+                  <tr>
+                    <td colSpan={3} className="py-6 text-center text-sm text-red-500">
+                      {errorTokens}
+                    </td>
+                  </tr>
+                ) : tokens.length === 0 ? (
                   <tr>
                     <td colSpan={3} className="py-6 text-center text-sm">
                       No tokens earned yet.

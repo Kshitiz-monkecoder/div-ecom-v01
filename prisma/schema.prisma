@@ -7,18 +7,19 @@ datasource db {
 }
 
 model User {
-  id        String        @id @default(cuid())
-  name      String
-  email     String?
-  phone     String        @unique
-  role      Role          @default(USER)
-  createdAt DateTime      @default(now())
-  orders    Order[]
-  tickets   Ticket[]
-  referralCode String   @unique
-  products  UserProduct[] @relation("UserProducts")
-  tokens        Token[]
-  adminTokens Token[] @relation("AdminTokens")
+  id           String        @id @default(cuid())
+  name         String
+  email        String?
+  phone        String        @unique
+  role         Role          @default(USER)
+  createdAt    DateTime      @default(now())
+  referralCode String        @unique
+  orders       Order[]
+  referrals    Referral[]
+  tickets      Ticket[]
+  adminTokens  Token[]       @relation("AdminTokens")
+  tokens       Token[]
+  products     UserProduct[] @relation("UserProducts")
 }
 
 model Product {
@@ -62,8 +63,8 @@ model OrderItem {
   description String
   capacity    String
   createdAt   DateTime @default(now())
-  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product     Product? @relation(fields: [productId], references: [id])
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
 }
@@ -76,8 +77,8 @@ model Ticket {
   description String
   status      TicketStatus @default(OPEN)
   createdAt   DateTime     @default(now())
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   order       Order?       @relation(fields: [orderId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model UserProduct {
@@ -85,42 +86,41 @@ model UserProduct {
   userId    String
   productId String
   createdAt DateTime @default(now())
-  user      User     @relation("UserProducts", fields: [userId], references: [id], onDelete: Cascade)
   product   Product  @relation("ProductUsers", fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation("UserProducts", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
 }
 
 model Referral {
   id            Int      @id @default(autoincrement())
+  referrerId    String
   name          String
-  phone         String
+  phone         String   @unique
   email         String
   product       String
-  referralCode  String?
   status        String   @default("pending")
   tokensAwarded Int      @default(0)
   submittedAt   DateTime @default(now())
+  referrer      User     @relation(fields: [referrerId], references: [id])
 }
 
 model Token {
   id        String      @id @default(cuid())
   amount    Int
   status    TokenStatus @default(UNUSED)
-  userId    String      // user who gets the token
-  adminId   String      // admin who approves the referral
+  userId    String
+  adminId   String?
   createdAt DateTime    @default(now())
-  usedAt    DateTime?   // optional, when redeemed
-
+  usedAt    DateTime?
+  admin     User?       @relation("AdminTokens", fields: [adminId], references: [id])
   user      User        @relation(fields: [userId], references: [id])
-  admin     User        @relation("AdminTokens", fields: [adminId], references: [id])
 }
 
 enum TokenStatus {
   UNUSED
   USED
 }
-
 
 enum Role {
   USER

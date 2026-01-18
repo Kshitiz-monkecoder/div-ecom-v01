@@ -35,7 +35,7 @@ export default function ReferPage() {
     };
 
     try {
-      const res = await fetch("/api/referrals", {
+      const res = await fetch("/api/user/referrals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

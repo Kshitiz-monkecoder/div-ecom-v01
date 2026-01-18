@@ -17,11 +17,12 @@ type Referral = {
 export default function AdminApproveReferral() {
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "pending" | "approved" | "rejected"
-  >("pending");
+  const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "approved" | "rejected">("pending");
 
-  // Fetch referrals
+  // Track which referral has input open and token amount
+  const [showInput, setShowInput] = useState<{ [id: number]: boolean }>({});
+  const [tokenAmounts, setTokenAmounts] = useState<{ [id: number]: number }>({});
+
   useEffect(() => {
     fetch("/api/admin/referrals")
       .then((res) => res.json())
@@ -32,21 +33,30 @@ export default function AdminApproveReferral() {
       .catch(() => setLoading(false));
   }, []);
 
-  // Approve / Reject handler
-const updateStatus = async (id: number, action: "approved" | "rejected") => {
-  const endpoint =
-    action === "approved"
-      ? `/api/admin/referrals/${id}/approve`
-      : `/api/admin/referrals/${id}/reject`;
+  const confirmApproval = async (id: number) => {
+    const tokenAmount = tokenAmounts[id] || 100; // default 100 if admin didn’t edit
+    const adminId = "admin123"; // replace with real adminId from session/auth
 
-  await fetch(endpoint, { method: "POST" });
+    try {
+      await fetch(`/api/admin/referrals/${id}/approve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tokenAmount, adminId }),
+      });
 
-  // Remove from UI after action
-  setReferrals((prev) => prev.filter((r) => r.id !== id));
-};
+      // Remove from UI
+      setReferrals((prev) => prev.filter((r) => r.id !== id));
+      setShowInput((prev) => ({ ...prev, [id]: false }));
+    } catch (err) {
+      console.error("Failed to approve referral:", err);
+    }
+  };
 
+  const rejectReferral = async (id: number) => {
+    await fetch(`/api/admin/referrals/${id}/reject`, { method: "POST" });
+    setReferrals((prev) => prev.filter((r) => r.id !== id));
+  };
 
-  // Filter referrals by status
   const filteredReferrals = referrals.filter((r) =>
     statusFilter === "all" ? true : r.status.toLowerCase() === statusFilter
   );
@@ -87,28 +97,59 @@ const updateStatus = async (id: number, action: "approved" | "rejected") => {
                   Code: {ref.referralCode ?? "—"}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Submitted on{" "}
-                  {new Date(ref.submittedAt).toLocaleDateString()}
+                  Submitted on {new Date(ref.submittedAt).toLocaleDateString()}
                 </p>
                 <p className="text-xs font-semibold">
                   Status: {ref.status.toUpperCase()}
                 </p>
               </div>
 
-              {/* Approve / Reject Buttons only for pending */}
+              {/* Approve / Reject with optional token input */}
               {ref.status.toLowerCase() === "pending" && (
-                <div className="flex gap-2">
-                  <Button
-                    className="flex items-center gap-2"
-                    onClick={() => updateStatus(ref.id, "approved")}
-                  >
-                    <Check size={16} /> Approve
-                  </Button>
+                <div className="flex gap-2 items-center">
+                  {!showInput[ref.id] ? (
+                    <Button
+                      className="flex items-center gap-2"
+                      onClick={() => {
+                        setShowInput((prev) => ({ ...prev, [ref.id]: true }));
+                        setTokenAmounts((prev) => ({ ...prev, [ref.id]: 100 })); // default 100
+                      }}
+                    >
+                      <Check size={16} /> Approve
+                    </Button>
+                  ) : (
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="number"
+                        placeholder="Tokens to award"
+                        className="border rounded px-2 w-20"
+                        value={tokenAmounts[ref.id]}
+                        onChange={(e) =>
+                          setTokenAmounts((prev) => ({
+                            ...prev,
+                            [ref.id]: parseInt(e.target.value),
+                          }))
+                        }
+                      />
+                      
+
+
+                      <Button onClick={() => confirmApproval(ref.id)}>Confirm</Button>
+                      <Button
+                        variant="outline"
+                        onClick={() =>
+                          setShowInput((prev) => ({ ...prev, [ref.id]: false }))
+                        }
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  )}
 
                   <Button
                     variant="outline"
                     className="flex items-center gap-2"
-                    onClick={() => updateStatus(ref.id, "rejected")}
+                    onClick={() => rejectReferral(ref.id)}
                   >
                     <X size={16} /> Reject
                   </Button>
