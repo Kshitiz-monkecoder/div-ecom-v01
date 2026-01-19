@@ -14,6 +14,7 @@ const navItems = [
   { href: "/admin/orders", label: "Orders" },
   { href: "/admin/tickets", label: "Tickets" },
   { href: "/admin/users", label: "Users" },
+   { href: "/admin/referrals", label: "Referrals & Tokens" },
 ];
 
 export function AdminHeader() {
@@ -32,15 +33,16 @@ export function AdminHeader() {
   return (
     <header className="w-full border-b bg-gray-50 dark:bg-gray-900 px-4 md:px-6 py-4 flex items-center justify-between">
       <Link href="/" className="flex items-center">
-        <Image
-          src="/divy-power-logo.png"
-          alt="DIVY Power"
-          width={120}
-          height={40}
-          className="h-8 w-auto"
-          priority
-        />
-      </Link>
+  <Image
+    src="/divy-power-logo.png"
+    alt="DIVY Power"
+    width={160}
+    height={60}
+    className="h-12 w-auto"
+    priority
+  />
+</Link>
+
       <Button
         variant="ghost"
         size="sm"

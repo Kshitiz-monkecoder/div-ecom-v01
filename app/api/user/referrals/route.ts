@@ -1,0 +1,94 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+/**
+ * CREATE REFERRAL
+ * POST /api/referrals
+ */
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const { name, phone, email, product, referralCode } = body;
+
+    // 1️⃣ Validate required fields
+    if (!name || !phone || !email || !product) {
+      return NextResponse.json(
+        { error: "All fields except referral code are required." },
+        { status: 400 }
+      );
+    }
+
+    // 2️⃣ Find referrer by referralCode
+    const referrerUser = await prisma.user.findUnique({
+      where: { referralCode: referralCode || "" },
+    });
+
+    if (!referrerUser) {
+      return NextResponse.json(
+        { error: "Invalid referral code or referrer not found." },
+        { status: 404 }
+      );
+    }
+
+    // 3️⃣ Create referral with default tokensAwarded
+    await prisma.referral.create({
+      data: {
+        name,
+        phone,
+        email,
+        product,
+        referrerId: referrerUser.id,
+        status: "PENDING",       // ✅ consistent status
+        tokensAwarded: 0,        // ✅ IMPORTANT
+      },
+    });
+
+    return NextResponse.json({
+      message: "Referral submitted successfully!",
+    });
+  } catch (error) {
+    console.error("Referral API error:", error);
+    return NextResponse.json(
+      { error: "Failed to submit referral" },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * FETCH REFERRALS
+ * GET /api/referrals
+ */
+export async function GET() {
+  try {
+    const referrals = await prisma.referral.findMany({
+      orderBy: { submittedAt: "desc" },
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        email: true,
+        product: true,
+        status: true,
+        tokensAwarded: true, // ✅ REQUIRED FOR UI
+        submittedAt: true,
+        referrer: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(referrals);
+  } catch (error) {
+    console.error("Fetch referrals error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch referrals" },
+      { status: 500 }
+    );
+  }
+}

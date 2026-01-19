@@ -1,5 +1,8 @@
 import { prisma } from "../lib/prisma";
 import { Role } from "@prisma/client";
+import { generateReferralCode } from "@/lib/referral";
+
+const referralCode = generateReferralCode();
 
 /**
  * Script to make a user an admin by phone number
@@ -43,6 +46,7 @@ async function makeAdmin(phone: string) {
           phone: cleanPhone,
           name: `Admin ${cleanPhone}`,
           role: Role.ADMIN,
+           referralCode,
         },
       });
       console.log(`✅ Created new admin user: ${user.name} (${user.phone})`);

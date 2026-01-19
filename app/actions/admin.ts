@@ -2,7 +2,9 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
+import { generateReferralCode } from "@/lib/referral"; 
 
+const referralCode = generateReferralCode();
 export async function getDashboardStats() {
   await requireAdmin();
 
@@ -158,6 +160,7 @@ export async function createUser(data: {
       phone: cleanPhone,
       email: data.email || null,
       role: "USER",
+    referralCode,
     },
   });
 

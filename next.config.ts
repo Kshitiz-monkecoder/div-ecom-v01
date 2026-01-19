@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   // Turbopack is enabled by default in Next.js 16
   // Since cloudinary is only used in server-side code (server actions),
   // we don't need additional webpack/Turbopack configuration
-  turbopack: {},
+  //turbopack: {},
   // Increase body size limit for server actions to allow file uploads (documents, images, etc.)
   experimental: {
     serverActions: {

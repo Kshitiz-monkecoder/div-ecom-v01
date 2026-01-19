@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
 import { Role } from "@prisma/client";
 import { getOTP, deleteOTP } from "@/lib/otp-store";
+import { nanoid } from "nanoid";
 
 const SESSION_COOKIE_NAME = "auth_session";
 const SESSION_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days
@@ -65,11 +66,13 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       // Create new user
+      const referralCode = nanoid(8).toUpperCase();
       user = await prisma.user.create({
         data: {
           phone: cleanPhone,
           name: `User ${cleanPhone}`,
           role: Role.USER,
+          referralCode,
         },
       });
     }
@@ -97,6 +100,7 @@ export async function POST(request: NextRequest) {
         phone: user.phone,
         email: user.email,
         role: user.role,
+       referralCode: user.referralCode,
       },
     });
   } catch (error) {
