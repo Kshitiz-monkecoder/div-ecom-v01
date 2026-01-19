@@ -105,7 +105,7 @@ export default function AdminApproveReferral() {
 
       {filteredReferrals.length === 0 && (
         <p className="text-muted-foreground mt-4">
-          No referrals found for "{statusFilter}" status 🎉
+          No referrals found for &quot;{statusFilter}&quot; status 🎉
         </p>
       )}
 

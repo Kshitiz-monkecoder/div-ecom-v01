@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/auth";
+import { requireAdmin } from "@/lib/proxy";
 import { generateReferralCode } from "@/lib/referral"; 
 
 const referralCode = generateReferralCode();

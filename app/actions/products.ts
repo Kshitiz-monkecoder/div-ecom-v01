@@ -1,7 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireAdmin, getCurrentUser } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
+import { requireAdmin } from "@/lib/proxy";
 import { parseImages, stringifyImages } from "@/lib/product-helpers";
 import { uploadImage } from "@/lib/cloudinary";
 import { z } from "zod";

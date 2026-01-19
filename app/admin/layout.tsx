@@ -1,5 +1,5 @@
 import { AdminNav, AdminHeader } from "@/components/admin-nav";
-import { requireAdmin } from "@/lib/middleware";
+import { requireAdmin } from "@/lib/proxy";
 
 export default async function AdminLayout({
   children,

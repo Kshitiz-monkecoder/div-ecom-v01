@@ -1,5 +1,5 @@
 import { CustomerNav, CustomerHeader } from "@/components/customer-nav";
-import { requireAuth } from "@/lib/middleware";
+import { requireAuth } from "@/lib/proxy";
 
 export default async function CustomerLayout({
   children,
