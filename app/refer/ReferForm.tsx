@@ -54,96 +54,80 @@ export default function ReferForm() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="max-w-md w-full text-center">
-          <CardHeader>
-            <CardTitle>Thank You!</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <p className="text-muted-foreground">
-              We’ve received your referral request.
-            </p>
-            <p className="text-muted-foreground">
-              Our team will contact you shortly.
-            </p>
-          </CardContent>
-        </Card>
+      <div className="text-center">
+        <div className="text-lg font-semibold">Thank you!</div>
+        <p className="mt-2 text-sm text-muted-foreground">
+          We’ve received your request. Our team will contact you shortly.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
-      <Card className="w-full max-w-lg">
-        <CardHeader>
-          <CardTitle>Referral Application</CardTitle>
-        </CardHeader>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-1">
+        <Label htmlFor="name">Your Name</Label>
+        <Input
+          id="name"
+          name="name"
+          placeholder="Full name"
+          required
+          value={formData.name}
+          onChange={handleChange}
+        />
+      </div>
 
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                name="name"
-                placeholder="Enter your full name"
-                required
-                value={formData.name}
-                onChange={handleChange}
-              />
-            </div>
+      <div className="space-y-1">
+        <Label htmlFor="phone">Your Phone</Label>
+        <Input
+          id="phone"
+          name="phone"
+          type="tel"
+          placeholder="10-digit phone number"
+          required
+          value={formData.phone}
+          onChange={handleChange}
+        />
+      </div>
 
-            <div className="space-y-1">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                name="phone"
-                type="tel"
-                placeholder="Enter phone number"
-                required
-                value={formData.phone}
-                onChange={handleChange}
-              />
-            </div>
+      <div className="space-y-1">
+        <Label htmlFor="email">Your Email</Label>
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Email address"
+          required
+          value={formData.email}
+          onChange={handleChange}
+        />
+      </div>
 
-            <div className="space-y-1">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Enter email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
+      <div className="space-y-1">
+        <Label htmlFor="product">Product Required</Label>
+        <Input
+          id="product"
+          name="product"
+          placeholder="Eg: Residential rooftop / Commercial plant"
+          required
+          value={formData.product}
+          onChange={handleChange}
+        />
+        <p className="text-xs text-muted-foreground">
+          Mention category, capacity requirement (kW), and any site notes if available.
+        </p>
+      </div>
 
-            <div className="space-y-1">
-              <Label htmlFor="product">Product Required</Label>
-              <Input
-                id="product"
-                name="product"
-                placeholder="Eg: Residential / Commercial"
-                required
-                value={formData.product}
-                onChange={handleChange}
-              />
-            </div>
+      {referralCode && (
+        <div className="space-y-1">
+          <Label htmlFor="referralCode">Referral Code</Label>
+          <Input id="referralCode" value={referralCode} readOnly />
+        </div>
+      )}
 
-            {referralCode && (
-              <div className="space-y-1">
-                <Label htmlFor="referralCode">Referral Code</Label>
-                <Input id="referralCode" value={referralCode} readOnly />
-              </div>
-            )}
-
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Submitting..." : "Submit Referral"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading ? "Submitting..." : "Submit Referral"}
+      </Button>
+    </form>
   );
 }

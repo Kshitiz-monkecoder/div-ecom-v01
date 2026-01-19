@@ -2,8 +2,6 @@ import { prisma } from "../lib/prisma";
 import { Role } from "@prisma/client";
 import { generateReferralCode } from "@/lib/referral";
 
-const referralCode = generateReferralCode();
-
 /**
  * Script to make a user an admin by phone number
  * Usage: bun run scripts/make-admin.ts <phone-number>
@@ -41,12 +39,13 @@ async function makeAdmin(phone: string) {
       console.log(`✅ User ${user.name} (${user.phone}) is now an ADMIN`);
     } else {
       // Create new user as admin
+      const referralCode = generateReferralCode();
       user = await prisma.user.create({
         data: {
           phone: cleanPhone,
           name: `Admin ${cleanPhone}`,
           role: Role.ADMIN,
-           referralCode,
+          referralCode,
         },
       });
       console.log(`✅ Created new admin user: ${user.name} (${user.phone})`);

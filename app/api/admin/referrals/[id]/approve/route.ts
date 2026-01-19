@@ -2,9 +2,9 @@
 
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth";
 
 interface Body {
-  adminId: string;
   tokenAmount: number;
 }
 
@@ -13,6 +13,8 @@ export async function POST(
   context: { params: Promise<{ id: string }> } // ✅ params is a Promise
 ) {
   try {
+    const admin = await requireAdmin();
+
     // ✅ Await params to get the dynamic id
     const { id } = await context.params;
 
@@ -22,11 +24,7 @@ export async function POST(
     }
 
     // Read request body
-    const { adminId, tokenAmount }: Body = await req.json();
-
-    if (!adminId) {
-      return NextResponse.json({ error: "Admin ID is required" }, { status: 400 });
-    }
+    const { tokenAmount }: Body = await req.json();
 
     if (typeof tokenAmount !== "number" || tokenAmount <= 0) {
       return NextResponse.json({ error: "Token amount must be a positive number" }, { status: 400 });
@@ -41,19 +39,20 @@ export async function POST(
       },
     });
 
-    // 2️⃣ Find the user using phone
-    const user = await prisma.user.findUnique({
-      where: { phone: referral.phone },
+    // Tokens are awarded to the referrer (the user who shared the code)
+    const referrer = await prisma.user.findUnique({
+      where: { id: referral.referrerId },
     });
 
-    if (!user) {
-      return NextResponse.json({ error: "User not found for this phone number" }, { status: 404 });
+    if (!referrer) {
+      return NextResponse.json({ error: "Referrer not found" }, { status: 404 });
     }
 
     // Create token record
     const token = await prisma.token.create({
       data: {
-        userId: user.id,
+        userId: referrer.id,
+        adminId: admin.id,
         amount: tokenAmount,
       },
     });

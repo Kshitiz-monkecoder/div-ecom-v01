@@ -3,8 +3,6 @@
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/proxy";
 import { generateReferralCode } from "@/lib/referral"; 
-
-const referralCode = generateReferralCode();
 export async function getDashboardStats() {
   await requireAdmin();
 
@@ -154,17 +152,27 @@ export async function createUser(data: {
     throw new Error("User with this phone number already exists");
   }
 
-  const user = await prisma.user.create({
-    data: {
-      name: data.name,
-      phone: cleanPhone,
-      email: data.email || null,
-      role: "USER",
-    referralCode,
-    },
-  });
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const referralCode = generateReferralCode();
+    try {
+      const user = await prisma.user.create({
+        data: {
+          name: data.name,
+          phone: cleanPhone,
+          email: data.email || null,
+          role: "USER",
+          referralCode,
+        },
+      });
+      return user;
+    } catch (err: any) {
+      // Retry only for referralCode collisions.
+      if (err?.code === "P2002") continue;
+      throw err;
+    }
+  }
 
-  return user;
+  throw new Error("Failed to generate unique referral code");
 }
 
 export async function assignProductsToUser(userId: string, productIds: string[]) {
