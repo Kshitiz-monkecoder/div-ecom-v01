@@ -1,16 +1,26 @@
 import { getDashboardStats } from "@/app/actions/admin";
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
+import { requireAdmin } from "@/lib/proxy";
 import { format } from "date-fns";
 import Link from "next/link";
 
 export default async function AdminDashboard() {
-  const stats = await getDashboardStats();
+  const [user, stats] = await Promise.all([requireAdmin(), getDashboardStats()]);
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+    <div className="max-w-6xl">
+      <PageHeader
+        greeting={user.name ? `Welcome back, ${user.name}` : "Welcome back"}
+        title="Admin Dashboard"
+        subtitle="Overview of recent activity, orders, and support tickets."
+        actions={[
+          { label: "View all orders", href: "/admin/orders" },
+          { label: "View all tickets", href: "/admin/tickets" },
+        ]}
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -63,7 +73,7 @@ export default async function AdminDashboard() {
                   <TableRow key={order.id}>
                     <TableCell>
                       {order.orderNumber}
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-muted-foreground">
                         {itemCount} product{itemCount !== 1 ? "s" : ""} • ₹
                         {(totalAmount / 100).toFixed(2)}
                       </div>
@@ -86,7 +96,9 @@ export default async function AdminDashboard() {
             </TableBody>
           </Table>
           {stats.recentOrders.length === 0 && (
-            <p className="text-center text-gray-500 py-4">No orders yet.</p>
+            <p className="text-center text-muted-foreground py-4">
+              No orders yet.
+            </p>
           )}
         </CardContent>
       </Card>
@@ -129,7 +141,9 @@ export default async function AdminDashboard() {
             </TableBody>
           </Table>
           {stats.recentTickets.length === 0 && (
-            <p className="text-center text-gray-500 py-4">No tickets yet.</p>
+            <p className="text-center text-muted-foreground py-4">
+              No tickets yet.
+            </p>
           )}
         </CardContent>
       </Card>

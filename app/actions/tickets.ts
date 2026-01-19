@@ -1,7 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireAuth, requireAdmin, getCurrentUser } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
+import { requireAuth, requireAdmin } from "@/lib/proxy";
 import { TicketStatus } from "@prisma/client";
 import { z } from "zod";
 
