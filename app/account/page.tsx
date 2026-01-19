@@ -2,6 +2,14 @@ import CustomerLayout from "@/components/customer-layout";
 import { getCurrentUser } from "@/lib/auth";
 import { format } from "date-fns";
 
+// Helper function to safely format dates
+function formatDate(date?: string | Date | null) {
+  if (!date) return "-";               // Handle missing date
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "-"; // Handle invalid date
+  return format(d, "MMMM dd, yyyy");
+}
+
 export default async function AccountPage() {
   const user = await getCurrentUser();
 
@@ -33,7 +41,7 @@ export default async function AccountPage() {
 
             <div>
               <p className="text-sm font-medium text-gray-500">Member Since</p>
-              <p>{format(new Date(user.createdAt), "MMMM dd, yyyy")}</p>
+              <p>{formatDate(user.createdAt)}</p>
             </div>
           </div>
         </div>
@@ -41,4 +49,3 @@ export default async function AccountPage() {
     </CustomerLayout>
   );
 }
-

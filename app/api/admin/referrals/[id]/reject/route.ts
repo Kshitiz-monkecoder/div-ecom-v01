@@ -1,14 +1,14 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
-  req: Request,
-  { params }: { params: { id: string } } // keep typing
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // UNWRAP params
-    const actualParams = await params;
-    const referralId = parseInt(actualParams.id, 10);
+    // ✅ unwrap params properly
+    const { id } = await context.params;
+    const referralId = Number(id);
 
     if (isNaN(referralId)) {
       return NextResponse.json(
@@ -19,7 +19,7 @@ export async function POST(
 
     const referral = await prisma.referral.update({
       where: { id: referralId },
-      data: { status: "REJECTED" }, // only difference from approve
+      data: { status: "REJECTED" },
     });
 
     return NextResponse.json(referral);
