@@ -30,16 +30,17 @@ export function CustomerHeader() {
 
   return (
     <header className="w-full border-b bg-gray-50 dark:bg-gray-900 px-4 md:px-6 py-4 flex items-center justify-between">
-      <Link href="/" className="flex items-center">
-        <Image
-          src="/divy-power-logo.png"
-          alt="DIVY Power"
-          width={120}
-          height={40}
-          className="h-8 w-auto"
-          priority
-        />
-      </Link>
+<Link href="/" className="flex items-center">
+  <Image
+    src="/divy-power-logo.png"
+    alt="DIVY Power"
+    width={160}
+    height={60}
+    className="h-12 w-auto"
+    priority
+  />
+</Link>
+
       <Button
         variant="ghost"
         size="sm"
