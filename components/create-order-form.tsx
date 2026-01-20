@@ -47,6 +47,24 @@ interface CreateOrderFormProps {
   products?: Product[];
 }
 
+type WarrantyPdfInput = {
+  documentNo: string;
+  systemSizeKwp: string;
+  customerName: string;
+  customerNumber: string;
+  customerAddress: string;
+  pinCode: string;
+  installationDate: string;
+  invoiceNo: string;
+
+  moduleType: string;
+  moduleSerialNumbers: string[];
+
+  inverterWarrantyYears: number;
+  inverterModel: string;
+  inverterSerialNumber: string;
+};
+
 export function CreateOrderForm({ users: initialUsers, products: initialProducts }: CreateOrderFormProps = {}) {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
@@ -62,6 +80,30 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
   const [additionalFiles, setAdditionalFiles] = useState<File[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Warranty PDF (generated) inputs
+  const [warrantyDocumentNo, setWarrantyDocumentNo] = useState("");
+  const [warrantySystemSizeKwp, setWarrantySystemSizeKwp] = useState("");
+  const [warrantyCustomerName, setWarrantyCustomerName] = useState("");
+  const [warrantyCustomerNumber, setWarrantyCustomerNumber] = useState("");
+  const [warrantyCustomerAddress, setWarrantyCustomerAddress] = useState("");
+  const [warrantyPinCode, setWarrantyPinCode] = useState("");
+  const [warrantyInstallationDate, setWarrantyInstallationDate] = useState("");
+  const [warrantyInvoiceNo, setWarrantyInvoiceNo] = useState("");
+  const [warrantyModuleType, setWarrantyModuleType] = useState("");
+  const [warrantyModuleSerialNumbersText, setWarrantyModuleSerialNumbersText] =
+    useState("");
+  const [warrantyInverterWarrantyYears, setWarrantyInverterWarrantyYears] =
+    useState<number>(5);
+  const [warrantyInverterModel, setWarrantyInverterModel] = useState("");
+  const [warrantyInverterSerialNumber, setWarrantyInverterSerialNumber] =
+    useState("");
+
+  const [generatingWarranty, setGeneratingWarranty] = useState(false);
+  const [generatedWarrantyUrl, setGeneratedWarrantyUrl] = useState<string | null>(
+    null
+  );
+  const [isWarrantyGeneratorOpen, setIsWarrantyGeneratorOpen] = useState(false);
 
 
   // Load users and products on mount if not provided
@@ -80,6 +122,18 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
   }, [initialUsers, initialProducts]);
 
   const selectedUser = users.find((u) => u.id === selectedUserId);
+
+  // Best-effort defaults for warranty fields from selected customer + entered address/phone
+  useEffect(() => {
+    if (selectedUser) {
+      setWarrantyCustomerName((prev) => prev || selectedUser.name || "");
+      setWarrantyCustomerNumber((prev) => prev || selectedUser.phone || "");
+    }
+  }, [selectedUser]);
+
+  useEffect(() => {
+    setWarrantyCustomerAddress((prev) => prev || address || "");
+  }, [address]);
 
   const addProduct = () => {
     if (products.length === 0) {
@@ -128,6 +182,71 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
     (sum, item) => sum + item.unitPrice * item.quantity * 100, // Convert back to paise
     0
   );
+
+  const warrantyModuleSerialNumbers = warrantyModuleSerialNumbersText
+    .split(/\r?\n/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const warrantyPdfInput: WarrantyPdfInput = {
+    documentNo: warrantyDocumentNo,
+    systemSizeKwp: warrantySystemSizeKwp,
+    customerName: warrantyCustomerName,
+    customerNumber: warrantyCustomerNumber,
+    customerAddress: warrantyCustomerAddress,
+    pinCode: warrantyPinCode,
+    installationDate: warrantyInstallationDate,
+    invoiceNo: warrantyInvoiceNo,
+
+    moduleType: warrantyModuleType,
+    moduleSerialNumbers: warrantyModuleSerialNumbers,
+
+    inverterWarrantyYears: warrantyInverterWarrantyYears,
+    inverterModel: warrantyInverterModel,
+    inverterSerialNumber: warrantyInverterSerialNumber,
+  };
+
+  const handleGenerateWarranty = async () => {
+    // Basic validations (API validates again)
+    if (
+      !warrantyPdfInput.documentNo ||
+      !warrantyPdfInput.systemSizeKwp ||
+      !warrantyPdfInput.customerName ||
+      !warrantyPdfInput.customerNumber ||
+      !warrantyPdfInput.customerAddress ||
+      !warrantyPdfInput.pinCode ||
+      !warrantyPdfInput.installationDate ||
+      !warrantyPdfInput.invoiceNo ||
+      !warrantyPdfInput.moduleType ||
+      !warrantyPdfInput.inverterModel ||
+      !warrantyPdfInput.inverterSerialNumber
+    ) {
+      toast.error("Please fill all warranty fields before generating");
+      return;
+    }
+
+    setGeneratingWarranty(true);
+    try {
+      const res = await fetch("/api/generate-warranty-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(warrantyPdfInput),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data?.pdfUrl) {
+        throw new Error(data?.error || "Failed to generate warranty PDF");
+      }
+
+      setGeneratedWarrantyUrl(data.pdfUrl);
+      toast.success("Warranty PDF generated successfully");
+    } catch (error) {
+      console.error("Generate warranty error:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to generate warranty PDF");
+    } finally {
+      setGeneratingWarranty(false);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!selectedUserId) {
@@ -181,6 +300,11 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
         }
       }
 
+      // If no warranty file was uploaded, use generated warranty PDF (Cloudinary URL)
+      if (!warrantyCardUrl && generatedWarrantyUrl) {
+        warrantyCardUrl = generatedWarrantyUrl;
+      }
+
       // Upload invoice
       if (invoiceFile) {
         try {
@@ -223,6 +347,11 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
         }
       }
 
+      const warrantyPdfData =
+        warrantyPdfInput.documentNo && warrantyPdfInput.systemSizeKwp
+          ? JSON.stringify(warrantyPdfInput)
+          : undefined;
+
       // Create order with document URLs
       const order = await createAdminOrder({
         userId: selectedUserId,
@@ -230,6 +359,8 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
         address,
         phone,
         notes: notes || undefined,
+        warrantyDocumentNo: warrantyPdfInput.documentNo || undefined,
+        warrantyPdfData,
         warrantyCardUrl,
         invoiceUrl,
         additionalFiles: additionalFileUrls.length > 0 ? additionalFileUrls : undefined,
@@ -522,12 +653,175 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
           {/* Step 4: Documents */}
           {step === 4 && (
             <div className="space-y-4">
+              <div className="border rounded-lg">
+                <button
+                  type="button"
+                  className="w-full flex items-center justify-between p-4 text-left"
+                  onClick={() => setIsWarrantyGeneratorOpen((v) => !v)}
+                >
+                  <div>
+                    <p className="font-semibold">Generate warranty</p>
+                  </div>
+                  <span className="text-sm text-gray-500">
+                    {isWarrantyGeneratorOpen ? "Hide" : "Show"}
+                  </span>
+                </button>
+
+                {isWarrantyGeneratorOpen && (
+                  <div className="px-4 pb-4 space-y-4">
+                    <div className="flex items-center justify-between gap-3">
+
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label>Document No *</Label>
+                        <Input
+                          value={warrantyDocumentNo}
+                          onChange={(e) => setWarrantyDocumentNo(e.target.value)}
+                          placeholder="e.g. DV25GST-83"
+                        />
+                      </div>
+                      <div>
+                        <Label>System Size (kWp) *</Label>
+                        <Input
+                          value={warrantySystemSizeKwp}
+                          onChange={(e) => setWarrantySystemSizeKwp(e.target.value)}
+                          placeholder="e.g. 4 KWP"
+                        />
+                      </div>
+                      <div>
+                        <Label>Customer Name *</Label>
+                        <Input
+                          value={warrantyCustomerName}
+                          onChange={(e) => setWarrantyCustomerName(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Label>Customer Number *</Label>
+                        <Input
+                          value={warrantyCustomerNumber}
+                          onChange={(e) => setWarrantyCustomerNumber(e.target.value)}
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <Label>Customer Address *</Label>
+                        <Textarea
+                          value={warrantyCustomerAddress}
+                          onChange={(e) => setWarrantyCustomerAddress(e.target.value)}
+                          rows={3}
+                        />
+                      </div>
+                      <div>
+                        <Label>Pin Code *</Label>
+                        <Input
+                          value={warrantyPinCode}
+                          onChange={(e) => setWarrantyPinCode(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Label>Date of Installation &amp; Commissioning *</Label>
+                        <Input
+                          value={warrantyInstallationDate}
+                          onChange={(e) => setWarrantyInstallationDate(e.target.value)}
+                          placeholder="e.g. 28-08-2024"
+                        />
+                      </div>
+                      <div>
+                        <Label>Invoice No. *</Label>
+                        <Input
+                          value={warrantyInvoiceNo}
+                          onChange={(e) => setWarrantyInvoiceNo(e.target.value)}
+                          placeholder="e.g. DV25GST-83"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="md:col-span-2">
+                        <Label>Module Type *</Label>
+                        <Input
+                          value={warrantyModuleType}
+                          onChange={(e) => setWarrantyModuleType(e.target.value)}
+                          placeholder="e.g. Monocrystalline 500WP Bluebird"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <Label>Module Serial Numbers (one per line)</Label>
+                        <Textarea
+                          value={warrantyModuleSerialNumbersText}
+                          onChange={(e) =>
+                            setWarrantyModuleSerialNumbersText(e.target.value)
+                          }
+                          rows={4}
+                          placeholder={"e.g.\nMS2404301A0928\nMS2404301A0966"}
+                        />
+                      </div>
+                      <div>
+                        <Label>Inverter Warranty Years *</Label>
+                        <Input
+                          type="number"
+                          min={1}
+                          value={warrantyInverterWarrantyYears}
+                          onChange={(e) =>
+                            setWarrantyInverterWarrantyYears(
+                              parseInt(e.target.value) || 1
+                            )
+                          }
+                        />
+                      </div>
+                      <div>
+                        <Label>Inverter Model *</Label>
+                        <Input
+                          value={warrantyInverterModel}
+                          onChange={(e) => setWarrantyInverterModel(e.target.value)}
+                          placeholder="e.g. DEYE 3 SUN-3K-G01"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <Label>Inverter Serial Number *</Label>
+                        <Input
+                          value={warrantyInverterSerialNumber}
+                          onChange={(e) =>
+                            setWarrantyInverterSerialNumber(e.target.value)
+                          }
+                          placeholder="e.g. XM4033K5621039"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                        {generatedWarrantyUrl && (
+                          <Button variant="outline" size="sm" asChild>
+                            <a
+                              href={generatedWarrantyUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View Generated
+                            </a>
+                          </Button>
+                        )}
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={handleGenerateWarranty}
+                          disabled={generatingWarranty}
+                        >
+                          {generatingWarranty ? "Generating..." : "Generate"}
+                        </Button>
+                      </div>
+                  </div>
+                )}
+              </div>
+                {!isWarrantyGeneratorOpen && (
               <div>
                 <Label htmlFor="warranty">Warranty Card (PDF)</Label>
                 <Input
                   id="warranty"
                   type="file"
                   accept=".pdf,.doc,.docx"
+                  disabled={generatingWarranty || isWarrantyGeneratorOpen}
                   onChange={(e) =>
                     setWarrantyFile(e.target.files?.[0] || null)
                   }
@@ -538,6 +832,7 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
                   </p>
                 )}
               </div>
+                )}
 
               <div>
                 <Label htmlFor="invoice">Invoice (PDF)</Label>

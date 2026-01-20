@@ -118,6 +118,50 @@ export async function uploadMultipleFiles(
 }
 
 /**
+ * Upload a PDF buffer to Cloudinary (as raw)
+ * @param pdfBuffer - PDF as a Node.js Buffer
+ * @param opts - Upload options
+ * @returns Promise resolving to the secure URL of the uploaded PDF
+ */
+export async function uploadPdfBuffer(
+  pdfBuffer: Buffer,
+  opts: { folder: string; publicId: string }
+): Promise<string> {
+  // Clean public id (Cloudinary: keep alphanumeric, hyphen, underscore, slash)
+  const safePublicId = opts.publicId
+    .replace(/\.pdf$/i, "")
+    .replace(/[^a-zA-Z0-9/_-]/g, "_")
+    .substring(0, 200);
+
+  const fullPublicId = `${opts.folder}/${safePublicId}`;
+
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "raw",
+        public_id: fullPublicId,
+        format: "pdf",
+        access_mode: "public",
+        overwrite: true, // allow deterministic regeneration for same documentNo
+        unique_filename: false,
+      },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary PDF upload error:", error);
+          reject(error);
+        } else if (result?.secure_url) {
+          resolve(result.secure_url);
+        } else {
+          reject(new Error("PDF upload failed: No URL returned"));
+        }
+      }
+    );
+
+    uploadStream.end(pdfBuffer);
+  });
+}
+
+/**
  * Upload a file with automatic resource type detection
  * @param file - The file to upload
  * @param folder - Optional folder path

@@ -7,6 +7,7 @@ import { OrderStatus } from "@prisma/client";
 import { z } from "zod";
 import { generateOrderNumber } from "@/lib/order-number";
 import { uploadDocument, uploadMultipleFiles } from "@/lib/cloudinary";
+import { sendOrderCreatedWhatsAppMessage } from "@/lib/whatsapp";
 
 const createOrderSchema = z.object({
   productId: z.string().min(1),
@@ -30,6 +31,8 @@ const createAdminOrderSchema = z.object({
   address: z.string().min(1),
   phone: z.string().min(1),
   notes: z.string().optional(),
+  warrantyDocumentNo: z.string().min(1).optional(),
+  warrantyPdfData: z.string().min(1).optional(),
   warrantyCardUrl: z.string().url().optional(),
   invoiceUrl: z.string().url().optional(),
   additionalFiles: z.array(z.string().url()).optional(),
@@ -83,6 +86,15 @@ export async function createOrder(data: unknown) {
       user: true,
     },
   });
+
+  // Fire-and-forget WhatsApp message (don't fail order creation if WhatsApp is down)
+  try {
+    await sendOrderCreatedWhatsAppMessage({
+      mobileNo: validated.phone,
+    });
+  } catch (error) {
+    console.error("Failed to send order WhatsApp message:", error);
+  }
 
   return order;
 }
@@ -195,6 +207,22 @@ export async function createAdminOrder(data: unknown) {
 
   const validated = createAdminOrderSchema.parse(data);
 
+  // If the DB schema hasn't been migrated yet, Prisma will throw
+  // "Unknown argument warrantyDocumentNo/warrantyPdfData". Detect and only set
+  // these fields if the columns exist.
+  let orderHasWarrantyColumns = false;
+  try {
+    const cols = (await prisma.$queryRawUnsafe(`PRAGMA table_info("Order")`)) as Array<{
+      name?: string;
+    }>;
+    const names = new Set(cols.map((c) => c.name).filter(Boolean) as string[]);
+    orderHasWarrantyColumns =
+      names.has("warrantyDocumentNo") && names.has("warrantyPdfData");
+  } catch {
+    // If PRAGMA isn't supported by the adapter, fail open by not setting new fields.
+    orderHasWarrantyColumns = false;
+  }
+
   // Verify user exists
   const user = await prisma.user.findUnique({
     where: { id: validated.userId },
@@ -218,27 +246,46 @@ export async function createAdminOrder(data: unknown) {
   const orderNumber = await generateOrderNumber();
 
   // Create order with items
+  // NOTE: These fields are added to the Prisma schema via migration.
+  // If Prisma Client hasn't been regenerated yet, TypeScript won't know about them.
+  // We build the `data` object dynamically to keep typechecking unblocked.
+  const orderData: any = {
+    userId: validated.userId,
+    orderNumber,
+    address: validated.address,
+    phone: validated.phone,
+    notes: validated.notes,
+    warrantyCardUrl: validated.warrantyCardUrl,
+    invoiceUrl: validated.invoiceUrl,
+    additionalFiles: validated.additionalFiles ? JSON.stringify(validated.additionalFiles) : null,
+    status: "NEW",
+    items: {
+      create: validated.items.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        name: item.name,
+        description: item.description,
+        capacity: item.capacity,
+      })),
+    },
+  };
+
+  if (validated.warrantyDocumentNo) {
+    if (orderHasWarrantyColumns) {
+      orderData.warrantyDocumentNo = validated.warrantyDocumentNo;
+    }
+  }
+
+  if (validated.warrantyPdfData) {
+    if (orderHasWarrantyColumns) {
+      orderData.warrantyPdfData = validated.warrantyPdfData;
+    }
+  }
+
   const order = await prisma.order.create({
     data: {
-      userId: validated.userId,
-      orderNumber,
-      address: validated.address,
-      phone: validated.phone,
-      notes: validated.notes,
-      warrantyCardUrl: validated.warrantyCardUrl,
-      invoiceUrl: validated.invoiceUrl,
-      additionalFiles: validated.additionalFiles ? JSON.stringify(validated.additionalFiles) : null,
-      status: "NEW",
-      items: {
-        create: validated.items.map((item) => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          name: item.name,
-          description: item.description,
-          capacity: item.capacity,
-        })),
-      },
+      ...orderData,
     },
     include: {
       items: {
@@ -249,6 +296,15 @@ export async function createAdminOrder(data: unknown) {
       user: true,
     },
   });
+
+  // Fire-and-forget WhatsApp message (don't fail order creation if WhatsApp is down)
+  try {
+    await sendOrderCreatedWhatsAppMessage({
+      mobileNo: validated.phone,
+    });
+  } catch (error) {
+    console.error("Failed to send admin order WhatsApp message:", error);
+  }
 
   return order;
 }

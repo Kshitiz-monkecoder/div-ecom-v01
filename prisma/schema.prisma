@@ -44,6 +44,8 @@ model Order {
   address         String
   phone           String
   notes           String?
+  warrantyDocumentNo String?
+  warrantyPdfData  String?
   warrantyCardUrl String?
   invoiceUrl      String?
   additionalFiles String?
