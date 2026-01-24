@@ -313,14 +313,14 @@ export function renderWarrantyHtml(
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Warranty Certificate - ${escapeHtml(input.documentNo)}</title>
     <style>
-      /* Logo only on page 1 (in flow); top margin for first-page content. Footer fixed, 96px bottom. */
-      @page { size: A4; margin: 48px 48px 96px 48px; }
+      /* Logo only on page 1 (in flow). Footer: transparent so it never whitens/hides text; sign uses multiply so white in PNG doesn't obscure. */
+      @page { size: A4; margin: 48px 48px 100px 48px; }
       * { box-sizing: border-box; }
       body { font-family: "Times New Roman", Times, serif; font-size: 11.5pt; line-height: 1.35; color: #111; margin: 0; }
       .doc-logo { margin-bottom: 20px; }
       .doc-logo .logo { height: 42px; width: auto; object-fit: contain; display: block; }
-      footer { position: fixed; bottom: 0; left: 0; right: 0; height: 84px; padding: 8px 48px 18px 48px; display: flex; align-items: flex-end; justify-content: flex-end; background: #fff; }
-      footer .sign { height: 54px; width: auto; object-fit: contain; }
+      footer { position: fixed; bottom: 0; left: 0; right: 0; height: 84px; padding: 8px 48px 18px 48px; display: flex; align-items: flex-end; justify-content: flex-end; background: transparent; }
+      footer .sign { height: 54px; width: auto; object-fit: contain; mix-blend-mode: multiply; }
 
       .content { padding: 0; }
       .title { text-align: center; font-weight: 700; }
