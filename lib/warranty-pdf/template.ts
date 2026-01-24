@@ -288,6 +288,10 @@ export function renderWarrantyHtml(
 
       const isBullet = line.startsWith("•\t");
       const isLettered = /^[a-p]\)\t/i.test(line);
+      const isSectionHead =
+        (/^\d+\.\t/.test(line) && !/^\d+\.\d+\t/.test(line)) ||
+        /^[A-Z][A-Z\s\-]+$/.test(line);
+      const isClause = /^\d+\.\d+\t/.test(line);
 
       if (isBullet) {
         const bulletText = escapeHtml(line.replace("•\t", "")).replaceAll(
@@ -301,7 +305,15 @@ export function renderWarrantyHtml(
         return `${maybeBreak}<div class="subbullet">${htmlLine}</div>`;
       }
 
-      // Keep tabs as alignment spacing in plain paragraphs.
+      if (isSectionHead) {
+        return `${maybeBreak}<div class="sectionHead">${htmlLine}</div>`;
+      }
+
+      if (isClause) {
+        return `${maybeBreak}<div class="clause">${htmlLine}</div>`;
+      }
+
+      // Plain paragraphs.
       return `${maybeBreak}<div class="para">${htmlLine}</div>`;
     })
     .join("");
@@ -313,22 +325,26 @@ export function renderWarrantyHtml(
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Warranty Certificate - ${escapeHtml(input.documentNo)}</title>
     <style>
-      /* Logo only on page 1 (in flow). Footer: transparent so it never whitens/hides text; sign uses multiply so white in PNG doesn't obscure. */
-      @page { size: A4; margin: 48px 48px 100px 48px; }
+      /* Logo on page 1 only. Sign only in table (page 1) and last-page-sign (last page); no fixed footer on middle pages. */
+      @page { size: A4; margin: 48px 48px 48px 48px; }
       * { box-sizing: border-box; }
       body { font-family: "Times New Roman", Times, serif; font-size: 11.5pt; line-height: 1.35; color: #111; margin: 0; }
       .doc-logo { margin-bottom: 20px; }
       .doc-logo .logo { height: 42px; width: auto; object-fit: contain; display: block; }
-      footer { position: fixed; bottom: 0; left: 0; right: 0; height: 84px; padding: 8px 48px 18px 48px; display: flex; align-items: flex-end; justify-content: flex-end; background: transparent; }
-      footer .sign { height: 54px; width: auto; object-fit: contain; mix-blend-mode: multiply; }
 
       .content { padding: 0; }
-      .title { text-align: center; font-weight: 700; }
-      .subtitle { text-align: center; font-weight: 700; margin-top: 2px; }
+      .title { text-align: center; font-weight: 700; font-size: 1.1em; }
+      .subtitle { text-align: center; font-weight: 700; margin-top: 2px; font-size: 1.02em; }
       .para { margin: 4px 0; white-space: pre-wrap; }
-      .bullet { margin: 6px 0 2px 0; font-weight: 700; }
+      .bullet { margin: 10px 0 4px 0; font-weight: 700; }
       .subbullet { margin: 2px 0 2px 18px; white-space: pre-wrap; }
+      .sectionHead { font-weight: 700; font-size: 1.05em; margin-top: 14px; margin-bottom: 4px; }
+      .clause { font-weight: 700; margin-top: 8px; margin-bottom: 2px; white-space: pre-wrap; }
       .muted { color: #444; }
+
+      .last-page-sign { margin-top: 32px; text-align: right; break-inside: avoid; page-break-inside: avoid; }
+      .last-page-sign .sign-label { font-size: 11.5pt; }
+      .last-page-sign img { height: 54px; width: auto; display: block; margin: 6px 0 4px 0; }
 
       .hl { background: #9AF5C8; padding: 2px 6px; font-weight: 600; border-radius: 2px; }
 
@@ -347,10 +363,6 @@ export function renderWarrantyHtml(
     </style>
   </head>
   <body>
-    <footer>
-      <img class="sign" src="${assets.signDataUrl}" alt="Authorized Signatory" />
-    </footer>
-
     <main class="content">
       <div class="doc-logo"><img class="logo" src="${assets.logoDataUrl}" alt="Divy Power Logo" /></div>
       <div class="title">${escapeHtml(introLines[0] || "")}</div>
@@ -391,6 +403,12 @@ export function renderWarrantyHtml(
       <div style="height: 14px;"></div>
 
       ${bodyHtml}
+
+      <div class="last-page-sign">
+        <div class="sign-label">For Divy Power Private Limited</div>
+        <img src="${assets.signDataUrl}" alt="Authorised Signatory" />
+        <div class="sign-label">Authorised Signatory</div>
+      </div>
     </main>
   </body>
 </html>`;
