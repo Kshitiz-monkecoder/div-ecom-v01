@@ -313,12 +313,12 @@ export function renderWarrantyHtml(
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Warranty Certificate - ${escapeHtml(input.documentNo)}</title>
     <style>
-      /* More top margin so the header/logo never overlaps the title */
-      @page { size: A4; margin: 132px 48px 96px 48px; }
+      /* Logo only on page 1 (in flow); top margin for first-page content. Footer fixed, 96px bottom. */
+      @page { size: A4; margin: 48px 48px 96px 48px; }
       * { box-sizing: border-box; }
       body { font-family: "Times New Roman", Times, serif; font-size: 11.5pt; line-height: 1.35; color: #111; margin: 0; }
-      header { position: fixed; top: 0; left: 0; right: 0; height: 96px; padding: 20px 48px 10px 48px; background: #fff; z-index: 10; }
-      header .logo { height: 42px; width: auto; object-fit: contain; }
+      .doc-logo { margin-bottom: 20px; }
+      .doc-logo .logo { height: 42px; width: auto; object-fit: contain; display: block; }
       footer { position: fixed; bottom: 0; left: 0; right: 0; height: 84px; padding: 8px 48px 18px 48px; display: flex; align-items: flex-end; justify-content: flex-end; background: #fff; }
       footer .sign { height: 54px; width: auto; object-fit: contain; }
 
@@ -347,15 +347,12 @@ export function renderWarrantyHtml(
     </style>
   </head>
   <body>
-    <header>
-      <img class="logo" src="${assets.logoDataUrl}" alt="Divy Power Logo" />
-    </header>
-
     <footer>
       <img class="sign" src="${assets.signDataUrl}" alt="Authorized Signatory" />
     </footer>
 
     <main class="content">
+      <div class="doc-logo"><img class="logo" src="${assets.logoDataUrl}" alt="Divy Power Logo" /></div>
       <div class="title">${escapeHtml(introLines[0] || "")}</div>
       <div class="subtitle">${escapeHtml(introLines[1] || "")}</div>
       ${introLines

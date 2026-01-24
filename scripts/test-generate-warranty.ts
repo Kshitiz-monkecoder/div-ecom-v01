@@ -39,6 +39,8 @@ async function main() {
     signDataUrl: toDataUrl("image/png", Buffer.from(sign)),
   });
 
+  // Use full puppeteer locally (bundles Chromium for Windows/Mac/Linux).
+  // The API route uses puppeteer-core + @sparticuz/chromium for Vercel (Linux only).
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],

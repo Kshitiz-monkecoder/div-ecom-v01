@@ -2,12 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import path from "node:path";
 import fs from "node:fs/promises";
-import puppeteer from "puppeteer";
+import chromium from "@sparticuz/chromium";
+import puppeteer from "puppeteer-core";
 import { requireAdmin } from "@/lib/auth";
 import { uploadPdfBuffer } from "@/lib/cloudinary";
 import { renderWarrantyHtml, type WarrantyPdfInput } from "@/lib/warranty-pdf/template";
 
 export const runtime = "nodejs";
+// Allow up to 60s for PDF generation (Vercel Pro; Hobby caps at 10s)
+export const maxDuration = 60;
 
 const WarrantyPdfInputSchema = z.object({
   documentNo: z.string().min(1),
@@ -73,9 +76,12 @@ export async function POST(request: NextRequest) {
       signDataUrl: toDataUrl("image/png", signBuf),
     });
 
+    // Use @sparticuz/chromium for serverless (Vercel, Lambda, etc.); includes executable and flags
+    chromium.setGraphicsMode = false; // PDF only, no WebGL needed
     const browser = await puppeteer.launch({
+      executablePath: await chromium.executablePath(),
+      args: chromium.args,
       headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     try {

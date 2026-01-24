@@ -33,7 +33,8 @@
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "pdf-parse": "^2.4.5",
-    "puppeteer": "^24.35.0",
+    "@sparticuz/chromium": "^133.0.0",
+    "puppeteer-core": "^24.35.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.69.0",
@@ -43,6 +44,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "puppeteer": "^24.35.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
