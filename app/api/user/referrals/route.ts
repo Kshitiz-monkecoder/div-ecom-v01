@@ -30,6 +30,17 @@ export async function POST(req: Request) {
       );
     }
 
+    // 2.5️⃣ Reject if this phone was already referred (unique constraint)
+    const existing = await prisma.referral.findUnique({
+      where: { phone },
+    });
+    if (existing) {
+      return NextResponse.json(
+        { error: "This phone number has already been referred." },
+        { status: 409 }
+      );
+    }
+
     // 3️⃣ Create referral with default tokensAwarded
     await prisma.referral.create({
       data: {
@@ -46,8 +57,16 @@ export async function POST(req: Request) {
     return NextResponse.json({
       message: "Referral submitted successfully!",
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Referral API error:", error);
+    // Handle unique constraint violation (race condition / concurrent submit)
+    const isPrisma = error && typeof error === "object" && "code" in error;
+    if (isPrisma && (error as { code?: string }).code === "P2002") {
+      return NextResponse.json(
+        { error: "This phone number has already been referred." },
+        { status: 409 }
+      );
+    }
     return NextResponse.json(
       { error: "Failed to submit referral" },
       { status: 500 }

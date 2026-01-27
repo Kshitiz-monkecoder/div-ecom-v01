@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 export default function ReferForm() {
   const searchParams = useSearchParams();
@@ -19,14 +21,18 @@ export default function ReferForm() {
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear error when user starts typing
+    if (error) setError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     const payload = {
       ...formData,
@@ -42,11 +48,17 @@ export default function ReferForm() {
 
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data?.error || "Failed to submit referral");
+      if (!res.ok) {
+        // Extract error message from response
+        const errorMessage = data?.error || "Failed to submit referral. Please try again.";
+        setError(errorMessage);
+        return;
+      }
 
       setSubmitted(true);
     } catch (err: any) {
-      alert(err.message);
+      // Handle network errors or other unexpected errors
+      setError(err.message || "An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -65,6 +77,12 @@ export default function ReferForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
       <div className="space-y-1">
         <Label htmlFor="name">Your Name</Label>
         <Input
