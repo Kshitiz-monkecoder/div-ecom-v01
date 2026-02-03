@@ -31,7 +31,7 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
   const [formData, setFormData] = useState({
     category: "" as typeof TICKET_CATEGORIES[number] | "",
     description: "",
-    orderId: "none",
+    orderId: "",
   });
   const minDescriptionLength = 100;
   const descriptionLength = formData.description.trim().length;
@@ -46,6 +46,11 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
 
     if (supportImages.length === 0) {
       toast.error("Please upload at least one supporting image.");
+      return;
+    }
+
+    if (!formData.orderId) {
+      toast.error("Please select a related order.");
       return;
     }
 
@@ -75,7 +80,7 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
       const ticket = await createTicket({
         category: formData.category as typeof TICKET_CATEGORIES[number],
         description: formData.description,
-        orderId: formData.orderId === "none" ? undefined : formData.orderId,
+        orderId: formData.orderId,
         images: imageUrls,
       });
       toast.success("Ticket created successfully!");
@@ -117,16 +122,16 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
       </div>
 
       <div>
-        <Label htmlFor="order">Related Order (Optional)</Label>
+        <Label htmlFor="order">Related Order *</Label>
         <Select
           value={formData.orderId}
           onValueChange={(value) => setFormData({ ...formData, orderId: value })}
+          required
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select an order (optional)" />
+            <SelectValue placeholder="Select an order" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="none">None</SelectItem>
             {orders.map((order) => (
               <SelectItem key={order.id} value={order.id}>
                 {order.items.length === 1

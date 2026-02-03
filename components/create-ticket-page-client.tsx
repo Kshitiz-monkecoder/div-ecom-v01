@@ -46,6 +46,28 @@ export function CreateTicketPageClient({ orders }: CreateTicketPageClientProps) 
 
   const inCooldown = remainingMs > 0;
 
+  if (orders.length === 0) {
+    return (
+      <div className="max-w-2xl">
+        <div className="mb-6">
+          <Link href="/tickets">
+            <Button variant="ghost">← Back to Tickets</Button>
+          </Link>
+        </div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-lg border p-6 text-center">
+          <h1 className="text-3xl font-bold mb-4">Create Support Ticket</h1>
+          <p className="text-muted-foreground mb-4">
+            You need at least one order to raise a support ticket. Please place an order first.
+          </p>
+          <Button asChild variant="outline">
+            <Link href="/orders">View Orders</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (inCooldown) {
     return (
       <div className="max-w-2xl">

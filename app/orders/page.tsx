@@ -37,22 +37,32 @@ export default async function OrdersPage() {
     },
   ];
 
+  const hour = new Date().getHours();
+  const timeGreeting =
+    hour >= 5 && hour < 12 ? "Good morning" :
+    hour >= 12 && hour < 17 ? "Good afternoon" :
+    hour >= 17 && hour < 21 ? "Good evening" : "Good night";
+  const displayName = user.name?.trim() || "there";
+
   return (
     <CustomerLayout>
-
       <div className="max-w-6xl">
-      {/* <div className="mb-4 aspect-video w-full ">
-            <MediaCarousel items={orderMedia} />
-          </div> */}
+        <div className="mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+            {timeGreeting}, {displayName}!
+          </h1>
+          <p className="text-lg text-muted-foreground mt-1">Welcome back.</p>
+        </div>
+
+        <div className="mb-8 aspect-video max-w-3xl mx-auto">
+          <MediaCarousel items={orderMedia} />
+        </div>
+
         <PageHeader
-          greeting={user.name ? `Hi, ${user.name}` : "Hi"}
           title="My Orders"
           subtitle="Track your orders and access products assigned to your account."
           actions={[{ label: "Need help?", href: "/tickets", variant: "outline" }]}
         />
-
-
-
 
         {/* Orders Section */}
         {orders.length > 0 ? (

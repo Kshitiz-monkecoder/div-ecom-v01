@@ -9,7 +9,7 @@ import { z } from "zod";
 const createTicketSchema = z.object({
   category: z.enum(["Installation Issue", "Product Issue", "Billing / Payment", "General Query"]),
   description: z.string().min(100),
-  orderId: z.string().optional(),
+  orderId: z.string().min(1, "Related order is required"),
   images: z.array(z.string().url()).min(1),
 });
 
@@ -18,19 +18,17 @@ export async function createTicket(data: unknown) {
 
   const validated = createTicketSchema.parse(data);
 
-  // If orderId is provided, verify it belongs to the user
-  if (validated.orderId) {
-    const order = await prisma.order.findUnique({
-      where: { id: validated.orderId },
-    });
+  // Verify order belongs to the user
+  const order = await prisma.order.findUnique({
+    where: { id: validated.orderId },
+  });
 
-    if (!order) {
-      throw new Error("Order not found");
-    }
+  if (!order) {
+    throw new Error("Order not found");
+  }
 
-    if (order.userId !== user.id) {
-      throw new Error("Order does not belong to you");
-    }
+  if (order.userId !== user.id) {
+    throw new Error("Order does not belong to you");
   }
 
   const ticket = await prisma.ticket.create({

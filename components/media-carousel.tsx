@@ -14,14 +14,9 @@ export type MediaItem = {
 interface MediaCarouselProps {
   items: MediaItem[];
   className?: string;
-  autoRotateMs?: number;
 }
 
-export function MediaCarousel({
-  items,
-  className = "",
-  autoRotateMs = 5000,
-}: MediaCarouselProps) {
+export function MediaCarousel({ items, className = "" }: MediaCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const safeItems = useMemo(() => items.filter((item) => item.url), [items]);
@@ -34,14 +29,6 @@ export function MediaCarousel({
     }, 0);
     return () => clearTimeout(timer);
   }, [safeItems.length]);
-
-  useEffect(() => {
-    if (!hasMultiple || safeItems.length === 0) return;
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % safeItems.length);
-    }, autoRotateMs);
-    return () => clearInterval(interval);
-  }, [autoRotateMs, hasMultiple, safeItems.length]);
 
   if (!safeItems || safeItems.length === 0) {
     return (
@@ -62,8 +49,10 @@ export function MediaCarousel({
             src={currentItem.url}
             className="h-full w-full object-cover"
             controls
+            autoPlay
             muted
             playsInline
+            loop
           />
         ) : (
           <Image
