@@ -36,7 +36,10 @@ const createAdminOrderSchema = z.object({
   warrantyCardUrl: z.string().url().optional(),
   invoiceUrl: z.string().url().optional(),
   additionalFiles: z.array(z.string().url()).optional(),
+  isMaterialDelivery: z.boolean().optional(),
 });
+
+const VALID_DELIVERY_SLOTS = ["EARLY", "MID", "LATE", "NIGHT"] as const;
 
 export async function createOrder(data: unknown) {
   const user = await requireAuth();
@@ -66,6 +69,12 @@ export async function createOrder(data: unknown) {
       phone: validated.phone,
       notes: validated.notes,
       status: "NEW",
+      statusHistory: {
+        create: {
+          status: "NEW",
+          createdById: user.id,
+        },
+      },
       items: {
         create: {
           productId: validated.productId,
@@ -84,6 +93,10 @@ export async function createOrder(data: unknown) {
         },
       },
       user: true,
+      statusHistory: {
+        orderBy: { createdAt: "asc" },
+        include: { createdBy: true },
+      },
     },
   });
 
@@ -140,6 +153,10 @@ export async function getOrder(id: string) {
       },
       user: true,
       tickets: true,
+      statusHistory: {
+        orderBy: { createdAt: "asc" },
+        include: { createdBy: true },
+      },
     },
   });
 
@@ -176,16 +193,32 @@ export async function getAllOrders(status?: OrderStatus) {
   return orders;
 }
 
-export async function updateOrderStatus(id: string, status: OrderStatus) {
+export async function updateOrderStatus(
+  id: string,
+  status: OrderStatus,
+  note?: string,
+  imageUrls?: string[]
+) {
   if (!id) {
     throw new Error("Order ID is required");
   }
 
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const order = await prisma.order.update({
     where: { id },
-    data: { status },
+    data: {
+      status,
+      statusHistory: {
+        create: {
+          status,
+          note: note?.trim() ? note.trim() : undefined,
+          imagesJson:
+            imageUrls && imageUrls.length > 0 ? JSON.stringify(imageUrls) : undefined,
+          createdById: admin.id,
+        },
+      },
+    },
     include: {
       items: {
         include: {
@@ -193,17 +226,86 @@ export async function updateOrderStatus(id: string, status: OrderStatus) {
         },
       },
       user: true,
+      statusHistory: {
+        orderBy: { createdAt: "asc" },
+        include: { createdBy: true },
+      },
     },
   });
 
   return order;
 }
 
+export async function updateOrderDeliverySlot(
+  orderId: string,
+  deliveryDate: Date,
+  deliverySlot: string
+) {
+  if (!orderId) {
+    throw new Error("Order ID is required");
+  }
+
+  const user = await requireAuth();
+
+  if (!VALID_DELIVERY_SLOTS.includes(deliverySlot as (typeof VALID_DELIVERY_SLOTS)[number])) {
+    throw new Error("Invalid delivery slot");
+  }
+
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    select: { userId: true },
+  });
+
+  if (!order) {
+    throw new Error("Order not found");
+  }
+
+  if (order.userId !== user.id) {
+    throw new Error("Order does not belong to you");
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const slotDate = new Date(deliveryDate);
+  slotDate.setHours(0, 0, 0, 0);
+  if (slotDate < today) {
+    throw new Error("Delivery date must be today or in the future");
+  }
+
+  await prisma.order.update({
+    where: { id: orderId },
+    data: {
+      deliveryDate: slotDate,
+      deliverySlot,
+    },
+  });
+
+  return { success: true };
+}
+
+export async function updateOrderMaterialDelivery(
+  orderId: string,
+  isMaterialDelivery: boolean
+) {
+  if (!orderId) {
+    throw new Error("Order ID is required");
+  }
+
+  await requireAdmin();
+
+  await prisma.order.update({
+    where: { id: orderId },
+    data: { isMaterialDelivery },
+  });
+
+  return { success: true };
+}
+
 /**
  * Create an order as admin with multiple products and document uploads
  */
 export async function createAdminOrder(data: unknown) {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const validated = createAdminOrderSchema.parse(data);
 
@@ -258,7 +360,14 @@ export async function createAdminOrder(data: unknown) {
     warrantyCardUrl: validated.warrantyCardUrl,
     invoiceUrl: validated.invoiceUrl,
     additionalFiles: validated.additionalFiles ? JSON.stringify(validated.additionalFiles) : null,
+    isMaterialDelivery: validated.isMaterialDelivery ?? false,
     status: "NEW",
+    statusHistory: {
+      create: {
+        status: "NEW",
+        createdById: admin.id,
+      },
+    },
     items: {
       create: validated.items.map((item) => ({
         productId: item.productId,
@@ -294,6 +403,10 @@ export async function createAdminOrder(data: unknown) {
         },
       },
       user: true,
+      statusHistory: {
+        orderBy: { createdAt: "asc" },
+        include: { createdBy: true },
+      },
     },
   });
 

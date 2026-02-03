@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "make-admin": "bun run scripts/make-admin.ts",
+    "seed-products": "bun run scripts/seed-products.ts",
     "migrate": "bash scripts/migrate.sh",
     "migrate:dev": "bunx prisma migrate dev",
     "migrate:generate": "bunx prisma migrate dev --create-only"

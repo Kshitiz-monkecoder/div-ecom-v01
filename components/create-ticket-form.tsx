@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -26,24 +27,63 @@ interface CreateTicketFormProps {
 export function CreateTicketForm({ orders }: CreateTicketFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [supportImages, setSupportImages] = useState<File[]>([]);
   const [formData, setFormData] = useState({
     category: "" as typeof TICKET_CATEGORIES[number] | "",
     description: "",
     orderId: "none",
   });
+  const minDescriptionLength = 100;
+  const descriptionLength = formData.description.trim().length;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (descriptionLength < minDescriptionLength) {
+      toast.error(`Description must be at least ${minDescriptionLength} characters.`);
+      return;
+    }
+
+    if (supportImages.length === 0) {
+      toast.error("Please upload at least one supporting image.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await createTicket({
+      const uploadData = new FormData();
+      supportImages.forEach((file) => uploadData.append("images", file));
+
+      const uploadRes = await fetch("/api/upload-ticket-images", {
+        method: "POST",
+        body: uploadData,
+      });
+
+      if (!uploadRes.ok) {
+        const errorData = await uploadRes.json().catch(() => ({}));
+        throw new Error(errorData?.error || "Failed to upload images");
+      }
+
+      const uploadJson = await uploadRes.json();
+      const imageUrls = Array.isArray(uploadJson?.urls) ? uploadJson.urls : [];
+
+      if (imageUrls.length === 0) {
+        throw new Error("No image URLs returned from upload");
+      }
+
+      const ticket = await createTicket({
         category: formData.category as typeof TICKET_CATEGORIES[number],
         description: formData.description,
         orderId: formData.orderId === "none" ? undefined : formData.orderId,
+        images: imageUrls,
       });
       toast.success("Ticket created successfully!");
-      router.push("/tickets");
+      if (typeof window !== "undefined") {
+        const cooldownMs = 2 * 60 * 1000;
+        localStorage.setItem("ticketCreateCooldownUntil", String(Date.now() + cooldownMs));
+      }
+      router.push(`/tickets/${ticket.id}`);
       router.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to create ticket");
@@ -103,11 +143,29 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
         <Textarea
           id="description"
           required
+          minLength={minDescriptionLength}
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           placeholder="Describe your issue or question..."
           rows={6}
         />
+        <p className="mt-2 text-xs text-muted-foreground">
+          {descriptionLength}/{minDescriptionLength} characters minimum
+        </p>
+      </div>
+
+      <div>
+        <Label htmlFor="supportImages">Supporting images *</Label>
+        <Input
+          id="supportImages"
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={(e) => setSupportImages(Array.from(e.target.files || []))}
+        />
+        <p className="mt-2 text-xs text-muted-foreground">
+          Please upload at least one image showing the issue.
+        </p>
       </div>
 
       <Button type="submit" disabled={loading} className="w-full">

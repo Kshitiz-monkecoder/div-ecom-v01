@@ -1,4 +1,4 @@
-import { getUserDetails, getAllProducts } from "@/app/actions/admin";
+import { getUserDetails } from "@/app/actions/admin";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
@@ -13,10 +13,7 @@ export default async function AdminUserDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [user, allProducts] = await Promise.all([
-    getUserDetails(id),
-    getAllProducts(),
-  ]);
+  const user = await getUserDetails(id);
 
   if (!user) {
     notFound();

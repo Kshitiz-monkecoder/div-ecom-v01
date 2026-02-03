@@ -4,6 +4,7 @@ import CustomerLayout from "@/components/customer-layout";
 import { PageHeader } from "@/components/page-header";
 import { ProductCard } from "@/components/product-card";
 import { OrderCard } from "@/components/order-card";
+import { MediaCarousel, type MediaItem } from "@/components/media-carousel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireAuth } from "@/lib/proxy";
@@ -16,16 +17,42 @@ export default async function OrdersPage() {
     getUserOrders(),
     getProducts(),
   ]);
+  const orderMedia: MediaItem[] = [
+    {
+      type: "video",
+      url: "https://res.cloudinary.com/dmk66g4w2/video/upload/v1770089560/Ashish_Jain___Solar_Monitor___Kavinagar___DIVY_POWER_Pvt_Ltd___TATA_Power_Pvt_Ltd_oxmonq.mp4",
+      alt: "Order Update",
+    },{
+      type: "video",
+      url: "https://res.cloudinary.com/dmk66g4w2/video/upload/v1770089560/Leading_the_Solar_Charge_A_Deep_Dive_with_the_Minds_Behind_Divy_Power_a8hia3.mp4",
+      alt: "Order Update",
+    },{
+      type: "video",
+      url: "https://res.cloudinary.com/dmk66g4w2/video/upload/v1770089559/Innovating_the_Future_of_Solar_Stories_from_UPSIT_2025._lsqcti.mp4",
+      alt: "Order Update",
+    },{
+      type: "video",
+      url: "https://res.cloudinary.com/dmk66g4w2/video/upload/v1770089544/wave_city_t0ubfh.mp4",
+      alt: "Order Update",
+    },
+  ];
 
   return (
     <CustomerLayout>
+
       <div className="max-w-6xl">
+      {/* <div className="mb-4 aspect-video w-full ">
+            <MediaCarousel items={orderMedia} />
+          </div> */}
         <PageHeader
           greeting={user.name ? `Hi, ${user.name}` : "Hi"}
           title="My Orders"
           subtitle="Track your orders and access products assigned to your account."
           actions={[{ label: "Need help?", href: "/tickets", variant: "outline" }]}
         />
+
+
+
 
         {/* Orders Section */}
         {orders.length > 0 ? (

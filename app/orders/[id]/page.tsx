@@ -1,5 +1,6 @@
 import CustomerLayout from "@/components/customer-layout";
 import { StatusBadge } from "@/components/status-badge";
+import { StatusTimeline } from "@/components/status-timeline";
 import { getOrder } from "@/app/actions/orders";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
@@ -7,6 +8,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, ExternalLink, Shield, Receipt, Paperclip } from "lucide-react";
+import { OrderDeliverySlotForm } from "@/components/order-delivery-slot-form";
 
 export default async function OrderDetailPage({
   params,
@@ -29,6 +31,29 @@ export default async function OrderDetailPage({
   const additionalFiles = order.additionalFiles
     ? JSON.parse(order.additionalFiles)
     : [];
+
+  const statusTimeline = order.statusHistory.map((entry) => {
+    let images: string[] = [];
+    if (entry.imagesJson) {
+      try {
+        const parsed = JSON.parse(entry.imagesJson);
+        if (Array.isArray(parsed)) {
+          images = parsed;
+        }
+      } catch {
+        images = [];
+      }
+    }
+
+    return {
+      id: entry.id,
+      status: entry.status,
+      note: entry.note,
+      images,
+      createdAt: entry.createdAt,
+      createdBy: entry.createdBy ? { name: entry.createdBy.name, email: entry.createdBy.email } : null,
+    };
+  });
 
   return (
     <CustomerLayout>
@@ -203,6 +228,23 @@ export default async function OrderDetailPage({
             </CardContent>
           </Card>
 
+          {/* Delivery Slot */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Delivery Slot</CardTitle>
+              <p className="text-sm text-muted-foreground font-normal">
+                Select your preferred date and 4-hour time slot for delivery.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <OrderDeliverySlotForm
+                orderId={order.id}
+                currentDeliveryDate={order.deliveryDate}
+                currentDeliverySlot={order.deliverySlot}
+              />
+            </CardContent>
+          </Card>
+
           {/* Installation Details */}
           <Card>
             <CardHeader>
@@ -248,6 +290,8 @@ export default async function OrderDetailPage({
               </CardContent>
             </Card>
           )}
+
+          <StatusTimeline items={statusTimeline} type="order" />
         </div>
       </div>
     </CustomerLayout>

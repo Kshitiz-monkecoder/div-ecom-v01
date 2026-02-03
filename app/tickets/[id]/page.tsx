@@ -1,10 +1,12 @@
 import CustomerLayout from "@/components/customer-layout";
 import { StatusBadge } from "@/components/status-badge";
+import { StatusTimeline } from "@/components/status-timeline";
 import { getTicket } from "@/app/actions/tickets";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default async function TicketDetailPage({
   params,
@@ -17,6 +19,29 @@ export default async function TicketDetailPage({
   if (!ticket) {
     notFound();
   }
+
+  const statusTimeline = ticket.statusHistory.map((entry) => {
+    let images: string[] = [];
+    if (entry.imagesJson) {
+      try {
+        const parsed = JSON.parse(entry.imagesJson);
+        if (Array.isArray(parsed)) {
+          images = parsed;
+        }
+      } catch {
+        images = [];
+      }
+    }
+
+    return {
+      id: entry.id,
+      status: entry.status,
+      note: entry.note,
+      images,
+      createdAt: entry.createdAt,
+      createdBy: entry.createdBy ? { name: entry.createdBy.name, email: entry.createdBy.email } : null,
+    };
+  });
 
   return (
     <CustomerLayout>
@@ -45,6 +70,24 @@ export default async function TicketDetailPage({
             </p>
           </div>
 
+          {ticket.images.length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Supporting Images</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {ticket.images.map((image, index) => (
+                  <div key={image.id} className="relative h-28 w-full">
+                    <Image
+                      src={image.url}
+                      alt={`Support image ${index + 1}`}
+                      fill
+                      className="rounded-md object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {ticket.order && (
             <div>
               <h2 className="text-xl font-semibold mb-2">Related Order</h2>
@@ -63,6 +106,19 @@ export default async function TicketDetailPage({
               </Link>
             </div>
           )}
+
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Contact Support</h2>
+            <p className="text-sm text-muted-foreground">
+              Need immediate assistance? Call{" "}
+              <a href="tel:+917065028801" className="text-primary underline">
+                +91 70650 28801
+              </a>
+              .
+            </p>
+          </div>
+
+          <StatusTimeline items={statusTimeline} type="ticket" />
         </div>
       </div>
     </CustomerLayout>

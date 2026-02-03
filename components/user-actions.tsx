@@ -11,15 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { deleteUser } from "@/app/actions/admin";
 import Link from "next/link";
 
@@ -38,9 +29,9 @@ interface UserActionsProps {
 export function UserActions({ userId, userName, currentUserId }: UserActionsProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [assignDialogOpen] = useState(false);
+  const [, setProducts] = useState<Product[]>([]);
+  const [, setSelectedProducts] = useState<string[]>([]);
   const [productsLoaded, setProductsLoaded] = useState(false);
   const [assignmentsLoaded, setAssignmentsLoaded] = useState(false);
   const isCurrentUser = currentUserId === userId;
@@ -91,14 +82,6 @@ export function UserActions({ userId, userName, currentUserId }: UserActionsProp
       setAssignmentsLoaded(false);
     }
   }, [assignDialogOpen]);
-
-  const handleToggleProduct = (productId: string) => {
-    setSelectedProducts((prev) =>
-      prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
-        : [...prev, productId]
-    );
-  };
 
   /*const handleAssignProducts = async () => {
     setLoading(true);

@@ -1,0 +1,24 @@
+Support images, 100 chars min
+for raising tickets atleast one supporting image is compulsory
+and they must describe the issue atleast 100 chars min 
+
+
+Contact us number visible after ticket submission
+Number:+91 70650 28801 (clickable)
+
+
+
+Orders page → carousel with videos and images from cloudinary, i will provide the links
+
+
+
+Status images optional field--> as the admin changes status he has a option to add images and description. images are optional.
+
+Status Timeline
+We must show a status timeline of the ticket/orders in the ticket and orders page
+
+
+Link to the landing page
+
+
+PDF fixes

@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { createAdminOrder } from "@/app/actions/orders";
 import { getAllUsersForAssignment } from "@/app/actions/admin";
 import { getAllProducts } from "@/app/actions/products";
@@ -79,6 +80,7 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
   const [warrantyFile, setWarrantyFile] = useState<File | null>(null);
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
   const [additionalFiles, setAdditionalFiles] = useState<File[]>([]);
+  const [isMaterialDelivery, setIsMaterialDelivery] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Warranty PDF (generated) inputs
@@ -364,6 +366,7 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
         warrantyCardUrl,
         invoiceUrl,
         additionalFiles: additionalFileUrls.length > 0 ? additionalFileUrls : undefined,
+        isMaterialDelivery,
       });
 
       toast.success(`Order ${order.orderNumber} created successfully!`);
@@ -637,6 +640,20 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
                   placeholder="Any additional notes or requirements"
                   rows={4}
                 />
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="material-delivery"
+                  checked={isMaterialDelivery}
+                  onCheckedChange={(value) => setIsMaterialDelivery(value === true)}
+                />
+                <Label
+                  htmlFor="material-delivery"
+                  className="text-sm font-medium leading-none cursor-pointer"
+                >
+                  Material delivery order
+                </Label>
               </div>
 
               <div className="flex justify-between">

@@ -14,16 +14,6 @@ import {
 import { toggleProductStatus, deleteProduct } from "@/app/actions/products";
 import { ParsedProduct } from "@/types";
 import Link from "next/link";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-
 interface User {
   id: string;
   name: string;
@@ -40,9 +30,9 @@ interface ProductActionsProps {
 export function ProductActions({ product, assignedUserIds = [], allUsers = [] }: ProductActionsProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState<User[]>(allUsers);
-  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState<string[]>(assignedUserIds);
+  const [, setUsers] = useState<User[]>(allUsers);
+  const [assignDialogOpen] = useState(false);
+  const [, setSelectedUsers] = useState<string[]>(assignedUserIds);
   const [usersLoaded, setUsersLoaded] = useState(false);
   const [userIdsLoaded, setUserIdsLoaded] = useState(false);
 
@@ -100,42 +90,6 @@ export function ProductActions({ product, assignedUserIds = [], allUsers = [] }:
       setUserIdsLoaded(false);
     }
   }, [assignDialogOpen]);
-
-  const handleToggleUser = (userId: string) => {
-    setSelectedUsers((prev) =>
-      prev.includes(userId)
-        ? prev.filter((id) => id !== userId)
-        : [...prev, userId]
-    );
-  };
-
-  const handleAssignUsers = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/admin/products/${product.id}/assign-users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userIds: selectedUsers }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        toast.error(data.error || "Failed to assign users");
-        return;
-      }
-
-      toast.success("Users assigned successfully");
-      setAssignDialogOpen(false);
-      router.refresh();
-    } catch {
-      toast.error("Failed to assign users");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleToggleStatus = async () => {
     setLoading(true);

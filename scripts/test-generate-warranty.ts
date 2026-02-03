@@ -57,7 +57,6 @@ async function main() {
 
     const outPath = path.join(process.cwd(), "assets", "warranty-generated-test.pdf");
     await fs.writeFile(outPath, Buffer.from(pdf));
-    // eslint-disable-next-line no-console
     console.log(`Wrote: ${outPath} (${pdf.byteLength} bytes)`);
   } finally {
     await browser.close();
@@ -65,7 +64,6 @@ async function main() {
 }
 
 main().catch((e) => {
-  // eslint-disable-next-line no-console
   console.error(e);
   process.exit(1);
 });

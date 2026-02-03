@@ -17,6 +17,7 @@ const navItems = [
 
 export function CustomerHeader() {
   const router = useRouter();
+  const landingUrl = process.env.NEXT_PUBLIC_LANDING_URL;
 
   const handleSignOut = async () => {
     try {
@@ -41,6 +42,15 @@ export function CustomerHeader() {
   />
 </Link>
 
+      <div className="flex items-center gap-2">
+        {landingUrl && (
+          <Button asChild variant="outline" size="sm">
+            <Link href={landingUrl} target="_blank" rel="noopener noreferrer">
+              Landing Page
+            </Link>
+          </Button>
+        )}
+
       <Button
         variant="ghost"
         size="sm"
@@ -50,6 +60,7 @@ export function CustomerHeader() {
         <LogOut className="h-4 w-4 mr-2" />
         Sign Out
       </Button>
+      </div>
     </header>
   );
 }

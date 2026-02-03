@@ -1,6 +1,6 @@
 import CustomerLayout from "@/components/customer-layout";
 import { TicketCard } from "@/components/ticket-card";
-import { Button } from "@/components/ui/button";
+import { CreateTicketButton } from "@/components/create-ticket-button";
 import { getUserTickets } from "@/app/actions/tickets";
 import Link from "next/link";
 import { TICKET_STATUSES, TICKET_CATEGORIES } from "@/types";
@@ -25,9 +25,7 @@ export default async function TicketsPage({
       <div>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Support Tickets</h1>
-          <Link href="/tickets/new">
-            <Button>Create New Ticket</Button>
-          </Link>
+          <CreateTicketButton />
         </div>
 
         {/* Filters */}

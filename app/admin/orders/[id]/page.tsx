@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table";
 import { FileText, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { OrderMaterialDeliveryToggle } from "@/components/order-material-delivery-toggle";
 
 export default async function AdminOrderDetailPage({
   params,
@@ -202,6 +203,21 @@ export default async function AdminOrderDetailPage({
             {!order.warrantyCardUrl && !order.invoiceUrl && additionalFiles.length === 0 && (
               <p className="text-center text-gray-500 py-4">No documents uploaded</p>
             )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Material Delivery</CardTitle>
+            <p className="text-sm text-muted-foreground font-normal">
+              {order.isMaterialDelivery ? "Material delivery order" : "Installation/service delivery"}
+            </p>
+          </CardHeader>
+          <CardContent>
+            <OrderMaterialDeliveryToggle
+              orderId={order.id}
+              isMaterialDelivery={order.isMaterialDelivery}
+            />
           </CardContent>
         </Card>
 

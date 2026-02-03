@@ -17,6 +17,8 @@ model User {
   orders       Order[]
   referrals    Referral[]
   tickets      Ticket[]
+  ticketStatusHistory TicketStatusHistory[] @relation("TicketStatusHistoryCreatedBy")
+  orderStatusHistory  OrderStatusHistory[]  @relation("OrderStatusHistoryCreatedBy")
   adminTokens  Token[]       @relation("AdminTokens")
   tokens       Token[]
   products     UserProduct[] @relation("UserProducts")
@@ -49,10 +51,14 @@ model Order {
   warrantyCardUrl String?
   invoiceUrl      String?
   additionalFiles String?
+  deliveryDate    DateTime?
+  deliverySlot    String?
+  isMaterialDelivery Boolean   @default(false)
   createdAt       DateTime    @default(now())
   user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   items           OrderItem[]
   tickets         Ticket[]
+  statusHistory   OrderStatusHistory[]
 }
 
 model OrderItem {
@@ -81,6 +87,48 @@ model Ticket {
   createdAt   DateTime     @default(now())
   order       Order?       @relation(fields: [orderId], references: [id])
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images      TicketImage[]
+  statusHistory TicketStatusHistory[]
+}
+
+model TicketImage {
+  id        String   @id @default(cuid())
+  ticketId  String
+  url       String
+  createdAt DateTime @default(now())
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+}
+
+model TicketStatusHistory {
+  id          String       @id @default(cuid())
+  ticketId    String
+  status      TicketStatus
+  note        String?
+  imagesJson  String?
+  createdAt   DateTime     @default(now())
+  createdById String?
+  ticket      Ticket       @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  createdBy   User?        @relation("TicketStatusHistoryCreatedBy", fields: [createdById], references: [id])
+
+  @@index([ticketId])
+  @@index([createdById])
+}
+
+model OrderStatusHistory {
+  id          String      @id @default(cuid())
+  orderId     String
+  status      OrderStatus
+  note        String?
+  imagesJson  String?
+  createdAt   DateTime    @default(now())
+  createdById String?
+  order       Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdBy   User?       @relation("OrderStatusHistoryCreatedBy", fields: [createdById], references: [id])
+
+  @@index([orderId])
+  @@index([createdById])
 }
 
 model UserProduct {

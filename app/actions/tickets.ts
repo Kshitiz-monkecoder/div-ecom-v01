@@ -8,8 +8,9 @@ import { z } from "zod";
 
 const createTicketSchema = z.object({
   category: z.enum(["Installation Issue", "Product Issue", "Billing / Payment", "General Query"]),
-  description: z.string().min(1),
+  description: z.string().min(100),
   orderId: z.string().optional(),
+  images: z.array(z.string().url()).min(1),
 });
 
 export async function createTicket(data: unknown) {
@@ -39,6 +40,15 @@ export async function createTicket(data: unknown) {
       category: validated.category,
       description: validated.description,
       status: "OPEN",
+      images: {
+        create: validated.images.map((url) => ({ url })),
+      },
+      statusHistory: {
+        create: {
+          status: "OPEN",
+          createdById: user.id,
+        },
+      },
     },
     include: {
       order: {
@@ -49,6 +59,11 @@ export async function createTicket(data: unknown) {
             },
           },
         },
+      },
+      images: true,
+      statusHistory: {
+        orderBy: { createdAt: "asc" },
+        include: { createdBy: true },
       },
     },
   });
@@ -103,6 +118,11 @@ export async function getTicket(id: string) {
           },
         },
       },
+      images: true,
+      statusHistory: {
+        orderBy: { createdAt: "asc" },
+        include: { createdBy: true },
+      },
     },
   });
 
@@ -143,16 +163,32 @@ export async function getAllTickets(status?: TicketStatus) {
   return tickets;
 }
 
-export async function updateTicketStatus(id: string, status: TicketStatus) {
+export async function updateTicketStatus(
+  id: string,
+  status: TicketStatus,
+  note?: string,
+  imageUrls?: string[]
+) {
   if (!id) {
     throw new Error("Ticket ID is required");
   }
 
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const ticket = await prisma.ticket.update({
     where: { id },
-    data: { status },
+    data: {
+      status,
+      statusHistory: {
+        create: {
+          status,
+          note: note?.trim() ? note.trim() : undefined,
+          imagesJson:
+            imageUrls && imageUrls.length > 0 ? JSON.stringify(imageUrls) : undefined,
+          createdById: admin.id,
+        },
+      },
+    },
     include: {
       user: true,
       order: {
@@ -163,6 +199,11 @@ export async function updateTicketStatus(id: string, status: TicketStatus) {
             },
           },
         },
+      },
+      images: true,
+      statusHistory: {
+        orderBy: { createdAt: "asc" },
+        include: { createdBy: true },
       },
     },
   });
