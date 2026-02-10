@@ -11,6 +11,7 @@ const createTicketSchema = z.object({
   description: z.string().min(100),
   orderId: z.string().min(1, "Related order is required"),
   images: z.array(z.string().url()).min(1),
+  subCategories: z.array(z.string()).min(1, "Please select at least one sub-issue"),
 });
 
 export async function createTicket(data: unknown) {
@@ -37,6 +38,7 @@ export async function createTicket(data: unknown) {
       orderId: validated.orderId,
       category: validated.category,
       description: validated.description,
+      subCategories: JSON.stringify(validated.subCategories),
       status: "OPEN",
       images: {
         create: validated.images.map((url) => ({ url })),

@@ -6,7 +6,9 @@ import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { TICKET_SUB_CATEGORIES } from "@/types";
 
 export default async function TicketDetailPage({
   params,
@@ -43,6 +45,27 @@ export default async function TicketDetailPage({
     };
   });
 
+  // Parse sub-categories
+  let subCategories: string[] = [];
+  if (ticket.subCategories) {
+    try {
+      const parsed = JSON.parse(ticket.subCategories);
+      if (Array.isArray(parsed)) {
+        subCategories = parsed;
+      }
+    } catch {
+      subCategories = [];
+    }
+  }
+
+  // Get labels for sub-categories
+  const getSubCategoryLabel = (value: string) => {
+    if (ticket.category === "General Query") return value;
+    const categorySubCats = TICKET_SUB_CATEGORIES[ticket.category] || [];
+    const found = categorySubCats.find((sc) => sc.value === value);
+    return found ? found.label : value;
+  };
+
   return (
     <CustomerLayout>
       <div className="max-w-4xl">
@@ -62,6 +85,25 @@ export default async function TicketDetailPage({
             </div>
             <StatusBadge status={ticket.status} type="ticket" />
           </div>
+
+          {subCategories.length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-3">Reported Issues</h2>
+              {ticket.category === "General Query" ? (
+                <div className="p-4 bg-muted/50 rounded-lg border">
+                  <p className="text-sm">{subCategories[0]}</p>
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {subCategories.map((subCat, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs py-1">
+                      {getSubCategoryLabel(subCat)}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           <div>
             <h2 className="text-xl font-semibold mb-2">Description</h2>

@@ -1,7 +1,8 @@
 import { getAllTickets } from "@/app/actions/tickets";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
-import { TICKET_STATUSES } from "@/types";
+import { Badge } from "@/components/ui/badge";
+import { TICKET_STATUSES, TICKET_SUB_CATEGORIES } from "@/types";
 import Link from "next/link";
 import { format } from "date-fns";
 
@@ -13,6 +14,28 @@ export default async function AdminTicketsPage({
   const tickets = await getAllTickets(
     searchParams.status as any
   );
+
+  // Helper to parse and get sub-category labels
+  const getSubCategoryLabels = (ticket: typeof tickets[0]) => {
+    if (!ticket.subCategories) return [];
+    
+    try {
+      const parsed = JSON.parse(ticket.subCategories);
+      if (!Array.isArray(parsed)) return [];
+      
+      if (ticket.category === "General Query") {
+        return parsed;
+      }
+      
+      const categorySubCats = TICKET_SUB_CATEGORIES[ticket.category] || [];
+      return parsed.map((value: string) => {
+        const found = categorySubCats.find((sc) => sc.value === value);
+        return found ? found.label : value;
+      });
+    } catch {
+      return [];
+    }
+  };
 
   return (
     <div>
@@ -51,29 +74,62 @@ export default async function AdminTicketsPage({
             <TableRow>
               <TableHead>Category</TableHead>
               <TableHead>Customer</TableHead>
+              <TableHead>Sub-Issues</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tickets.map((ticket) => (
-              <TableRow key={ticket.id}>
-                <TableCell>{ticket.category}</TableCell>
-                <TableCell>{ticket.user.name}</TableCell>
-                <TableCell>
-                  <StatusBadge status={ticket.status} type="ticket" />
-                </TableCell>
-                <TableCell>
-                  {format(new Date(ticket.createdAt), "MMM dd, yyyy")}
-                </TableCell>
-                <TableCell>
-                  <Link href={`/admin/tickets/${ticket.id}`}>
-                    <span className="text-primary hover:underline">View</span>
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
+            {tickets.map((ticket) => {
+              const subCategoryLabels = getSubCategoryLabels(ticket);
+              const displayLabels = subCategoryLabels.slice(0, 2);
+              const remaining = subCategoryLabels.length - displayLabels.length;
+
+              return (
+                <TableRow key={ticket.id}>
+                  <TableCell>{ticket.category}</TableCell>
+                  <TableCell>{ticket.user.name}</TableCell>
+                  <TableCell>
+                    {subCategoryLabels.length > 0 ? (
+                      <div className="flex flex-wrap gap-1 max-w-xs">
+                        {ticket.category === "General Query" ? (
+                          <Badge variant="outline" className="text-xs">
+                            General Query
+                          </Badge>
+                        ) : (
+                          <>
+                            {displayLabels.map((label, index) => (
+                              <Badge key={index} variant="outline" className="text-xs">
+                                {label.length > 30 ? `${label.substring(0, 30)}...` : label}
+                              </Badge>
+                            ))}
+                            {remaining > 0 && (
+                              <Badge variant="secondary" className="text-xs">
+                                +{remaining} more
+                              </Badge>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground text-sm">—</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={ticket.status} type="ticket" />
+                  </TableCell>
+                  <TableCell>
+                    {format(new Date(ticket.createdAt), "MMM dd, yyyy")}
+                  </TableCell>
+                  <TableCell>
+                    <Link href={`/admin/tickets/${ticket.id}`}>
+                      <span className="text-primary hover:underline">View</span>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
         {tickets.length === 0 && (

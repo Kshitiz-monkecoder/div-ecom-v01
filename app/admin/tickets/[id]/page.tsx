@@ -4,7 +4,9 @@ import { StatusBadge } from "@/components/status-badge";
 import { TicketStatusForm } from "@/components/ticket-status-form";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { TICKET_SUB_CATEGORIES } from "@/types";
 
 export default async function AdminTicketDetailPage({
   params,
@@ -17,6 +19,27 @@ export default async function AdminTicketDetailPage({
   if (!ticket) {
     notFound();
   }
+
+  // Parse sub-categories
+  let subCategories: string[] = [];
+  if (ticket.subCategories) {
+    try {
+      const parsed = JSON.parse(ticket.subCategories);
+      if (Array.isArray(parsed)) {
+        subCategories = parsed;
+      }
+    } catch {
+      subCategories = [];
+    }
+  }
+
+  // Get labels for sub-categories
+  const getSubCategoryLabel = (value: string) => {
+    if (ticket.category === "General Query") return value;
+    const categorySubCats = TICKET_SUB_CATEGORIES[ticket.category] || [];
+    const found = categorySubCats.find((sc) => sc.value === value);
+    return found ? found.label : value;
+  };
 
   return (
     <div>
@@ -52,6 +75,25 @@ export default async function AdminTicketDetailPage({
             <TicketStatusForm ticketId={ticket.id} currentStatus={ticket.status} />
           </div>
         </div>
+
+        {subCategories.length > 0 && (
+          <div className="bg-white dark:bg-gray-900 rounded-lg border p-6">
+            <h2 className="text-xl font-semibold mb-4">Reported Issues</h2>
+            {ticket.category === "General Query" ? (
+              <div className="p-4 bg-muted/50 rounded-lg border">
+                <p className="text-sm">{subCategories[0]}</p>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {subCategories.map((subCat, index) => (
+                  <Badge key={index} variant="secondary" className="text-sm py-1.5 px-3">
+                    {getSubCategoryLabel(subCat)}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="bg-white dark:bg-gray-900 rounded-lg border p-6">
           <h2 className="text-xl font-semibold mb-4">Description</h2>

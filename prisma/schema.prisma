@@ -78,16 +78,17 @@ model OrderItem {
 }
 
 model Ticket {
-  id          String       @id @default(cuid())
-  userId      String
-  orderId     String?
-  category    String
-  description String
-  status      TicketStatus @default(OPEN)
-  createdAt   DateTime     @default(now())
-  order       Order?       @relation(fields: [orderId], references: [id])
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  images      TicketImage[]
+  id            String       @id @default(cuid())
+  userId        String
+  orderId       String?
+  category      String
+  description   String
+  subCategories String?
+  status        TicketStatus @default(OPEN)
+  createdAt     DateTime     @default(now())
+  order         Order?       @relation(fields: [orderId], references: [id])
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images        TicketImage[]
   statusHistory TicketStatusHistory[]
 }
 
