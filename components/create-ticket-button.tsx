@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/language-provider";
 
 const STORAGE_KEY = "ticketCreateCooldownUntil";
 
@@ -22,6 +23,7 @@ function formatRemaining(ms: number): string {
 }
 
 export function CreateTicketButton() {
+  const { t } = useLanguage();
   const [remainingMs, setRemainingMs] = useState(() => getRemainingMs());
 
   useEffect(() => {
@@ -39,14 +41,14 @@ export function CreateTicketButton() {
   if (disabled) {
     return (
       <Button disabled variant="secondary">
-        Create new ticket in {formatRemaining(remainingMs)}
+        {t("support.newComplaint")} — {formatRemaining(remainingMs)}
       </Button>
     );
   }
 
   return (
     <Link href="/tickets/new">
-      <Button>Create New Ticket</Button>
+      <Button className="min-h-[48px]">{t("support.newComplaint")}</Button>
     </Link>
   );
 }

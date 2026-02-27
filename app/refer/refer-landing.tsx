@@ -7,21 +7,69 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ProductImageCarousel } from "@/components/product-image-carousel";
-import { ChevronLeft, ChevronRight, ShieldCheck, Zap, Clock } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+
+const SUBSIDY_AMOUNT = 78000;
+const BILL_TO_SAVINGS_RATIO = 0.95; // approximate monthly savings = bill * 0.95
 
 type PublicProduct = {
   id: string;
   name: string;
   description: string;
   capacity: string;
-  category: "Residential" | "Commercial" | string;
+  category: string;
   images: string[];
+  price?: number;
 };
+
+function SavingsCalculator() {
+  const [monthlyBill, setMonthlyBill] = useState(3000);
+  const monthlySavings = Math.round(monthlyBill * BILL_TO_SAVINGS_RATIO);
+  const yearlySavings = monthlySavings * 12;
+  const twentyFiveYearSavings = yearlySavings * 25;
+  const payAfterSubsidy = Math.max(0, 180000 - SUBSIDY_AMOUNT);
+  const paybackYears = payAfterSubsidy > 0 ? (payAfterSubsidy / yearlySavings).toFixed(1) : "0";
+
+  return (
+    <Card className="border-2 border-[#27AE60]/30">
+      <CardHeader>
+        <CardTitle className="text-lg">💰 देखें, आप कितना बचा सकते हैं!</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div>
+          <label className="text-sm font-medium">आपका मासिक बिजली बिल: ₹{monthlyBill}</label>
+          <input
+            type="range"
+            min="500"
+            max="15000"
+            step="500"
+            value={monthlyBill}
+            onChange={(e) => setMonthlyBill(Number(e.target.value))}
+            className="w-full mt-2 h-3 rounded-lg appearance-none bg-muted accent-primary"
+          />
+          <div className="flex justify-between text-xs text-muted-foreground mt-1">
+            <span>₹500</span>
+            <span>₹15,000</span>
+          </div>
+        </div>
+        <div className="space-y-2 text-sm">
+          <p className="text-[#27AE60] font-bold text-lg">
+            आपकी मासिक बचत: ₹{monthlySavings.toLocaleString("en-IN")}
+          </p>
+          <p>सालाना बचत: ₹{yearlySavings.toLocaleString("en-IN")}</p>
+          <p>25 साल में कुल बचत: ₹{twentyFiveYearSavings.toLocaleString("en-IN")}</p>
+          <p>सब्सिडी: ₹{SUBSIDY_AMOUNT.toLocaleString("en-IN")} (सीधे बैंक में)</p>
+          <p>आपको लगाना होगा (सब्सिडी के बाद): ~₹{(payAfterSubsidy / 100000).toFixed(1)} लाख</p>
+          <p>Payback period: ~{paybackYears} साल</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 function ProductShowcase({ products }: { products: PublicProduct[] }) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
-
   const cards = useMemo(() => products.slice(0, 12), [products]);
 
   const scrollByCard = (dir: "prev" | "next") => {
@@ -37,11 +85,8 @@ function ProductShowcase({ products }: { products: PublicProduct[] }) {
   if (cards.length === 0) {
     return (
       <Card className="border-dashed">
-        <CardHeader>
-          <CardTitle className="text-base">Our solar solutions</CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm text-muted-foreground">
-          Products will appear here once they’re added in the admin panel.
+        <CardContent className="pt-6 text-sm text-muted-foreground">
+          प्रोडक्ट जल्द ही जोड़े जाएंगे।
         </CardContent>
       </Card>
     );
@@ -50,73 +95,54 @@ function ProductShowcase({ products }: { products: PublicProduct[] }) {
   return (
     <div className="relative">
       <div className="flex items-center justify-between gap-3 mb-3">
-        <div className="flex items-center gap-2">
-          <h2 className="text-base font-semibold">Popular options</h2>
-          <Badge variant="secondary">No prices shown</Badge>
-        </div>
-
+        <h2 className="text-base font-semibold">हमारे प्रोडक्ट</h2>
         <div className="hidden sm:flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={() => scrollByCard("prev")}
-            aria-label="Previous"
-          >
+          <Button type="button" variant="outline" size="icon" onClick={() => scrollByCard("prev")} aria-label="Previous">
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={() => scrollByCard("next")}
-            aria-label="Next"
-          >
+          <Button type="button" variant="outline" size="icon" onClick={() => scrollByCard("next")} aria-label="Next">
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
-
-      <div
-        ref={scrollerRef}
-        className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 pr-2"
-      >
+      <div ref={scrollerRef} className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 pr-2">
         {cards.map((p) => (
-          <Card
-            key={p.id}
-            data-carousel-card
-            className="min-w-[280px] sm:min-w-[320px] snap-start overflow-hidden"
-          >
+          <Card key={p.id} data-carousel-card className="min-w-[280px] sm:min-w-[320px] snap-start overflow-hidden">
             <div className="relative h-40 bg-muted">
               {p.images?.length ? (
                 <ProductImageCarousel images={p.images} alt={p.name} className="object-cover" />
               ) : (
-                <div className="h-full w-full flex items-center justify-center text-xs text-muted-foreground">
-                  No image
-                </div>
+                <div className="h-full w-full flex items-center justify-center text-xs text-muted-foreground">No image</div>
               )}
             </div>
-
             <CardContent className="p-4 space-y-2">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="font-semibold leading-snug">{p.name}</div>
                   <div className="text-xs text-muted-foreground">{p.capacity}</div>
                 </div>
-                <Badge variant="outline">{p.category}</Badge>
               </div>
+              {p.price != null && p.price > 0 && (
+                <p className="text-[#27AE60] font-semibold">
+                  ₹{(p.price / 100).toLocaleString("en-IN")}
+                  {p.price / 100 >= SUBSIDY_AMOUNT && (
+                    <span className="text-xs font-normal text-muted-foreground"> (सब्सिडी के बाद ~₹{Math.round((p.price / 100 - SUBSIDY_AMOUNT) / 1000)}K)</span>
+                  )}
+                </p>
+              )}
               <p className="text-sm text-muted-foreground line-clamp-2">{p.description}</p>
             </CardContent>
           </Card>
         ))}
       </div>
-
-      <p className="mt-2 text-xs text-muted-foreground sm:hidden">
-        Swipe to browse.
-      </p>
     </div>
   );
 }
+
+const TESTIMONIALS = [
+  { text: "पहले बिल ₹5,000 आता था, अब ₹200 आता है। दिव्य पावर ने बहुत अच्छा काम किया।", name: "राजेश शर्मा", location: "इंदिरापुरम, गाजियाबाद", stars: 5 },
+  { text: "सब्सिडी भी टाइम पर आ गई। टीम बहुत helpful है।", name: "प्रीति गुप्ता", location: "वसुंधरा, गाजियाबाद", stars: 5 },
+];
 
 export default function ReferLanding() {
   const searchParams = useSearchParams();
@@ -129,11 +155,9 @@ export default function ReferLanding() {
       try {
         const res = await fetch("/api/public/products");
         const data = await res.json();
-        if (res.ok && Array.isArray(data)) {
-          setProducts(data);
-        }
+        if (res.ok && Array.isArray(data)) setProducts(data);
       } catch {
-        // ignore; we'll show fallback UI
+        // ignore
       } finally {
         setLoadingProducts(false);
       }
@@ -142,121 +166,82 @@ export default function ReferLanding() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-orange-50 via-white to-white">
-      <header className="border-b bg-white/70 backdrop-blur supports-backdrop-filter:bg-white/50">
+    <div className="min-h-screen bg-[#FFF9F0]">
+      <header className="border-b border-border bg-card/90 backdrop-blur">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Image
-              src="/divy-power-logo.png"
-              alt="Divy Power"
-              width={150}
-              height={48}
-              className="h-10 w-auto"
-              priority
-            />
-            <Badge variant="secondary" className="hidden sm:inline-flex">
-              Welcome
-            </Badge>
-          </div>
-          <div className="hidden md:flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4" />
-              Trusted installation & support
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              Quick follow‑up
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <Zap className="h-4 w-4" />
-              Residential & commercial
-            </span>
-          </div>
+          <Image src="/divy-power-logo.png" alt="Divy Power" width={150} height={48} className="h-10 w-auto" priority />
+          <Badge variant="secondary">PM सूर्य घर योजना पार्टनर</Badge>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-10">
+      <main className="container mx-auto px-4 py-8 space-y-10">
+        {/* Hero */}
+        <section className="rounded-2xl bg-linear-to-b from-[#FF9933]/20 via-white to-[#138808]/20 border border-border p-6 md:p-8 text-center">
+          <p className="text-3xl mb-2">☀️</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">PM सूर्य घर मुफ्त बिजली योजना</h1>
+          <p className="text-xl font-semibold text-[#27AE60] mt-2">बिजली का बिल ₹0 करें!</p>
+          <p className="text-foreground mt-1">सरकार दे रही है ₹78,000 तक की सब्सिडी</p>
+          <ul className="mt-4 text-sm text-foreground space-y-1">
+            <li>✅ 2,000+ परिवार पहले ही लगवा चुके हैं</li>
+            <li>✅ UPNEDA अधिकृत कंपनी</li>
+            <li>✅ 25 साल की वारंटी</li>
+          </ul>
+          {referralCode && (
+            <p className="mt-4 text-sm font-medium text-primary">
+              आपके दोस्त ने आपको रेफर किया है! 🎁 स्पेशल डिस्काउंट उपलब्ध
+            </p>
+          )}
+        </section>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <section className="space-y-6">
-            <div className="space-y-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="outline">Divy Power</Badge>
-                {referralCode ? (
-                  <Badge variant="secondary" className="font-mono">
-                    Referred: {referralCode}
-                  </Badge>
-                ) : (
-                  <Badge variant="secondary">Referral link missing code</Badge>
-                )}
+          <div className="space-y-8">
+            <SavingsCalculator />
+            <div>
+              <h2 className="text-lg font-semibold mb-4">कैसे काम करता है?</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <Card><CardContent className="p-4"><p className="font-medium">1️⃣ फॉर्म भरें</p><p className="text-xs text-muted-foreground mt-1">हमारी टीम 24 घंटे में कॉल करेगी</p></CardContent></Card>
+                <Card><CardContent className="p-4"><p className="font-medium">2️⃣ फ्री सर्वे</p><p className="text-xs text-muted-foreground mt-1">टेक्नीशियन आपकी छत देखने आएगा (₹0)</p></CardContent></Card>
+                <Card><CardContent className="p-4"><p className="font-medium">3️⃣ इंस्टॉल</p><p className="text-xs text-muted-foreground mt-1">3-5 दिन में सोलर लग जाएगा, बिल ₹0!</p></CardContent></Card>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-                You’ve been referred for a solar consultation.
-              </h1>
-              <p className="text-muted-foreground leading-relaxed">
-                Please fill in your details and what kind of solar solution you’re looking for.
-                Divy Power will contact you to understand your site requirements and recommend the
-                right system.
-              </p>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-sm font-medium">1. Share your requirement</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Tell us what you need (residential or commercial).
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-sm font-medium">2. We contact you</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Our team calls to confirm details & feasibility.
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-sm font-medium">3. Get a proposal</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    System recommendation & next steps.
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Products we offer</h2>
-                {loadingProducts ? (
-                  <span className="text-xs text-muted-foreground">Loading…</span>
-                ) : null}
-              </div>
+            <div>
+              <h2 className="text-lg font-semibold mb-3">हमारे प्रोडक्ट</h2>
               <ProductShowcase products={products} />
             </div>
-          </section>
+            <Card>
+              <CardHeader><CardTitle className="text-base">💬 हमारे ग्राहक क्या कहते हैं</CardTitle></CardHeader>
+              <CardContent className="space-y-4">
+                {TESTIMONIALS.map((t, i) => (
+                  <div key={i} className="border-l-4 border-primary pl-4">
+                    <p className="text-sm">&ldquo;{t.text}&rdquo;</p>
+                    <p className="text-xs text-muted-foreground mt-1">— {t.name}, {t.location} {"⭐".repeat(t.stars)}</p>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
 
-          <aside className="lg:sticky lg:top-8">
-            <Card className="shadow-sm">
-              <CardHeader className="space-y-1">
-                <CardTitle>Solar requirement form</CardTitle>
+          <aside className="lg:sticky lg:top-8 space-y-6">
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle>📝 फ्री कंसल्टेशन बुक करें</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Fill your details and requirement. We’ll contact you shortly.
+                  सबमिट करने पर दिव्य पावर टीम 24 घंटे में आपको कॉल करेगी। आपकी जानकारी सुरक्षित है।
                 </p>
               </CardHeader>
               <CardContent>
-                <ReferForm />
-                <p className="mt-4 text-xs text-muted-foreground">
-                  By submitting, you agree that Divy Power may contact you using the details you
-                  provide here.
-                </p>
+                <ReferForm referralCode={referralCode} />
               </CardContent>
             </Card>
+            <div className="grid grid-cols-2 gap-2">
+              <Card><CardContent className="p-3 text-center text-sm font-medium">2,000+ इंस्टॉल</CardContent></Card>
+              <Card><CardContent className="p-3 text-center text-sm font-medium">₹78,000 सब्सिडी</CardContent></Card>
+              <Card><CardContent className="p-3 text-center text-sm font-medium">25 साल वारंटी</CardContent></Card>
+              <Card><CardContent className="p-3 text-center text-sm font-medium">4.8 ⭐ रेटिंग</CardContent></Card>
+            </div>
           </aside>
         </div>
       </main>
     </div>
   );
 }
-

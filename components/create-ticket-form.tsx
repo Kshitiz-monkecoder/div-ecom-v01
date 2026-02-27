@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useLanguage } from "@/components/language-provider";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -125,6 +126,7 @@ function CheckboxCard({
 
 export function CreateTicketForm({ orders }: CreateTicketFormProps) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   
@@ -242,7 +244,7 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
         subCategories: subCategories,
       });
       
-      toast.success("Ticket created successfully!");
+      toast.success(t("toasts.ticketCreated", { number: ticket.id.slice(-6).toUpperCase() }));
       
       if (typeof window !== "undefined") {
         const cooldownMs = 2 * 60 * 1000;
@@ -252,7 +254,7 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
       router.push(`/tickets/${ticket.id}`);
       router.refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to create ticket");
+      toast.error(error instanceof Error ? error.message : t("toasts.error"));
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/auth";
 
 /**
  * CREATE REFERRAL
@@ -10,13 +11,14 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, phone, email, product, referralCode } = body;
 
-    // 1️⃣ Validate required fields
-    if (!name || !phone || !email || !product) {
+    // 1️⃣ Validate required fields (email optional for refer landing)
+    if (!name || !phone || !product) {
       return NextResponse.json(
-        { error: "All fields except referral code are required." },
+        { error: "Name, phone and product are required." },
         { status: 400 }
       );
     }
+    const emailToSave = email && String(email).trim() ? String(email).trim() : "referral@divypower.in";
 
     // 2️⃣ Find referrer by referralCode
     const referrerUser = await prisma.user.findUnique({
@@ -46,7 +48,7 @@ export async function POST(req: Request) {
       data: {
         name,
         phone,
-        email,
+        email: emailToSave,
         product,
         referrerId: referrerUser.id,
         status: "PENDING",       // ✅ consistent status
@@ -75,12 +77,18 @@ export async function POST(req: Request) {
 }
 
 /**
- * FETCH REFERRALS
- * GET /api/referrals
+ * FETCH REFERRALS (current user's referrals only)
+ * GET /api/user/referrals
  */
 export async function GET() {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const referrals = await prisma.referral.findMany({
+      where: { referrerId: user.id },
       orderBy: { submittedAt: "desc" },
       select: {
         id: true,
@@ -89,7 +97,7 @@ export async function GET() {
         email: true,
         product: true,
         status: true,
-        tokensAwarded: true, // ✅ REQUIRED FOR UI
+        tokensAwarded: true,
         submittedAt: true,
         referrer: {
           select: {

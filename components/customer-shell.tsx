@@ -8,14 +8,12 @@ export default function CustomerShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <CustomerHeader />
-      <div className="flex flex-1 flex-col md:flex-row">
-        <CustomerNav />
-        <main className="flex-1 p-4 md:p-8 overflow-auto">
-          {children}
-        </main>
-      </div>
+      <main className="flex-1 p-4 md:p-8 overflow-auto pb-24 md:pb-8">
+        {children}
+      </main>
+      <CustomerNav />
     </div>
   );
 }

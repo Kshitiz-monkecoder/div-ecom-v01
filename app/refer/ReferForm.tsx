@@ -1,30 +1,55 @@
 "use client";
-import { useSearchParams } from "next/navigation";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export default function ReferForm() {
-  const searchParams = useSearchParams();
-  const referralCode = searchParams.get("code");
+const BILL_RANGES = [
+  { value: "500-1000", label: "₹500-1000" },
+  { value: "1000-2000", label: "₹1000-2000" },
+  { value: "2000-5000", label: "₹2000-5000" },
+  { value: "5000-8000", label: "₹5000-8000" },
+  { value: "8000+", label: "₹8000+" },
+];
 
+const PROPERTY_TYPES = [
+  { value: "मकान", label: "मकान" },
+  { value: "फ्लैट", label: "फ्लैट" },
+  { value: "दुकान", label: "दुकान" },
+  { value: "फैक्ट्री", label: "फैक्ट्री" },
+];
+
+const AREAS = [
+  "इंदिरापुरम", "वसुंधरा", "राजेंद्र नगर", "कविनगर", "वैशाली", "गाजियाबाद शहर",
+  "अन्य (Ghaziabad)",
+];
+
+export default function ReferForm({ referralCode }: { referralCode: string | null }) {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
-    product: "",
+    product: "Residential rooftop",
+    billRange: "",
+    propertyType: "",
+    area: "",
   });
-
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    // Clear error when user starts typing
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     if (error) setError(null);
   };
 
@@ -33,8 +58,15 @@ export default function ReferForm() {
     setLoading(true);
     setError(null);
 
+    const productStr = [formData.product, formData.billRange, formData.propertyType, formData.area]
+      .filter(Boolean)
+      .join(" | ") || formData.product;
+
     const payload = {
-      ...formData,
+      name: formData.name.trim(),
+      phone: formData.phone.trim(),
+      email: formData.email.trim() || undefined,
+      product: productStr,
       referralCode: referralCode || null,
     };
 
@@ -48,16 +80,13 @@ export default function ReferForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        // Extract error message from response
-        const errorMessage = data?.error || "Failed to submit referral. Please try again.";
-        setError(errorMessage);
+        setError(data?.error || "Failed to submit. Please try again.");
         return;
       }
 
       setSubmitted(true);
-    } catch (err: any) {
-      // Handle network errors or other unexpected errors
-      setError(err.message || "An unexpected error occurred. Please try again.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
@@ -65,10 +94,10 @@ export default function ReferForm() {
 
   if (submitted) {
     return (
-      <div className="text-center">
-        <div className="text-lg font-semibold">Thank you!</div>
+      <div className="text-center py-4">
+        <p className="text-lg font-semibold">धन्यवाद!</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          We’ve received your request. Our team will contact you shortly.
+          हमें आपका रिक्वेस्ट मिल गया है। हमारी टीम जल्द ही संपर्क करेगी।
         </p>
       </div>
     );
@@ -82,68 +111,90 @@ export default function ReferForm() {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <div className="space-y-1">
-        <Label htmlFor="name">Your Name</Label>
+      <div className="space-y-2">
+        <Label htmlFor="name">आपका नाम</Label>
         <Input
           id="name"
           name="name"
-          placeholder="Full name"
+          placeholder="नाम"
           required
           value={formData.name}
           onChange={handleChange}
+          className="min-h-[48px]"
         />
       </div>
-
-      <div className="space-y-1">
-        <Label htmlFor="phone">Your Phone</Label>
+      <div className="space-y-2">
+        <Label htmlFor="phone">मोबाइल नंबर</Label>
         <Input
           id="phone"
           name="phone"
           type="tel"
-          placeholder="10-digit phone number"
+          placeholder="10-digit number"
           required
           value={formData.phone}
           onChange={handleChange}
+          className="min-h-[48px]"
         />
       </div>
-
-      <div className="space-y-1">
-        <Label htmlFor="email">Your Email</Label>
+      <div className="space-y-2">
+        <Label htmlFor="email">ईमेल (वैकल्पिक)</Label>
         <Input
           id="email"
           name="email"
           type="email"
-          placeholder="Email address"
-          required
+          placeholder="Email"
           value={formData.email}
           onChange={handleChange}
+          className="min-h-[48px]"
         />
       </div>
-
-      <div className="space-y-1">
-        <Label htmlFor="product">Product Required</Label>
-        <Input
-          id="product"
-          name="product"
-          placeholder="Eg: Residential rooftop / Commercial plant"
-          required
-          value={formData.product}
-          onChange={handleChange}
-        />
-        <p className="text-xs text-muted-foreground">
-          Mention category, capacity requirement (kW), and any site notes if available.
-        </p>
+      <div className="space-y-2">
+        <Label>मासिक बिजली बिल (लगभग)</Label>
+        <Select value={formData.billRange} onValueChange={(v) => setFormData((p) => ({ ...p, billRange: v }))}>
+          <SelectTrigger className="min-h-[48px]">
+            <SelectValue placeholder="चुनें" />
+          </SelectTrigger>
+          <SelectContent>
+            {BILL_RANGES.map((r) => (
+              <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
-
+      <div className="space-y-2">
+        <Label>प्रॉपर्टी का प्रकार</Label>
+        <Select value={formData.propertyType} onValueChange={(v) => setFormData((p) => ({ ...p, propertyType: v }))}>
+          <SelectTrigger className="min-h-[48px]">
+            <SelectValue placeholder="चुनें" />
+          </SelectTrigger>
+          <SelectContent>
+            {PROPERTY_TYPES.map((r) => (
+              <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="space-y-2">
+        <Label>एरिया</Label>
+        <Select value={formData.area} onValueChange={(v) => setFormData((p) => ({ ...p, area: v }))}>
+          <SelectTrigger className="min-h-[48px]">
+            <SelectValue placeholder="चुनें" />
+          </SelectTrigger>
+          <SelectContent>
+            {AREAS.map((a) => (
+              <SelectItem key={a} value={a}>{a}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       {referralCode && (
-        <div className="space-y-1">
-          <Label htmlFor="referralCode">Referral Code</Label>
-          <Input id="referralCode" value={referralCode} readOnly />
+        <div className="space-y-2">
+          <Label>रेफरल कोड</Label>
+          <Input value={referralCode} readOnly className="min-h-[48px] bg-muted" />
         </div>
       )}
-
-      <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? "Submitting..." : "Submit Referral"}
+      <Button type="submit" className="w-full min-h-[48px] bg-[#27AE60] hover:bg-[#20a350]" disabled={loading}>
+        {loading ? "लोड हो रहा है..." : "फ्री कंसल्टेशन बुक करें →"}
       </Button>
     </form>
   );
