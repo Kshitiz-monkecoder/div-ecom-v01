@@ -37,6 +37,17 @@ const createAdminOrderSchema = z.object({
   invoiceUrl: z.string().url().optional(),
   additionalFiles: z.array(z.string().url()).optional(),
   isMaterialDelivery: z.boolean().optional(),
+  leadNo: z.string().optional(),
+  tenure: z.string().optional(),
+  date: z.union([z.string(), z.date()]).optional().transform((v) => (v ? (typeof v === "string" ? new Date(v) : v) : undefined)),
+  customerCompanyName: z.string().optional(),
+  segmentProductType: z.string().optional(),
+  kWp: z.string().optional(),
+  structure: z.string().optional(),
+  inverter: z.string().optional(),
+  systemType: z.string().optional(),
+  area: z.string().optional(),
+  solarBrand: z.string().optional(),
 });
 
 const VALID_DELIVERY_SLOTS = ["EARLY", "MID", "LATE", "NIGHT"] as const;
@@ -361,6 +372,17 @@ export async function createAdminOrder(data: unknown) {
     invoiceUrl: validated.invoiceUrl,
     additionalFiles: validated.additionalFiles ? JSON.stringify(validated.additionalFiles) : null,
     isMaterialDelivery: validated.isMaterialDelivery ?? false,
+    leadNo: validated.leadNo,
+    tenure: validated.tenure,
+    date: validated.date,
+    customerCompanyName: validated.customerCompanyName,
+    segmentProductType: validated.segmentProductType,
+    kWp: validated.kWp,
+    structure: validated.structure,
+    inverter: validated.inverter,
+    systemType: validated.systemType,
+    area: validated.area,
+    solarBrand: validated.solarBrand,
     status: "NEW",
     statusHistory: {
       create: {

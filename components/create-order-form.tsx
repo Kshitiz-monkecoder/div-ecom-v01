@@ -83,6 +83,19 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
   const [isMaterialDelivery, setIsMaterialDelivery] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  // Order additional info (optional)
+  const [leadNo, setLeadNo] = useState("");
+  const [tenure, setTenure] = useState("");
+  const [orderDate, setOrderDate] = useState("");
+  const [customerCompanyName, setCustomerCompanyName] = useState("");
+  const [segmentProductType, setSegmentProductType] = useState("");
+  const [kWp, setKWp] = useState("");
+  const [structure, setStructure] = useState("");
+  const [inverter, setInverter] = useState("");
+  const [systemType, setSystemType] = useState("");
+  const [area, setArea] = useState("");
+  const [solarBrand, setSolarBrand] = useState("");
+
   // Warranty PDF (generated) inputs
   const [warrantyDocumentNo, setWarrantyDocumentNo] = useState("");
   const [warrantySystemSizeKwp, setWarrantySystemSizeKwp] = useState("");
@@ -367,6 +380,17 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
         invoiceUrl,
         additionalFiles: additionalFileUrls.length > 0 ? additionalFileUrls : undefined,
         isMaterialDelivery,
+        leadNo: leadNo || undefined,
+        tenure: tenure || undefined,
+        date: orderDate || undefined,
+        customerCompanyName: customerCompanyName || undefined,
+        segmentProductType: segmentProductType || undefined,
+        kWp: kWp || undefined,
+        structure: structure || undefined,
+        inverter: inverter || undefined,
+        systemType: systemType || undefined,
+        area: area || undefined,
+        solarBrand: solarBrand || undefined,
       });
 
       toast.success(`Order ${order.orderNumber} created successfully!`);
@@ -655,6 +679,56 @@ export function CreateOrderForm({ users: initialUsers, products: initialProducts
                   Material delivery order
                 </Label>
               </div>
+
+              <details className="rounded-lg border p-4">
+                <summary className="cursor-pointer font-medium">Additional Info (optional)</summary>
+                <div className="mt-4 grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="leadNo">Lead No</Label>
+                    <Input id="leadNo" value={leadNo} onChange={(e) => setLeadNo(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label htmlFor="tenure">Tenure</Label>
+                    <Input id="tenure" value={tenure} onChange={(e) => setTenure(e.target.value)} placeholder="e.g., 2021-2022" />
+                  </div>
+                  <div>
+                    <Label htmlFor="orderDate">Date</Label>
+                    <Input id="orderDate" type="date" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label htmlFor="customerCompanyName">Customer/Company Name</Label>
+                    <Input id="customerCompanyName" value={customerCompanyName} onChange={(e) => setCustomerCompanyName(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label htmlFor="segmentProductType">Segment (Product Type)</Label>
+                    <Input id="segmentProductType" value={segmentProductType} onChange={(e) => setSegmentProductType(e.target.value)} placeholder="e.g., SPGs, C&I" />
+                  </div>
+                  <div>
+                    <Label htmlFor="kWp">kWp</Label>
+                    <Input id="kWp" value={kWp} onChange={(e) => setKWp(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label htmlFor="structure">Structure</Label>
+                    <Input id="structure" value={structure} onChange={(e) => setStructure(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label htmlFor="inverter">Inverter</Label>
+                    <Input id="inverter" value={inverter} onChange={(e) => setInverter(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label htmlFor="systemType">System Type</Label>
+                    <Input id="systemType" value={systemType} onChange={(e) => setSystemType(e.target.value)} placeholder="e.g., On grid, Offgrid, Hybrid" />
+                  </div>
+                  <div>
+                    <Label htmlFor="area">Area</Label>
+                    <Input id="area" value={area} onChange={(e) => setArea(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label htmlFor="solarBrand">Solar Brand</Label>
+                    <Input id="solarBrand" value={solarBrand} onChange={(e) => setSolarBrand(e.target.value)} />
+                  </div>
+                </div>
+              </details>
 
               <div className="flex justify-between">
                 <Button variant="outline" onClick={() => setStep(2)}>

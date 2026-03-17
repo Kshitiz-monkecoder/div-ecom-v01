@@ -34,6 +34,20 @@ model Product {
   images      String
   isActive    Boolean       @default(true)
   createdAt   DateTime      @default(now())
+  sno                 String?
+  leadNo              String?
+  tenure              String?
+  date                DateTime?
+  customerCompanyName String?
+  segmentProductType  String?
+  kWp                 String?
+  structure           String?
+  inverter            String?
+  mobileNo            String?
+  systemType          String?
+  address             String?
+  area                String?
+  solarBrand          String?
   orderItems  OrderItem[]
   users       UserProduct[] @relation("ProductUsers")
 }
@@ -55,6 +69,17 @@ model Order {
   deliverySlot    String?
   isMaterialDelivery Boolean   @default(false)
   createdAt       DateTime    @default(now())
+  leadNo              String?
+  tenure              String?
+  date                DateTime?
+  customerCompanyName String?
+  segmentProductType  String?
+  kWp                 String?
+  structure           String?
+  inverter            String?
+  systemType          String?
+  area                String?
+  solarBrand          String?
   user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   items           OrderItem[]
   tickets         Ticket[]

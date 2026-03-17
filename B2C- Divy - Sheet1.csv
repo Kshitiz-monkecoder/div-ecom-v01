@@ -1,0 +1,533 @@
+sno,Lead no.,Tenure,Date,Customer/ Company Name,Segment(Product Type),kWp,Structure,Inverter,Mobile No,System type ,ADDRESS,Area,SOLAR BRAND
+0,3151,2021-2022,,Anil Chopra,SPGs,6,,,9212303791,On grid,Plot no 89 Pocket 8 Sector 21 Rohini Delhi,Delhi,Tata
+1,17323,2021-2022,,Amit Kumar,SPGs,5,,,9971149190,On grid,267/IIA Vaishali Heights Sec 1 Vaishali Gzb,Vaishali,Tata
+2,32939,2021-2022,,Anil Kumar,SPGs,7,,,9910894446,On grid,KD 93 Kavi Nagar Ghaziabad,Kavi nagar,Tata
+3,17224,2021-2022,,Smita Jain,SPGs,9,,,9560399660,On grid,KD 93 Kavi Nagar Ghaziabad,Kavi nagar,Tata
+4,17409,2021-2022,,Anuj,SPGs,5,,,9818010859,On grid,Model Town Ghaziabad,Model town,Tata
+5,16240,2021-2022,,Birendra singh Sishodia,SPGs,5,,,9818499930,On grid,"D-582, Govindpuram",Govind puram,Tata
+6,18713,2021-2022,,Harjot Harpal Ji,SPGs,3,,,9999100600,On grid,x,Model town,Tata
+7,10788,2021-2022,,Kamal Sahani,SPGs,10,,,9811022485,On grid,R-13/56 Raj Nagar Ghaziabad,Raj nagar,Tata
+8,17228,2021-2022,,Akshay Rana,SPGs,3,,,"9742866404
+ 8588956840",On grid,140D J&K Pocket Dilshad Garden Delhi,,Tata
+9,5847,2021-2022,15.05.2021,Vishal anand,SPGs,9,,,9971602777,On grid,KH178 kavi nagar,Kavi nagar,Tata
+10,17152,2021-2022,,RP Agarwal,SPGs,5,,,9811143483,On grid,C-30 Model Town Ghaziabad,Model town,Tata
+11,32942,2021-2022,,Dinesh goel,SPGs,5,,,9810301138,On grid,C-31 model town ghaziabad,Model town,Tata
+12,17191,2021-2022,,Sunil Agarwal,SPGs,10,,,9810333177,On grid,Vasundhara,Vasundhara,Tata
+13,31809,2021-2022,,PS tomar,SPGs,5,,,9412000206,On grid,D11 Govindpuram,Govind puram,Tata
+14,7214,2021-2022,,Sai leela school,SPGs,3,,,8860061443,On grid,"148,149 shiv puram II Indergarhi C block Govidpuram",Govind puram,Tata
+15,61132,2021-2022,,Alok Goel,SPGs,10,,,9811155723,On grid,213 Sec 26 Noida,,Tata
+16,7213,2021-2022,,Ashish Jain JI,SPGs,7,,,9818344717,On grid,KD 74 Kavi nagar ghaziabad,Kavi nagar,Tata
+17,4178,2021-2022,,Gureshwar Singh,SPGs,7.5,,,9810210274,On grid,E60 Naraina Vihar Naraina Industrial Estate south west delhi,Delhi,Tata
+18,5276,2021-2022,,Lajpat rai college,Education,11,,,9634141651,On grid,Main Shyam park Sahibabad ghaziabad,,Tata
+19,5369,2021-2022,,Vinod jain ji,SPGs,5,,,"9990315924
+ 9891117578",On grid,KH 239 Kavi nagar ghaziabad,Kavi nagar,Tata
+20,11568,2021-2022,,Rahul bhalla,SPGs,8,,,9810252264,On grid,KD 73 Kavi Nagar ghaziabad,Kavi nagar,Tata
+21,61133,2021-2022,,Suraj Bhalla,SPGs,8,,,9643718568,On grid,KD 73 Kavi Nagar ghaziabad,Kavi nagar,Tata
+22,10310,2021-2022,,Rajeev Tyagi,SPGs,5,,,9810343164,On grid,R9/136 Raj nagar Ghaziabad,Raj nagar,Tata
+23,32938,2021-2022,,Shri pal ji,SPGs,10,,,9821286699,On grid,C-18 Silver OAKS Greator Noida,,Tata
+24,34485,2023-2024,02.05.2023,Anuj mathur,SPGs,5,,,9810530777,On grid,R-2/174 raj nagar,Raj nagar,Tata
+25,16309,2021-2022,,Rakesh agarwal,SPGs,10,,,9811401225,On grid,R11/52 Raj nagar,Raj nagar,Tata
+26,2583,2021-2022,,Rajvir JI,SPGs,4,,,9891804900,On grid,Vasundhara,Vasundhara,Tata
+27,25016,2021-2022,,Arvind Kumar,SPGs,9,,,9811333123,On grid,C-126 nehru nagar,Nehru Nagar,Tata
+28,21030,2021-2022,,Karan Arora,SPGs,9,,,9810331223,On grid,SB 30 Shastri nagar,Shashtri nagar,Tata
+29,25024,2021-2022,,himanshu ji,SPGs,5,,,8130473800,On grid,9/298 -A Sector 3 Rajendra nagar,Rajendra nagar,Tata
+30,25147,2021-2022,,Avadh kumar,SPGs,9,,,9810323774,On grid,C125 nehru nagar ghaziabad,Nehru Nagar,Tata
+31,22206,2021-2022,,Navneet,SPGs,5,,,8860367884,On grid,"B-33 Garima garden, Sahibabad",,Tata
+32,21171,2021-2022,,Aditya,SPGs,3,,,9910181799,On grid,R 6/221 Raj nagar,Raj nagar,Tata
+33,18693,2021-2022,20.02.2022,Amit garg,SPGs,5,,,9810160007,On grid,"89, Peeragarhi New Delhi",,Tata
+34,5855,2021-2022,,Mahesh Kumar,SPGs,5,,,9810382627,On grid,KH-192 Kavi Nagar,Kavi nagar,Tata
+35,25018,2021-2022,,Arun Ahuja,SPGs,10,,,9312283513,On grid,R-2/68 Raj nagar,Raj nagar,Tata
+36,26614,2021-2022,15.12.2021,"Parag Kaushik/
+  Lalita Sharma",SPGs,5,,,9818943939,On grid,"H.No. - 101 Akanksha Enclave Abhay Khand-2 Indrapuram, Ghaziabad",Indirapuram,Tata
+37,,2021-2022,,Krishna Pradhan,SPGs,3,,,,On grid,621 D Royal Suncity Indrapuram GZB,Indirapuram,Tata
+38,18673,2021-2022,31.02.2022,Ashish Sharma,SPGs,5,2x4 - 10x12,6,"98106763422, 9717998203",On grid,Plot No. 88 sec-5 Rajendra Nagar Sahibabad,Rajendra nagar,Tata
+39,27595,2021-2022,,Yanesh Trading Co.,SPGs,10,,,8813076000,On grid,Sonipat,,Tata
+40,27099,2022-2023,02.04.2022,Anil Kumar vasundhara,SPGs,6,,,9910395499,On grid,H-373 sec-14 Vasundhra Ghaziabad,Vasundhara,Tata
+41,28258,2021-2022,,Galaxy Garments Industries Pvt Ltd,C&I,10,,,9312147318,On grid,Plot No. 22 Sec- D1 Tronica City Ghaziabad,,Tata
+42,29269,2022-2023,23.05.2022,Babita Singhal,SPGs,8,,,9958755590,On grid,CA-005 Avantika,Avantika,Tata
+43,29289,2021-2022,,Arun Sharma,SPGs,5,,,9899163434,On grid,KH-191A 2nd Floor Block-H Kavi Nagar,Kavi nagar,Tata
+44,3166,2021-2022,,Binesh Ji,SPGs,5,,,9582877892,On grid,"peera garhi, Delhi",Delhi,Tata
+45,15113,2022-2023,28.05.2022,Puneet Jain,SPGs,2.4,,,7906018123,On grid,SB-95 B-Block Shastri Nagar Ghaziabad,Shashtri nagar,Tata
+46,27859,2022-2023,23.06.2022,Neet Dev Singh,SPGs,8,,,8800811235,Offgrid,F-9 Indraprastha Awas Yojna F Block Near Banthla Flyover loni GZB,Loni,Adani DCR
+47,28145,2022-2023,25.06.2022,Delhi School of professional,Education,30,,,9868798499,On grid,"Plot No.- 9 sec-25 rohini, Delhi-110085",Delhi,Tata
+48,29684,2021-2022,,Pankaj Jain,SPGs,10,,,9910558833,On grid,IInd C 176 Nehru Nagar Ghaziabad,Nehru Nagar,Sova
+49,30457,2022-2023,12.07.2022,S.M. Gupta,SPGs,7,,,9811469050,On grid,3/89 sec-2 Near DLF School Rajendra Nagar Ghaziabad,Rajendra nagar,Tata
+50,29880,2022-2023,17.07.2022,O.N.Tripathi,SPGs,6,,,9971395640,On grid,6/140 Chirajeev Vihar Ghaziabad,Chiranjiv vihar,Tata
+51,34936,2022-2023,17.12.2022,Srikant Dwivedi,SPGs,3,,,8826754657,On grid,sector-1 Pilotno-48 chiranjeev vihar,Chiranjiv vihar,Tata
+52,34882,2022-2023,10.12.2022,Ajai Kumar Garg,SPGs,5,,,9971869712,On grid,R12/55 Raj nagar,Raj nagar,Tata
+53,34782,2022-2023,26.11.2022,Vikas Goyal,SPGs,4,,,9810476778,On grid,"50 Laxmi Vihar, Nehru Nagar Ghaziabad",Nehru Nagar,Sova
+54,34768-A,2022-2023,7.12.2022,Mohit batra,SPGs,10,,,9312282858,On grid,D-621 Govindpuram,Govind puram,Tata
+55,29786,2022-2023,29.12.2022,SK Jain,SPGs,13,,,9312890244,On grid,Second A-48 Nehru Nagar Ghaziabad,Nehru Nagar,Sova
+56,30198,2022-2023,28.12.2022,Saroj Bala,SPGs,5,,,9971146563,On grid,D-581 Govindpuram ghaziabad,Govind puram,Tata
+57,27950,2022-2023,03-02-2023,Sachin Tyagi,SPGs,3,,,9999595971,On grid,R6/231 Raj nagar,Raj nagar,Tata
+58,35469,2021-2022,02-02-2023,vivek Goel,SPGs,5,,,98106763422,On grid,G-21 Patel Nagar,,Tata
+59,61726,2021-2022,,Utsav Farm,others,5,,,9971700389,Offgrid,NOIDA,,Sova
+60,12811,2020-2021,16.09.2020,Jitendra Parmar,SPGs,10,,,9811219293,On grid,A 37 Nirman Vihar delhi,,Tata
+61,19933,2021-2022,,Vinod sharma,SPGs,5,,,9810995381,On grid,Akansha enclave indirapuram,Indirapuram,Tata
+62,22235,2021-2022,20.09.2021,Ashish Dass,SPGs,10,,,9810004031,On grid,R 13/113 Raj Nagar,Raj nagar,Tata
+63,29579,2021-2022,20.02.2022,Manoj Kodwani,C&I,10,,,9868225989,On grid,"M-100 sec-2 DSIIDC Bawana Industrial Area, Delhi",Delhi,Sova
+64,35021,2022-2023,18.12.2022,Jagdish chand arya,SPGs,6,,,9717788475,On grid,"AE 1st floor, Avantika Ghaziabad",Avantika,Sova
+65,28179,2022-2023,26.08.2022,Ruchir Garg,SPGs,9,,,9810363398,On grid,C128 Nehru Nagar,Nehru Nagar,Tata
+66,41548,2022-2023,24.03.2023,Virendra pal,SPGs,3,,,9810800915,On grid,"1471, Vivekanand nagar, Nehru nagar",Nehru Nagar,Adani DCR
+67,42447,2023-2024,01.04.2023,Sandeep kumar,SPGs,5,,,9958776389,On grid,D-580 Govindpuram,Govind puram,Adani DCR
+68,10690,2023-2024,11.04.2023,NS Chauhan,SPGs,5,,,9639004441,On grid,R-12/21 Raj nagar,Raj nagar,Tata
+69,42492,2023-2024,12.04.2023,Anish bharadwaj/ dinesh,SPGs,6,,,9899633277,On grid,"305, Shahapur jaat goan delhi",Delhi,Sova
+70,42445,2023-2024,15.04.2023,Ayush kumar,SPGs,5,,,7011242343,On grid,KA-20 karpuripuram,,Adani DCR
+71,4999,2022-2023,23.03.2023,Chetan bansal,SPGs,11,,,9350355354,On grid,"H-19, Block- B kavi nagar",Kavi nagar,Adani DCR
+72,4999,2023-2024,26.04.2023,Chetan bansal,others,30,,,9350355354,On grid,Ambedkar road,,Adani DCR
+73,40172,2023-2024,17.04.2023,Chetan bansal,SPGs,5,,,9654817490,On grid,R-7/207 raj nagar,Raj nagar,Tata
+74,42465,2023-2024,14.04.2023,Tulsa rani,SPGs,4,,,9868421521,On grid,B-419 Panchwati,,Adani DCR
+75,42563,2023-2024,04-05-2023,Sanjeev kapoor,SPGs,7,,,9811029565,On grid,R3/74 Raj nagar Ghaziabad,Raj nagar,Tata
+76,27925,2023-2024,06-05-2023,Sidharth singh,SPGs,5,,,9999997053,On grid,9/150A sec 3 rajender nagar Sahibabad,Rajendra nagar,Tata
+77,31360,2023-2024,05-05-2023,Mr Anand Prakash Sharma,SPGs,7,,,9717720108,On grid,G102 Govindpuram,Govind puram,Tata
+78,36086,2023-2024,9.5.2023,Anand Dubey,SPGs,10.2,,,9899158000,On grid,SA 40 Shastri Nagar,Shashtri nagar,Sova
+79,34687,2023-2024,29.04.2023,Bhubneshwar Dutt,SPGs,9,,,8744094535,On grid,"KD-38, Kavi Nagar, Ghaziabad",Kavi nagar,Tata
+80,28084,2023-2024,12.05.2023,BBL grover,SPGs,11,,,9818378685,On grid,R3/73 Raj nagar,Raj nagar,Tata
+81,42564,2022-2023,01-05-2023,Prasoon Gupta,SPGs,3,,,9891571699,On grid,"76, IRS Society abay khand 2 Indrapuram",Indirapuram,Adani DCR
+82,35382,2021-2022,,Navjot singh,SPGs,10,,,9717964151,On grid,KH-6 kavi nagar,Kavi nagar,Tata
+83,42558,2023-2024,01-06-2023,Mr. Rahul khatri,SPGs,10,,,9215966670,On grid,H-1369 Sector-15 Sonipat,,Tata
+84,34913,2023-2024,03-06-2023,Mr. Sanjay choudhary,SPGs,6,,,7011563547,On grid,"H-76, satyam resideny NH-91 Chapprola",,Adani DCR
+85,41108,2023-2024,21.06.2023,Alpna Chaudhary,SPGs,6,,,8527360814,On grid,C-268 Govindpuram,Govind puram,Tata
+86,42667,2023-2024,16.06.2023,Harpal singh,SPGs,3,,,9212524509,On grid,"96, Sehkari nagar",,Tata
+87,18629,2023-2024,31.05.2023,Akash yadav,SPGs,2,,,7827207513,On grid,Rahul vihar,Pratap vihar,Adani DCR
+88,37570,2023-2024,27.06.2023,Chetan Sirohi,SPGs,5,,,8588850196,On grid,H-5 Radha garden govindpuram,Govind puram,Adani DCR
+89,2486,2023-2024,15.07.2023,Rajeev vaid,SPGs,5,,,9350224866,On grid,a3/232 sector rohini 85,,Tata
+90,42572,2023-2024,23.08.2023,Maya prakesh kaushik,SPGs,7,,,9717293727,On grid,c-39 shyam park,,Tata
+91,47040,2023-2024,12.09.2023,Paras ahuja,SPGs,10,,,7460000123,On grid,raj nagar,Raj nagar,Tata
+92,47147,2023-2024,23.09.2023,satish kumar,SPGs,12,,,8368037835,On grid,SH-55 shastri nagar,Shashtri nagar,Tata
+93,47197,2023-2024,27.09.2023,Deepika garg,SPGs,5,,,9891095296,On grid,105 Ansal garden govindpuram,Govind puram,Tata
+94,37112,2023-2024,26.10.2023,Karan Bhusry,SPGs,5,,,9999275331,On grid,R 1/30 raj nagar,Raj nagar,Tata
+95,47193,2023-2024,10.1.2023,Dr. sumit,SPGs,8,,,9716671968,Hybrid,A-245 Govindpuram,Govind puram,Tata
+96,49672,2023-2024,29.11.2023,Kohinoor transport,C&I,3,,,9312851563,On grid,Mukand nagar,,Tata
+97,25871,2023-2024,1.11.2023,Tushar gupta,SPGs,8,,,9873994448,On grid,R4/83 Raj nagar ghaziabad,Raj nagar,Tata
+98,,2021-2022,,The world land hotel,others,20,,,,On grid,,,Sova
+99,61717,2023-2024,,Ghaziabad precious pvt ltd,C&I,200,,,9717773710,On grid,MEERUT INDUSTRIAL AREA GZB,,TATA NDCR
+100,51667,2021-2022,,BBPS,Education,440,,,9811899886,On grid,NOIDA,,TATA NDCR
+101,61719,2021-2022,,hindu soceity,Education,800,,,9355250746,On grid,Sonipat,,TATA NDCR
+102,13477,2021-2022,,Shivam Trading company,others,30,,,9811054637,On grid,Sikandrabad,,TATA NDCR
+103,61722,2021-2022,,Jaquar,C&I,1400,,,9785004011,On grid,REWARI RAJASTHAN,,others
+104,61723,2021-2022,,Pernod Ricard,C&I,200,,,9041275643,On grid,Punjab,,TATA NDCR
+105,,2021-2022,,Jagadguru kirpalu,C&I,100,,,,On grid,,,others
+106,,2021-2022,,Chadha Farm house,others,800,,,,On grid,,,Sova
+107,,2022-2023,,Wave Tower 1,others,18,,,,On grid,Wave City Ghaziabad,,Sova
+108,,2021-2022,,Royal woollen mills,C&I,150,,,9896676100,On grid,Panipat,,TATA NDCR
+109,59676,2024-2025,,Delhi gujrati samaj,others,90,,,9899208690,On grid,Civil lines delhi,Delhi,Tata
+110,42548,2023-2024,3.5.2023,Rajiv dixit,SPGs,8,,,9997353222,On grid,D-5 sec 122 noida,,Tata
+111,29640,2024-2025,15.05.2024,Sukhveer gupta,SPGs,3,,,9810480959,On grid,86 shanker vihar lal kuan,Lal kuan,Tata
+112,47288,2024-2025,15.2.2024,Dr Raj kumar garg,SPGs,5,,,9891515215,On grid,B16 nehru nagar ghaziabad,Nehru Nagar,Tata
+113,44413,2024-2025,12.2.2024,KM Garg,SPGs,5,,,9439036576,On grid,R5/122 raj nagar,Raj nagar,Tata
+114,54461,2024-2025,12.2.2024,Neerja garg,SPGs,5,,,9439036576,On grid,R5/122 raj nagar,Raj nagar,Tata
+115,28646,2023-2024,11.09.2023,Navin Pahwa,SPGs,5,,,9810003967,On grid,IIND C 54 Nehru nagar,Nehru Nagar,Tata
+116,,2021-2022,,DPS Panipat,C&I,100,,,9310277773,On grid,Panipat,,TATA NDCR
+117,,2021-2022,,Hargobind,C&I,150,,,9350533099,On grid,Haryana,,TATA NDCR
+118,,2021-2022,,Kissan hattchery,C&I,100,,,9410662959,On grid,allahabad,,TATA NDCR
+119,,2021-2022,,hansapur mushroom,C&I,70,,,9416320675,On grid,haryana,,TATA NDCR
+120,54700,2023-2024,03.03.2024,Bhagawati Prasad Gaur,SPGs,4,,,9873997043,On grid,F-6 Duplex Sanjay Nagar (New Hanuman mandir ),Sanjay nagar,Tata
+121,41925,2023-2024,7.3.2024,Hariom Sharma,SPGs,8,,,9999141168,On grid,morti 10 saipuram colony morti,,Adani DCR
+122,58633,2024-2025,22.08.2024,Baldev raj sharma,SPGs,8,,,9818130050,On grid,KF 85 kavi nagar,Kavi nagar,Tata
+123,46820,2024-2025,18.8.2024,Yogesh agarwal,SPGs,12,,,9211653724,On grid,75 IRS society INDIRAPURAM,Indirapuram,Adani DCR
+124,54196,2023-2024,06.03.2024,Surender,SPGs,3.1,,,9716040344,On grid,113/2 Sahkari Nagar Avantika,Avantika,Adani DCR
+125,36580,2023-2024,01.03.2024,Pradeep Jain,SPGs,5,,,9811965472,On grid,R-2/4 Rajnagar,Raj nagar,Tata
+126,54181,2023-2024,09.02.2024,Himanshu arora,SPGs,4,,,7042433493,On grid,chiranjiv vihar,Chiranjiv vihar,Tata
+127,51557,2023-2024,20.12.2023,Aman Traders,SPGs,3,,,9990967595,On grid,vasant road ghaziabad,,Tata
+128,53054,2023-2024,23.01.2024,satish chand jain,SPGs,6.36,,,9716193452,On grid,baghpat,,Tata
+129,52896,2023-2024,10.1.2024,Girish chand mehrotra,SPGs,3,,,9412079436,On grid,C-234 salimar garden ghaziabad,,Tata
+130,5434,2023-2024,25.08.2023,Sanidhya sirohi,SPGs,10,,,9810589084,On grid,R2/145 raj nagar ghaziabad,Raj nagar,Tata
+131,47292,2023-2024,01.12.2023,Lalit goel,SPGs,5,4 x 6,5(III),8826785758,On grid,9/150 Rajendra nagar ghaziabad,Rajendra nagar,Tata
+132,55227,2023-2024,03.03.2024,Jamuna Prasad Sharma,SPGs,4,,,9990566724,On grid,Plot No. d-457 Govindpurm Ghaziabad,Govind puram,Tata
+133,55560,2023-2024,19.03.2024,siraj malik,SPGs,4,,,9997773010,On grid,sahanpur mujaffarnagar,,Tata
+134,29428,2023-2024,13.3.2024,Umesh Chand Gupta,SPGs,5,,,9654383001,On grid,Karhera Near Air Force,,Tata
+135,55535,2023-2024,16.3.2024,Varun Malik,SPGs,3,,,9818357574,On grid,H-64/1 Nehru Nagar Near Urvashi Showroom,Nehru Nagar,Adani DCR
+136,53797,2023-2024,06.03.2024,Vikas kumar,SPGs,3,,,7499755777,On grid,Plot no.173 G.K.I indirapuram,Indirapuram,Tata
+137,33395,2023-2024,21.01.2024,Om Laxmi,SPGs,9,,,9810120734,On grid,A-18 govindpuram,Govind puram,Tata
+138,52873,2023-2024,06.03.2024,Mamta Tyagi,SPGs,5,,,9910838940,On grid,C-25 urvashi Enclave vardan hospital,,Tata
+139,55375,2023-2024,11.3.2024,Ashutosh Kumar,SPGs,3,,,9953509796,On grid,Chipiyana H-2 Serial no Shaniwas Gali no. 7 Om Sai Enclave Chipyana,Chipiyana,Adani DCR
+140,17320,2023-2024,07.03.2024,Sunita Sharma,SPGs,3,,,9999770096,On grid,H-Plot 26 Kala Enclave Khoda Colony 625,,Adani DCR
+141,53816,2023-2024,03.03.2024,Anil Tyagi,SPGs,5,,,9810547074,On grid,Sec 14/308 Vasundhra,Vasundhara,Adani DCR
+142,53130,2022-2023,18.01.2023,Jaiveer singh Tyagi,SPGs,3,,,7303192767,On grid,DD-147 Avantika shastri nagar,Shashtri nagar,Tata
+143,27720,2023-2024,24.02.2024,Vivek Garg,SPGs,4.24,,,9891411007,On grid,"Plot.no DD-130, Avantika, Phase 1, Ghaziabad",Avantika,Tata
+144,55405,2023-2024,09.03.2024,Sunny Chauhan,SPGs,4,,,9811111661,On grid,Plot No. 37 Kala Khoda Colony,,Adani DCR
+145,44134,2023-2024,11.02.2024,Kamlesh Agarwal,SPGs,5,,,9810173187,On grid,R1/17 raj nagar,Raj nagar,Adani DCR
+146,51643,2023-2024,15.1.2024,Gaurav kumar,SPGs,4,,,9540441054,On grid,Modinagar,Modinagar,Adani DCR
+147,55000,2023-2024,29.02.2024,Dharmendra Singh,SPGs,4,,,8383878105,On grid,3/61 Rajiender Nagar Sector-5 Ghaziabad,Rajendra nagar,Tata
+148,46756,2023-2024,08.01.2024,David,SPGs,4,,,9958590426,On grid,C-1072 nand gram,Nand gram,Tata
+149,43436,2022-2023,09.02.2023,Amit kumar Raj nagar,SPGs,7,,,9810606490,On grid,R9/70 raj nagar,Raj nagar,Tata
+150,55244,2023-2024,16.3.2024,Deepak Chauhan,SPGs,2,,,7906687074,On grid,K123 mariam nagar,Nand gram,Tata
+151,55552,2023-2024,18.3.2024,Raj Dutt pandey,SPGs,2,,,7053940322,On grid,"C-43, Modern railyway CITY",,Tata
+152,54098,2023-2024,16.3.2024,Maya devi (Mahesh),SPGs,4,,,9999373420,On grid,E27 janak puri Ghaziabad,,Tata
+153,55594,2023-2024,22.03.2024,Anil kumar rajeshwari,SPGs,4,,,9871844082,On grid,89 gali no 5 akash nagar indergarhi ghaziabad,,Tata
+154,35272,2023-2024,07.03.2024,Devender Kumar,SPGs,3,,,9650200212,On grid,SEVA NAGAR GZB,,Tata
+155,58825,2024-2025,07.09.2024,Murari kumar,SPGs,3,,,9350726357,On grid,"E 20 gagan enclave, GHAZIABAD",,Tata
+156,48647,2023-2024,02.01.2024,Pradeep panchal,SPGs,15,,,9810300813,On grid,Plot no 1260 sec 5 vasundhara ghaziabad,,Tata
+157,55072,2023-2024,23.03.2024,Ashok Kumar,SPGs,3,,,9818171407,On grid,B -894 guldhar -2 sanjay nagar gzb.,Sanjay nagar,Adani DCR
+158,54899,2023-2024,26.03.2024,Atul Jain,SPGs,5,,,8766300990,On grid,Sec 23 sanjay nagar,Sanjay nagar,Adani DCR
+159,18645,2023-2024,28.03.2024,Pradeep kumar / madhu jayant,SPGs,5,,,"7060035999, 7087410166",On grid,"HIG 166 abhay khand Near Sai Mandir , Behind Indrapuram Police Choki",Indirapuram,Tata
+160,55670,2023-2024,29.3.2024,Neeraj Devi / Deepanshu Maheshwari,SPGs,2,,,9136392388,On grid,H.no 4 street no2 krishna vihar,loni,Tata
+161,61204,2023-2024,29.03.2024,Dr pravesh Gupta,SPGs,7,,,9810093013,On grid,SB 29 Shastri nagar,Shashtri nagar,Adani DCR
+162,55514,2023-2024,30.03.2024,Kirti Gupta,SPGs,3,,,9717776478,On grid,H-654 sec 3 vasundhara,Vasundhara,Tata
+163,55688,2024-2025,1.4.2024,Dev chandra,SPGs,3,,,9968483703,On grid,H.no 56 om sai enclave chipiyana,Chipiyana,Adani DCR
+164,54028,2023-2024,31.03.2024,Devendra bansal,SPGs,4,4 x 6,4,9927902856,On grid,"90, sec 5 rajender nagar sahibabad",Rajendra nagar,Tata
+165,6939,2023-2024,29.03.2024,Dr sc sharma,SPGs,6,,,9891811896,On grid,110 Sanjay Nagar Ghaziabad,Sanjay nagar,Adani DCR
+166,19915,2021-2022,09.02.2022,Ashok Kumar Gautam,SPGs,10,,,9650992929,Offgrid,Wave city ghaziabad,,Tata
+167,27337,2023-2024,23.08.2023,Reena thakker,SPGs,9.8,,,9311873567,On grid,Sonipat,,Tata
+168,46938,2023-2024,23.08.2023,Urmila Joshia,SPGs,4,,,7982859380,On grid,G-98 H-14 partap vihar Gjhaziabad,Pratap vihar,Adani DCR
+169,34716,2023-2024,14.07.2023,Manish Kumar Anita Gupta,SPGs,4,,,9811366502,On grid,200/201 B-7 Sec-4 Rohini Delhi,Delhi,Tata
+170,29240,2023-2024,24.03.2024,Surender Singh,SPGs,9,,,9663372046,On grid,H.No-99 Sikandar pur Loni Road Ghaziabad,Loni,Adani DCR
+171,55745,2024-2025,08-04-2024,Mohan Kumar Govil,SPGs,3,,,9811597771,On grid,Plot No.123 Ashok Vihar PH-3 Delhi,Delhi,Tata
+172,55746,2024-2025,08-04-2024,Anil kumar Govil,SPGs,3,,,9868603162,On grid,Plot No.123 Block-A Ashok Vihar PH-3 Delhi,Delhi,Tata
+173,16266,2024-2025,01.04.2024,Adarsh Lakhpat Sr. Secondary School(Chirag Chaudhary),SPGs,10,,,9999222922,On grid,e-25 khajoori khas delhi,,Tata
+174,42756,2024-2025,06-04-2024,Rajat Gupta/ Rajul gupta,SPGs,5,,,8470055535,On grid,"R-6/160A Raj Nagar, Ghaziabad",Raj nagar,Adani DCR
+175,55744,2024-2025,13.04.2024,Rajendra Kumar,SPGs,3,,,9999598320/ 9540938320,On grid,H.no 130 street 11 om sai enclave chipiyana buzurg,Chipiyana,Tata
+176,55400,2024-2025,13.04.2024,Devendra singh,SPGs,3,,,9310931011,On grid,J134 patel nagar ghaziabad,,Tata
+177,61137,2024-2025,14.04.2024,Ushir Kant sharma,SPGs,8,,,9311753574,On grid,SA -44/1 shastri nagar ghaziabad,Shashtri nagar,Tata
+178,55685,2024-2025,15.04.2024,Vijay Pal Singh,SPGs,5,,,9868645807,On grid,C-233 Shalimar Garden Extn.2 Ghaziabad,Shalimar Garden,Tata
+179,55629,2024-2025,15.04.2024,Aditya Sharma,SPGs,5,,,9899350001,On grid,C-224 Shalimar Garden Extn.2 Ghaziabad,Shalimar Garden,Tata
+180,55538,2024-2025,15.04.2024,Rachna/Ram Kirshan,SPGs,5,,,9650102186,On grid,C-268 Shalimar Garden Extn.2 Ghaziabad,Shalimar Garden,Tata
+181,55538,2024-2025,15.04.2024,Devbrat/ Amit Kumar,SPGs,3,,,8287186128,On grid,C-266 A Shalimar Garden Extn.2 Ghaziabad,Shalimar Garden,Tata
+182,55998,2024-2025,19.04.2024,Shyamvir Singh,SPGs,2,,,8512842201,On grid,"B-29, S-3 DLF Colony Ghaziabad",,Tata
+183,35823,2024-2025,23.04.2024,Shekhar yadav ji,SPGs,7,,,9818998866,On grid,R2/34 raj nagar ghaziabad,Raj nagar,Tata
+184,55398,2024-2025,20.4.2024,Kanchan verma,SPGs,3,,,9650747108,On grid,131 B maliwara chowk ghaiabad,,Tata
+185,55628,2024-2025,09.4.2024,Sandeep mittal,SPGs,7.4,,,9718345848,On grid,BD-283 avantika ghaziabad,Avantika,Tata
+186,43725,2024-2025,11.06.2024,Ashu verma ji,SPGs,5,,,9810009581,On grid,R/9/11 raj nagar,Raj nagar,Tata
+187,43725,2024-2025,11.06.2024,Raja verma ji,SPGs,5,,,9810009581,On grid,R/9/11 raj nagar,Raj nagar,Tata
+188,25902,2023-2024,05.01.2024,Satyabir Singh,SPGs,5,,,9818194032,On grid,R/9/274 Rajnagar Ghaziabad,Raj nagar,Adani DCR
+189,55513,2024-2025,05.05.2024,Priyank Goel,SPGs,3,,,9650173603,On grid,Plot No.9/318 Sec.3 Rajender Nagar,Rajendra nagar,Tata
+190,29078,2024-2025,08.05.2024,Mr. Rajendra Singh,SPGs,9,,,9555965332,On grid,D-15 Sector-12 Pitars Colony Pratap Vihar Ghaziabad,Pratap vihar,Tata
+191,34607,2024-2025,05.07.2024,Kavita Mathur,SPGs,3,,,9313090884,On grid,N/441/B Sanjay Nagar Ghaziabad,Sanjay nagar,Tata
+192,27209,2024-2025,05-06-2024,Suman Devi,SPGs,2,,,9553008664,On grid,"A-64, R.k Puram, Govindpurm, Ghaziabad",Govind puram,Adani DCR
+193,56026,2024-2025,13.05.2024,Pramod kumar,SPGs,3,,,9999369233,On grid,53 Dhiraj Kunj Vardhman Puram Morta Ghaziabad (201003),,Tata
+194,55777,2024-2025,09.05.2024,Devendra Kumar Gupta,SPGs,5.3,,,8085911932,On grid,"House No. 40 Sec-4, Chiranjeevi Vihar",Chiranjiv vihar,Adani DCR
+195,10796,2024-2025,11.05.2024,Sarla Rastogi,SPGs,5,,,9650990614,On grid,R13/69 Rajnagar Ghaziabad UP,Raj nagar,Adani DCR
+196,56089,2024-2025,14.05.2024,Omkar Gupta / Mohit,SPGs,3,,,8791727162,On grid,adarsh nagar modinagar,Modinagar,Tata
+197,29622,2024-2025,18.5.2024,Bhagwati,SPGs,3,,,8800115652,On grid,H.no 21 block I govindpuram,Govind puram,Tata
+198,54030,2024-2025,24.05.2024,Himanshu Jain,SPGs,8.4,,,9999503210,On grid,B47 south ext part 2 delhi,Delhi,Tata
+199,45033,2024-2025,24.5.2024,Suresh kumar tuteja,SPGs,5,,,9911557788,On grid,B242 swarn jayanati puram,Govind puram,Tata
+200,56055,2024-2025,24.5.2024,Vijay singh tomar,SPGs,4,,,9891294744,On grid,SH 8 Avantika ghaziabad,Avantika,Adani DCR
+201,36260,2024-2025,25.05.2024,Sudheer kumar,SPGs,5,,,8285682426,On grid,"P-34 shivam vihar,",,Tata
+202,56396,2024-2025,25.5.2024,Brij gopal sharma,SPGs,5,,,9871021075/ 9810244647,On grid,III H 188 Nehru nagar ghazibad,Nehru Nagar,Tata
+203,46886,2024-2025,31.05.2024,Kailash nath mishra,SPGs,2,,,9871202391,On grid,C-399 swarn jayanti puram,Govind puram,Tata
+204,56516,2024-2025,04.06.2024,Neeraj agarwal,SPGs,7,,,9818093697,On grid,No 140 delta 3 greater noida,,Tata
+205,37918,2024-2025,08.06.2024,Satender Singh,SPGs,5,,,9717416959,On grid,D-2 Govindpuram GZB,Govind puram,TATa
+206,61136,2021-2022,,Sita Sharma,SPGs,5,,,9868245693,On grid,Nehru nagar,Nehru Nagar,Tata
+207,46580,2024-2025,12.06.2024,Dr O P Aggrawal /Naveen Aggrawal,SPGs,7,,,9312975077,On grid,D-73 patel nagar,,Tata
+208,56880,2024-2025,13.06.2024,Mudit Mohan,SPGs,5,,,9990842346/ 9910870999,On grid,II A 205 nehru nagar Gzb 2nd floor,Nehru Nagar,Tata
+209,56020,2024-2025,13.06.2024,Hemendra mohan saxena,SPGs,5,,,9990842346,On grid,II A 204 nehru nagar Gzb,Nehru Nagar,Tata
+210,56881,2024-2025,13.06.2024,Sumit Mohan,SPGs,5,,,8448235039,On grid,II A 205 nehru nagar Gzb,Nehru Nagar,Tata
+211,56414,2024-2025,16.06.2024,Anil jain,SPGs,5,,,9354139506,On grid,S 180 school block near durga mata mandir shakarpur delhi,Delhi,Adani DCR
+212,56453,2024-2025,20.05.2024,Praveen negi,SPGs,5,,,8802209691,On grid,sec 15 plot no. 907 vasundhra gzb 201012,Vasundhara,Tata
+213,56590,2024-2025,20.06.2024,Krishan pal singh,SPGs,4,,,9971454534,On grid,A 30 mariam nagar ghaziabad,Nand gram,Tata
+214,56389,2024-2025,24.06.2024,Manish sharma,SPGs,10,,,9810507055,Offgrid,J P public Jn.High school indira market loni gzb,Loni,Tata
+215,56874,2024-2025,24.06.2024,Brijesh saini,SPGs,12,,,9871629712,On grid,Plot 46 sec 5 rajender nagar sahibabad,Rajendra nagar,Tata
+216,56942,2024-2025,24.06.2024,Nirupam sharma,SPGs,4,,,9910925444,On grid,S 2 3/145 sector 2 rajender nagar ghaziabad,Rajendra nagar,Tata
+217,56372,2024-2025,25.06.2024,Ved prakash sharma,SPGs,3,,,,On grid,H No 188 sec 1 chiranjeev vihar ghaziabad,Chiranjiv vihar,Adani DCR
+218,43425,2024-2025,23.06.2024,Mahesh kumar,SPGs,5,,,9310676572,On grid,C - 83/85 Govindpuram gzb,Govind puram,Tata
+219,56651,2024-2025,22.06.2024,Prayag,SPGs,5,,,9899235369,On grid,E 33 sector 20 noida 201301,,Adani DCR
+220,55811,2024-2025,29.06.2024,Amrit versha,SPGs,3,,,9911776640,On grid,H no.188 gali no. 4 A block part 1 mukandpur delhi,Delhi,Tata
+221,56989,2024-2025,29.06.2024,Giri raj kishore,SPGs,3,,,9911776640,On grid,H no.188 gali no. 4 A block part 1 mukandpur delhi,Delhi,Tata
+222,45629,2024-2025,07.07.2024,Ram kumar gupta,SPGs,7,,,9990007689,On grid,K - I 78 Kavi nagar Gzb,Kavi nagar,Tata
+223,57017,2024-2025,06.07.2024,Taravati chaudhary,SPGs,5,,,8810671539/ 8920788042,On grid,"80, Karhera Colony, Mahadev Gali, Mohan Nagar, Ghaziabad",,Tata
+224,56967,2024-2025,05.07.2024,S K pandey,SPGs,5,,,9810097419,On grid,D D 146 avantika Ghaziabad,Avantika,Tata
+225,28084,2024-2025,09.07.2024,BBL grover,SPGs,8,,,9818378685,On grid,R-3/73 rajanagr gzb,Rajendra nagar,Tata
+226,56499,2024-2025,30.06.2024,Shivam verma,SPGs,7,,,9990007689,On grid,K - I 78 Kavi nagar Gzb,Kavi nagar,Tata
+227,27625,2024-2025,08.07.2024,Ramtek yadav,SPGs,4,,,9897763143,On grid,Surana muradnagar gzb 201206,Murad nagar,Tata
+228,57347,2024-2025,22.07.2024,Pramod kumar sharma,SPGs,5,,,7290827018,On grid,"144,Basant kunj guldhar 2 sector 23 sanjay nagar",Sanjay nagar,Tata
+229,57320,2024-2025,18.07.2024,Sh kedar singh,SPGs,5,,,9049294676,On grid,keadrnath sec 9 A block shiv puri gali no. 1 house no. 15,,Tata
+230,57354,2024-2025,19.07.2024,Virendra singh,SPGs,4,,,7838464822,On grid,1/30 First floor sadar bazar delhi CANT city,Delhi,Tata
+231,57353,2024-2025,19.07.2024,Anita devi,SPGs,3,,,9958299122,On grid,1/30 First floor sadar bazar delhi CANT city,Delhi,Tata
+232,59676,2024-2025,17.06.2024,Delhi gujrati samaj 2,C&I,65,,,9899208690,On grid,"2, Raj niwas marg Civil lines delhi",Delhi,Tata
+233,58556,2024-2025,06.08.2024,Asha Ram,SPGs,4,4 x 6,4,9953985322,On grid,"512,patvari mohalla mohan nagar karheda ghaziabad",,Adani DCR
+234,25184,2024-2025,26.07.2024,Arvind kumar tyagi,SPGs,4,,,8368716275,On grid,15/748 vasundhra ghaziabad Opp yashoda hospital,Vasundhara,Tata
+235,56104,2024-2025,01.08.2024,Yogesh prajapati,SPGs,3,,,9654277484,On grid,Loni ghaziabad,Loni,Tata
+236,55173,2024-2025,06.07.2024,Firdosh jahan,SPGs,4,,,9910126284,Hybrid,537 A pasonda near new masjid sahibabad,,Tata
+237,11603,2024-2025,30.07.2024,K B khanna,SPGs,4.2,,,9971466788,On grid,KD 122 Kavi nagar gzb,Kavi nagar,Tata
+238,58677,2024-2025,14.08.2024,Jaibir Singh Payal,SPGs,3,,,8800328373,On grid,Flat no.8 metro complex sec 5 rajender nagar sahibabad gzb 201005,Rajendra nagar,Adani DCR
+239,58572,2024-2025,17.08.2024,suresh chand gupta,SPGs,5,,,9899323051,On grid,E 131 sector 20 noida 201301,,Adani DCR
+240,57130,2024-2025,21.08.2024,Navin chandra shaily,SPGs,7,,,9899200600,On grid,Sec 1 plot no. 279 4th floor vaishali gzb,Vaishali,Tata
+241,57386,2024-2025,27.08.2024,Sajender pal singh,SPGs,5,,,9350523398,On grid,SE 66 Shastri nagar ghaziabad,Shashtri nagar,Tata
+242,38518,2024-2025,26.08.2024,Ritu saini/Jaidrat chaudhary,SPGs,5,,,8130552428,On grid,J 62 Govindpuram near police chawki gzb,Govind puram,Adani DCR
+243,57446,2024-2025,26.08.2024,Nitesh kumar,SPGs,3.18,,,9718041844,On grid,Plot no.80 sector 1 vaishali,Vaishali,Adani DCR
+244,58583,2024-2025,26.08.2024,Pradeep kashyap (Om prakash kashyap),SPGs,3,,,9811554800/ 9899427624,On grid,A 4 sec B 5/6 tronica city loni ghaziabad,Loni,Tata
+245,29278,2024-2025,26.08.2024,Hemant kumar,SPGs,4,,,8587945457,On grid,c-195 GOVINdPURAM GHAZIABAD,Govind puram,Tata
+246,58728,2024-2025,03.09.2024,Vijay kishore tyagi,SPGs,3,,,9718283863,On grid,Village kaithwadi muradnagar,Murad nagar,Tata
+247,57512,2024-2025,08.09.2024,Pramod kumar tyagi,SPGs,5.3,,,7701898252,On grid,D 618 Govindpuram,Govind puram,Tata
+248,56016,2024-2025,04.09.2024,Real sunrise public school,C&I,7,,,9999281939,On grid,D 504 Lajpat nagar sahibabad,,TATA NDCR
+249,25954,2023-2024,04.12.2023,Mr. Saurabh Rastogi,SPGs,7,,,9870884009,On grid,X 12 Land Craft Ghaziabad,,JA solar
+250,55016,2024-2025,11.09.2024,Tarun tulsian,SPGs,8,,,9899137999 +93100037999,On grid,FB 63 Lajpat nagar Sahibabad,,Tata
+251,58917,2024-2025,14.09.2024,Anirudh yadav,SPGs,5,,,8851791105,On grid,K B 92 karpuri puram ghaziabad,,Adani DCR
+252,58933,2024-2025,14.09.2024,Anil kumar malik,SPGs,5,,,9412000059,On grid,B 11 sai nagar Shastri nagar meeut,Shashtri nagar,Tata
+253,58931,2024-2025,14.09.2024,Gopal singh,SPGs,5,,,9871629712,On grid,H 85 Greater Ganga nagar meerut,Meerut,Tata
+254,58517,2024-2025,14.09.2024,Bhupender singh bhaduria,SPGs,3,,,9412783300,On grid,H 89 Greater Ganga nagar meerut,Meerut,Tata
+255,58932,2024-2025,14.09.2024,Kamta prasad shukla,SPGs,3,,,9412709600,On grid,H 83 Greater Ganga nagar meerut,Meerut,Tata
+256,58943,2024-2025,14.09.2024,Sahi ram rana,SPGs,5,,,8077825785,On grid,H 147 Greater Ganga nagar meerut,Meerut,Tata
+257,58567,2024-2025,31.08.2024,Ambani and associate,SPGs,21.2,,,9582959949,On grid,"WP-545/1,3rd floor Ashok vihar Phase -1 Delhi",Delhi,Tata
+258,59005,2024-2025,26.09.2024,Jain Mandir,C&I,8,,,9810014303,On grid,H 4 Pitam pura opp. gujarat app near pushpanjli pritam pura new delhi,Delhi,TATA NDCR
+259,44262,2024-2025,05.10.2024,Navjeevan Singh,SPGs,5,,,8800537575,On grid,A 61 Govindpuram,Govind puram,Adani DCR
+260,57027,2024-2025,05.10.2024,Mr saurabh,SPGs,15,,,9811000062,On grid,KA 37 Kavi nagar ghaziabad,Kavi nagar,TATA NDCR
+261,15121,2024-2025,11.10.2024,B K jain,SPGs,8.17,,,9811148293,On grid,BD-285 avantika phase 1 near holi chowk gzb,Avantika,TATa
+262,56012,2024-2025,10.10.2024,Karan agarwal,SPGs,30,,,8800522011,On grid,H no.49 road no.2 east punjabi bagh west delhi,Delhi,TATA NDCR
+263,25491,2024-2025,20.10.2024,Mahesh chand (Tushar Constructions),SPGs,8,,,9717827402,On grid,III B 8 nehru nagar ghaziabad,Nehru Nagar,Adani DCR
+264,58883,2024-2025,20.10.2024,Radhe lal chaturvedi,SPGs,5,,,9312660362,On grid,H No 185 sector 1 chiranjeev vihar ghaziabad,Chiranjiv vihar,Adani DCR
+265,58809,2024-2025,19.10.2024,Abhishek puri,SPGs,6,4 x 6,3+3,9873919053,On grid,6h/89 sec 5 rajender nagar sahibabad,Rajendra nagar,Tata
+266,59153,2024-2025,17.10.2024,Aditya,SPGs,3,,,9971688097,On grid,pratap vihar near bank of baroda,Pratap vihar,Tata
+267,44742,2024-2025,19.10.2024,Satender singh,SPGs,6,,,9810416643,On grid,R 7/150 Raj nagar ghaziabad UP,Raj nagar,TATa
+268,58581,2024-2025,15.11.2024,Kapil kumar,SPGs,4,,,9411664610,On grid,61 dausa banjarpur muradnagar gzb,Muradnagar,Tata
+269,59593,2024-2025,16.11.2024,Dinesh kumar sharma,SPGs,3,,,8218011920,On grid,Shyam singh vihar sart purg gali no 2 near sumer field school,,Adani DCR
+270,59177,2024-2025,09.11.2024,A K rana,SPGs,3,,,8447686511,On grid,3081 sec 4B vasundhra gzb,Vasundhara,TATa
+271,59568,2024-2025,16.11.2024,Arpita saxena,SPGs,5,,,8860953243,On grid,B 7 urvashi enclave near vardan hospital rajnagar extension gzb,Raj nagar,Tata
+272,59670,2024-2025,16.11.2024,Prashant chaudhary,SPGs,3,,,9897557869,On grid,51 greater ganga nagar mawana road meerut,Meerut,Tata
+273,61134,2024-2025,19.11.2024,Sudhir kr gupta,SPGs,5,,,9527508311,On grid,Plot no 30 sector 6 chiranjeev vihar,Chiranjiv vihar,Tata
+274,42207,2024-2025,21.11.2024,Dharamvir singh tyagi,SPGs,6,,,9811792966,On grid,R7/152 rajnagar,Raj nagar,Tata
+275,59486,2024-2025,23.11.2024,Dipesh garg,SPGs,9,,,9810087353,On grid,Plot no 155 sec 4 vaishali,Vaishali,Adani DCR
+276,59658,2024-2025,30.11.2024,Bhagat singh,SPGs,3,,,9818833043,On grid,Sector C 1 Plot no AC 215 ansal East tronica city loni,Loni,Tata
+277,59658,2024-2025,30.11.2024,Kajal,SPGs,3,,,9818833043,On grid,Sector C 1 Plot no AC 215 ansal East tronica city loni,Loni,Tata
+278,17224,2021-2022,,Sarthak jain,SPGs,8,,,9560399660,On grid,KD 93 Kavi nagar ghaziabad,Kavi nagar,Tata
+279,59705,2024-2025,30.11.2024,Pradeep yadav,SPGs,3,,,9871469974,On grid,M 1 M block shastri nagar gzb,Shashtri nagar,Tata
+280,36778,2024-2025,30.11.2024,Sunil kumar,SPGs,3,,,9868875805,On grid,21 rajapur Kavi nagar gzb,Kavi nagar,Tata
+281,59694,2024-2025,30.11.2024,Rajiv kumar,SPGs,3,,,9818162962,On grid,Rajapur near charan singh dwar kavi nagar,Kavi nagar,Tata
+282,59707,2024-2025,06.12.2024,Shobha kumari,SPGs,4,,,8882525927,On grid,Chipiyana,Chipiyana,Adani DCR
+283,27039,2024-2025,04.12.2024,Renu verma,SPGs,3,,,9911034038,On grid,663 Niti khand 1/Indirapuram gzb,Indirapuram,Tata
+284,27039,2024-2025,04.12.2024,Saurabh verma,SPGs,3,,,9911034038,On grid,663 Niti khand 1/Indirapuram gzb,Indirapuram,Tata
+285,58947,2024-2025,06.12.2024,Arunjay kumar pandey,SPGs,3,,,9868741970,On grid,Plot no 32 TF2 Niti khand 2 Indirapuram,Indirapuram,Tata
+286,54528,2024-2025,08.12.2024,Mukesh kumar saxena,SPGs,6,,,9871186750,On grid,Sector 5 plot no 272 Chiranjeev vihar gzb,Chiranjiv vihar,Tata
+287,59744,2024-2025,06.12.2024,Nain singh,SPGs,3,,,8800805570,On grid,C 27 RK puram govindpuram gzb,Govind puram,Adani DCR
+288,59572,2024-2025,10.12.2024,Rajendra kumar sharma,SPGs,4.34,,,9411902112,On grid,B 27 Gali no. 2 Gurunanak pura modinagar,Modinagar,Tata
+289,59714,2024-2025,10.12.2024,KRISNA KUMARI,SPGs,4.32,,,9084787487,On grid,B 25 Gali no. 2 Gurunanak pura modinagar,Modinagar,Tata
+290,59806,2024-2025,15.12.2024,Sahdev kumar gupta,SPGs,5.4,,,9810691804,On grid,FB 194 LAJPAT NAGAR SAHIBABAD,,Tata
+291,58764,2024-2025,9.10.2024,Gargi hospital/Rahul garg.,C&I,50,,,9871037053,On grid,"R-9/182, Raj Nagar, Ghaziabad, Uttar Pradesh 201002",,Tata
+292,10794,2024-2025,01.01.2025,Renu goel,SPGs,5,,,9810861214,On grid,R 13/66 Rajnagar gzb,Raj nagar,Adani DCR
+293,27116,2024-2025,31.12.2024,Anil kumar,SPGs,6,,,9911520900,On grid,H no.493 Mata wali dharamshala chipyana buzurg Gautam buddh nagar,Chipiyana,Tata
+294,57578,2024-2025,28.12.2024,Yash singh,SPGs,5,,,9599457306,On grid,B-350 swarnjayanti puram,,Tata
+295,60178,2024-2025,31.12.2024,Rajesh kumar,SPGs,3,,,8130225448,On grid,Shanu ji medical hi tech city mord bamheta road lal kuan gzb,Lal kuan,Adani DCR
+296,hari desh,2024-2025,06.01.2025,Arun kumar dwivedi,SPGs,10.7,,,9953205120,On grid,R 12/2 RAJ NAGAR GHAZIABAD UP,Raj nagar,TATA NDCR
+297,60219,2024-2025,09.01.2025,Sanjay kumar,SPGs,3,,,9718892200,On grid,IInd A maya apartment Plot no 67 Vikram enclave shalimar garden ext 1 gzb,Shalimar Garden,Tata
+298,55372,2024-2025,14.01.2025,D K Agarwal,SPGs,5,,,9650885998,On grid,DD 122 Avantika colony gzb,Avantika,Tata
+299,60243,2024-2025,13.01.2025,Naveen kumar,SPGs,4,,,9760319898,On grid,72 MANDHIYA SUKHLAL PILKHUWA,hAPUR,Tata
+300,60332,2024-2025,27.01.2025,Jal singh,SPGs,4,,,9899642740,On grid,845/4 shalimar garden sahibabad,Shalimar Garden,Tata
+301,60311,2024-2025,17.01.2025,Raghubeer Singh,SPGs,3,,,9456929907,On grid,rajapur,Rajendra nagar,Tata
+302,46424,2024-2025,27.01.2025,Sunita kushwaha,SPGs,5,,,9810795862,On grid,A 301 govindpuram,Govind puram,Tata
+303,60522,2024-2025,04-02-2025,prakash chandra pant,SPGs,2.28,,,9218557006,On grid,"349A gali no 4 ram shyam enclave ,chipyaana buzurag",Chipiyana,Tata
+304,59796,2024-2025,03-02-2025,kavita bhati,SPGs,4,,,7430882450,On grid,H no 84 Preet vihar Hapur,Pratap vihar,Tata
+305,59850,2024-2025,22/12/2024,naveen kandpal,SPGs,3.24,,,9045846012,On grid,devi dutt bhawan santpuru govind puri gali no 3 modinagar,Govind puram,Tata
+306,7213,2024-2025,18/12/2024,jain agro foods,C&I,10,,,9818344717,On grid,nh24 udyog kunj riyan international school backside,,TATA NDCR
+307,59745,2024-2025,12-12-2024,kevlananad joshi,SPGs,4,,,9711190704,On grid,shakti khand 3 plot no 613 indarapuram gzb,Indirapuram,Tata
+308,60467,2024-2025,5/2./2025,Suresh chand,SPGs,5,,,9990228666,On grid,g18 sec11 pratap vihar gzb,Pratap vihar,Tata
+309,60571,2024-2025,6-2-2025,sunita devi,SPGs,3,,,8802066175,On grid,h no 28 main road mukundpur delHI,Delhi,Adani DCR
+310,60648,2024-2025,17/2/2025,Chetan kapil,SPGs,4,,,9899280880,On grid,h no 125 gali no 6 old arya nagar gzb,,Adani DCR
+311,62044,2024-2025,17/2/2025,Vipin kumar,SPGs,5,,,7351475036,On grid,RAj nagar extention,Raj nagar,Tata
+312,62043,2024-2025,17/2/2025,Parveen sharma,SPGs,5,,,9871322115,On grid,RAj nagar extention,Raj nagar,Tata
+313,62042,2024-2025,17/2/2025,Prashant teotia,SPGs,5,,,8930051848,On grid,RAj nagar extention,Raj nagar,Tata
+314,60228,2024-2025,21/2/25,suman tyagi,SPGs,7,,,9410677881,On grid,i-18 krishna garden sadarpur road ghaziabad,,Tata
+315,59778,2024-2025,21/2/25,Anjana mahender singh,SPGs,4,,,8077805868,On grid,"shivaji nagar ,dankaur road ,sikandrabad",,Tata
+316,12319,2024-2025,22/2/25,Sanjay chaudhary,SPGs,5,,,9910434995,On grid,"old 30 A ,new 122 ,rakesh marg gali no 2 GZB",,Tata
+317,60599,2024-2025,1-3-25,satish kumar,SPGs,6.72,7 x 9,6,9718145169,On grid,345 niti khand 3 indrapuram [GZB],Indirapuram,Tata
+318,59366,2024-2025,7-3-25,BIJENDRA KUMAR GARG,SPGs,5.08,,,9868609109,On grid,H NO 53 SEC 5 CHIRANJEEV VIHAR GZB,Chiranjiv vihar,Adani DCR
+319,60787,2024-2025,7-3-25,VINOD SHARMA,SPGs,3,,,9958446048,On grid,CPIYANA BUZARG SEC 16 G B NAGAR AALAYAM,,BLUEBIRD
+320,54956,2024-2025,17/3/25,raj manjusha,SPGs,2.875,,,9891580976,On grid,h no 7a shivpuri thana road sec 9 vijay nagar,Vijay nagar,Tata
+321,60778,2024-2025,10-3-25,yogesh vashishtha,SPGs,6,,,9891127788,On grid,bd 274 avantika gzb,Avantika,Tata
+322,60262,2024-2025,13/3/25,rajneesh tyagi (Toshi Tech ),C&I,20,,,9811692657,Hybrid,ECOTECH -11 MAYCHA KASNA G B NAGAR,,TATA NDCR
+323,60396,2024-2025,17/3/25,gaurav nirvan,SPGs,5,,,9690062062,On grid,i 114 preet vihar delhi road hapur,Pratap vihar,Tata
+324,60728,2024-2025,24/3/25,Priya rajput,SPGs,3,,,8285458853,On grid,Plot no 608 Niti khand 1 Indirapuram,Indirapuram,Tata
+325,60587,2024-2025,24/3/25,UPENDRA TRIPATHI,SPGs,3,,,9718252620,On grid,H NO 17-18 Khatu shyam enclave chipiyana buzurg ghaziabad,Chipiyana,Tata
+326,60513,2024-2025,22/3/25,Poonam Arya,SPGs,5,,,"9717174186, 9818965893",On grid,B-44 Sun vilas raj nagar ghaziabad,,Tata
+327,60807,2024-2025,18/3/25,Jagmohan Verma,SPGs,3,,,7503952938,On grid,87/9 JM Tailor Krishna Nagar Ghaziabad,,Tata
+328,60808,2024-2025,18/3/25,Kamlesh Verma,SPGs,3,,,9599745696,On grid,180 Gali no 3 krishna nagar ghaziabad,,Tata
+329,60809,2024-2025,18/3/25,Billu singh,SPGs,3,,,9211939110,On grid,182 JM Tailor Krishna nagar ghaziabad,,Tata
+330,57458,2024-2025,28/3/25,ajay jain,SPGs,3,,,9837575775,On grid,8/1120 adarsh nagar modinagar gzb,Modinagar,Tata
+331,30518,2024-2025,27/3/25,laxmi narayan agarwal,SPGs,3,,,7503276104,On grid,10a /67 vasundhra gzb,Vasundhara,Tata
+332,56436,2024-2025,2-12-24,kripal singh,SPGs,4,,,7011953982,On grid,40 feet road krishna vihar loni gzb,Loni,Tata
+333,60819,2024-2025,28/3/25,lakshya khanna,SPGs,7,,,9953683125,On grid,h no 67 2nd fr sector 15 vasundhra gzb,Vasundhara,Tata
+334,57456,2024-2025,29/3/25,sanjiv shukla,SPGs,3.45,,,9868333099,On grid,chiraanjeev vihar,Chiranjiv vihar,Tata
+335,60850,2024-2025,30/3/25,raj kumar singh,SPGs,2.3,,,9555207776,On grid,c 12 sunrise villa biharipura dhundhera shiv adarsh colony gzb,,Tata
+336,60834,2024-2025,31/3/25,Virendra pratap singh,SPGs,4,,,8892482030,On grid,indrapuram,Indirapuram,Tata
+337,60898,2025-2026,1-4-25,sajida asad,SPGs,4,,,9953874312,On grid,near hydel colony jeetpur muradnagar gzb,Murad nagar,BLUEBIRD
+338,60940,2025-2026,2-4-25,SACHIN TYAGI,SPGs,4.025,,,9818344336,On grid,H NO D 83 DUNDAHERA GZB,,Tata
+339,60629,2025-2026,4-4-25,anil kumar gupta,SPGs,3,,,8527296821,On grid,s 1 a177 metrotech homes ext 2 shalimar garden sahibabad gzb,Shalimar Garden,Tata
+340,59495,2025-2026,3-4-25,bhoop singh,SPGs,3,,,9540585912,On grid,khasra no 262 plot no 38 harsh vihar 2 gzb,,BLUEBIRD
+341,21050,2025-2026,10-4-25,SH PUSHPRAJ TYAGI,SPGs,7.47,3 x 5,3,9910347964,On grid,k j 47 kavi nagar gzb,Kavi nagar,Tata
+342,59653,2025-2026,11-4-25,krishna gupta,SPGs,3,,,7053302464,On grid,49 k n 248 vinayak enclave 2 girdharpur road chaprula gzb,,BLUEBIRD
+343,60985,2025-2026,11-4-25,umesh kumar singh,SPGs,3.45,,,9811316409,On grid,h n m 102 sector 12 pratap vihar gzb,Pratap vihar,Tata
+344,60845,2025-2026,8-4-25,munni devi,SPGs,3,,,9868989942,On grid,h no 48 kailesh puram govindpuram gzb,Govind puram,BLUEBIRD
+345,61026,2025-2026,14/4/25,amar singh,SPGs,3,,,9891102493,On grid,a 166 main shalimar garden extension 1 gzb,Shalimar Garden,Tata
+346,60970,2025-2026,14/4/25,puran mal,SPGs,3,2 x 4,3,9911449917,On grid,a 166 main shalimar garden extension 1 gzb,Shalimar Garden,Tata
+347,60999,2025-2026,14/4/25,subodh kumar,SPGs,5.75,,,9212367621,On grid,98/b gt road model town west opp chaudhary mall d mart gzb,Model town,Tata
+348,60205,2024-2025,20/3/25,CMC Mall raj nagar,C&I,40,,,8800332018,Hybrid,c 18 b rdc rajnagar gzb,,TATA NDCR
+349,60626,2025-2026,18/4/25,gyanesh kumar,SPGs,3,,,8439591110,On grid,modinagar,Modinagar,Adani DCR
+350,54470,2025-2026,18/4/25,jagat sharma,SPGs,5,,,9910022358,On grid,c b 11 avantika,Avantika,Adani DCR
+351,60995,2025-2026,16/4/25,radha rani,SPGs,3,,,7011340914,On grid,h 394 govindpuram gali no 9 near kanak farm house,Govind puram,Tata
+352,61029,2025-2026,21/4/25,raj abhichintan mishra,SPGs,4,,,8130050408,On grid,h n 106 3rd floor gali no 4 main shyam park sahibabad gzb,,Tata
+353,60945,2025-2026,15/4/25,raj kumar gerald,SPGs,5,,,9810027987,On grid,4/176 chiranjeev vihar gzb,Chiranjiv vihar,Tata
+354,60169,2025-2026,28/4/25,Rajesh kumar,SPGs,3.45,,,9582896476,On grid,sd 422 shastri nagar gzb,Shashtri nagar,Tata
+355,59666,2025-2026,1-5-25,RAJESH BATRA,SPGs,8,,,9212112220,On grid,A 347 OLD NO 515 BUDHA MARG MANDAWALI DELHI,Delhi,Tata
+356,61192,2025-2026,3-5-25,pappu sharma,SPGs,2,,,8700146539,On grid,425 soniya vihar panisheel colony near bihari mandir bhopura,,BLUEBIRD
+357,60827,2025-2026,2-5-25,durga prashad sharma,SPGs,3,,,9582462303,On grid,e 118 janak puri behind gaur enclave 2 sahibabad,,Tata
+358,60740,2025-2026,2-5-25,Dayal public school,C&I,8,,,9811117612,On grid,1357 nirankari colony sec 12 vijay nagar ghaziabad,Vijay nagar,Adani NDCR
+359,61183,2025-2026,30/4/25,Satyaveer Singh,SPGs,3,,,8010051476,On grid,d 118 rameshwar park loni gzb,Loni,Tata
+360,61101,2025-2026,1-5-25,swati,SPGs,3,,,7253007434,On grid,krishna nagar gali no 2 rajbala enclave modinagar,Rajendra nagar,Tata
+361,48068,2025-2026,2-5-25,devendra mittal,SPGs,4,,,9891391601,On grid,c 134 nehru nagar 2nd gzb,Nehru Nagar,Tata
+362,61103,2025-2026,4-5-25,sheela rani,SPGs,3.45,,,8700480964,On grid,h no 25 ganga vihar colony muradnagar,Murad nagar,Tata
+363,60189,2025-2026,1-5-25,GEETA KHANNA,SPGs,3,,,8826940026,On grid,K 24 B SECTOR 9 VIJAY NAGAR GZB 201001,Vijay nagar,Tata
+364,61208,2025-2026,3-5-25,RAVI KUMAR,SPGs,2,,,8287019857,On grid,bhonjha,,BLUEBIRD
+365,59460,2025-2026,16-5-25,lalit kumar garg,SPGs,3,,,7037497066,On grid,gali no 3 purani pannapuri garh road hapur,hAPUR,Tata
+366,61060,2025-2026,25-5-25,ANKIT SHARMA,SPGs,4.02,,,8527062626,On grid,H NO 121 BHONJHA GHAZIABAD 201001,,Tata
+367,61309,2025-2026,29-5-25,RAHUL TEVATIYA,SPGs,4.6,,,8650844366,On grid,MADIYA LAKHPAT PILKHAWA,hAPUR,Tata
+368,61483,2025-2026,6-6-25,PUSHPA SINGH,SPGs,4.64,,,8755079265,On grid,B 24 GURUNANAK PURA GALI NO 2 MODINAGAR,Modinagar,Tata
+369,61392,2025-2026,12-6-25,SHYAM SUNDAR BHARDWAJ,SPGs,8,,,9810967744,On grid,SD 140 SHASTRI NAGAR GZB,Shashtri nagar,Tata
+370,61494,2025-2026,10-6-25,ASHOK KUMAR,SPGs,4,,,8802296937,On grid,1158 3RD FLOOR MUKHARJI NAGAR DELHI,Delhi,Tata
+371,56669,2025-2026,15-06-25,sunil kumar tyagi,SPGs,5.22,,,9716919174,On grid,d-35 sec 9 vijay nagar near ghaziabad,Vijay nagar,Tata
+372,61296,2025-2026,12-6-25,DEEPIKA KOUNDAL,SPGs,5.2,,,9213726627,On grid,flat no 401 plot no 9/20 sec 3 svd platinum rajendra nagar gzb,Rajendra nagar,Tata
+373,61321,2025-2026,17-6-25,MOHD ALI SAFDAR,SPGs,5.22,,,8588829301,On grid,H NO 2C/353 SECTOR 2C VASUNDHRA GZB 291012,Vasundhara,Tata
+374,61157,2025-2026,21-6-25,KUNTESH BALA,SPGs,3,,,9718016373,On grid,KH NO 174 GALI NO 8 WAZIRABAD DELHI,DELHI,Tata
+375,61617,2025-2026,18-6-25,RAKESH KUMAR TALWAR,SPGs,5,,,9810531841,On grid,BW 75 D SHALIMAR BAGH DELHI (110088),Shalimar Garden,Tata
+376,58703,2025-2026,04-07-25,Mayank DM,SPGs,8.5,,,9716818462,On grid,Crossing republic ghaziabad,,TATA NDCR
+377,62049,2025-2026,07-07-25,MR. PRANAV LOHANI / Pradeep chandra,SPGs,4.64,,,9582539140,On grid,PLOT NO 91 VASUNDHRA,Vasundhara,TATA NDCR
+378,60545,2025-2026,15-5-25,anil kumar vasisth,SPGs,2,,,9354628929,On grid,3/144 sec 3 vasundhara,Vasundhara,Tata
+379,,2025-2026,,Jaat Dharamshala(Ballu),SPGs,5,,,9896004461,On grid,Sonipat,,Tata
+380,62051,2025-2026,06-07-25,Meena tuteja,SPGs,5.8,,,9911557788,On grid,B-242 SWARN JAYANTI PURAM GOVINDPURAM(GZB),Govind puram,Tata
+381,59708,2025-2026,07-01-2025,Puneet chaturwedi,SPGs,3.48,7x9,3,9711330463,On grid,A-164 SHALIMAR GARDAN EXT.2 GZB,Shalimar Garden,Tata
+382,62082,2025-2026,08-07-25,Rajeev kumar yadav,SPGs,4.06,,,9871045559,On grid,"E-165, SEC-9, E-BLOCK NEAR PRPS SCHOOL, NEW VIJAY NAGAR, (GZB)",Pratap vihar,Tata
+383,,2025-2026,13-07-25,chhaya,SPGs,3,,,9810480959,On grid,86 shanker vihar lal kuan,Lal kuan,Adani DCR
+384,62117,2025-2026,20-07-25,Nitin kamboj,SPGs,3.48,,,9717744779,On grid,"362.5 f-2, shakti khand-3,indirapuram 201014",Indirapuram,Tata
+385,61411,2025-2026,15-05-25,Surender(CDO Driver),SPGs,5,,,9868944071,On grid,L 155 PARTAP VIHAR,Pratap vihar,BLUEBIRD
+386,62283,2025-2026,30-07-25,Dinesh kumar,SPGs,3,,,9013717766,On grid,"House no. 197, kalyan vihar delhi-110009",Delhi,Tata
+387,60847,2025-2026,26-06-2025,Praveen agarwal,SPGs,4,,,7505348372,On grid,house no 854 tyagi nagar hapur,hAPUR,Tata
+388,62566,2025-2026,12-08-2025,Prem singh,SPGs,3,,,9310101878,On grid,2898 adarsh colony bharipuram gzb,,Tata
+389,62471,2025-2026,31-07-2025,Amarjeet singh sodhi,SPGs,4,,,9818183054,On grid,J 3/37 UG RAJAURI GARDEN DELHI-110027,,Tata
+390,63013,2025-2026,25-08-2025,Mridul,SPGs,3,,,9899065394,On grid,"Flat number 204,SEC 5, RAJENDRA NAGAR",Rajendra nagar,Tata
+391,,2025-2026,11-08-2025,INMANTEC COLLEGE,Education,5,,,,On grid,DASNA COLLEGE,,Tata
+392,33953,2025-2026,31-08-2025,Dr satish sharma,SPGs,7,mono + 7X9,10,9810052123 / 9690772482,On grid,patel nagar gzb,,Tata
+393,62533,2025-2026,05-09-2025,Mr. Rajesh P Raghavan,SPGs,6,mono,6,9818019367,On grid,"30- D/ Pocket -A SFS Flats, Mayur Vihar Phase - III Delhi-96",Delhi,Adani
+394,57442,2025-2026,06-09-2025,Indrajay Singh,SPGs,3,7 x 9,4,9560044107 / 9717676258,Hybrid,"Plot no 23 Khasra No 3003 near Indane Gas Agency/ Shree Ram Farmhouse, Mansarovar Park Shahpur",,Tata
+395,61273,2025-2026,06-09-2025,Laxmi Das,SPGs,3,8 x 10,3,8249059368/ 7678680384/ 8727574338,On grid,287C Abhay Khand 3 GHA Flats Indrapuram 201014,Indirapuram,Tata
+396,61326,2025-2026,30/07/2025,Santosh Singh,SPGs,2,8x10,2,9873945701,On grid,8/75 Ground floor Rajnagar GZB,,BLUEBIRD
+397,45434,2025-2026,30/07/2025,Mahipal Singh,SPGs,2,8x10,2,9311111267 / 9873945701,On grid,8/75 first floor Rajnagar Gzb,,BLUEBIRD
+398,37815,2025-2026,30/07/2025,Dhirendra Pratap Singh,SPGs,2,8x10,2,9311605827/ 9873945701,On grid,8/75 2nd floor Rajnagar GZB,,BLUEBIRD
+399,61277,2025-2026,07-09-2025,Naresh(Shivam),SPGs,3,,,8791678564/ 9548313352/ 8630571771,On grid,"Hanuman Chowk, Patti Bhawanipur, Village Surana Rawli Road Muradnagar 201206",Muradnagar,Adani DCR
+400,61418,2025-2026,10-09-2025,Jyoti (Krishna Kumar),SPGs,3,2x4,3,9654154760,On grid,Village Morta Meerut Road Gzb,,BLUEBIRD
+401,58792,2025-2026,9-9-2025,Ritesh Kumar Singh,SPGs,4.58,6x8,3,"7052081520, 9450090925",On grid,63 A S R RESIDENCY -1 BISHNOLI BISHNOLI GAUTAM BUDH NAGAR UP 203207 IND,,Tata
+402,60837,2025-2026,17/09/2025,Manish Bhatiya,SPGs,3,8X10,3,8527367555,On grid,"Village Dhargal, Ghaziabad",,Tata
+403,62467,2025-2026,15/09/25,Vinod Tomar (Sudha Tomar),SPGs,3,4 x 6,3,9971386536,On grid,"Vijay nagar, Ghazaibad",Vijay nagar,BLUEBIRD
+404,61774,2025-2026,19/09/25,Babita Chauhan,SPGs,2,2X4,3,"9210703725, 9213720571",On grid,"Chapraula ,GZB",,BLUEBIRD
+405,64241,2025-2026,15/09/25,Raghunandan Goel,SPGs,3,5x10,3,9897019921,On grid,"Modinagar, GZB",Modinagar,Tata
+406,64242,2025-2026,15/09/25,Nitin Goel,SPGs,3+2,5X10,5,8439176830,On grid,"Modinagar, GZB",Modinagar,Tata
+407,63482,2025-2026,25/09/25,Sheela Devi (Narendra Ji),SPGs,4,7 x 9,4,9258045745,On grid,Radhe Enclave Modinagar GZB,Modinagar,Tata
+408,60719,2025-2026,27/09/25,Kumar Pal (Mukesh Kumar),SPGs,4,10 x 12,5,"7217771473, 8860166491",On grid,"E-125 Sector -9 New Vijay nagar, ghaziabad 201009",Vijay nagar,Tata
+409,64232,2025-2026,22/09/25,Puneet Kumar,SPGs,5,2 X 4,5,"6396056495, 9756021668",On grid,Chhayapur Road near Chandi Mandir & Modern Public School Pilakhuwa,Pilukhwa,Tata
+410,64288,2025-2026,25/09/25,Chandra Mani Sharma,SPGs,5,2 X 4,5 (III),8077657171,On grid,"27, Ram Shila SM Road Shanti Niketan Colony Bulandshahr 203001",,Tata
+411,56588,2025-2026,24/09/25,Ram Niwas Singh (Daleep Kumar),SPGs,3,15 X 10,3,8468971268,On grid,A 3 Block H No. 10 Nand Nagri Delhi,Delhi,Tata
+412,62293,2025-2026,25/09/2025,Mahendra Kumar Kundalia (Vaibhav Jain),SPGs,3 + 3,7 X 9,3,9654372525,On grid,B-55 3rd Floor C C Colony Kalyan Vihar Delhi,Delhi,Tata
+413,62671,2025-2026,26/09/2025,Urmila Devi (Piyush),SPGs,3,6 X8,3,"9990247011, 8287665493, 8700561532",On grid,H no. 335 Christian Nagar Baghu Gali No 4 Near Panchayat Ghar GZB 201009,,Tata
+414,64278,2025-2026,06-10-2025,Naipal SIngh (Preeti Singh),SPGs,3,6 X 8,5 (I),9650923331,On grid,H no. 127 Sec 10 Chiranjeev Vihar GZB 201001,Chiranjiv vihar,Tata
+415,64305,2025-2026,06-10-2025,Amit Kumar chandan,SPGs,3,Mono,3,"9999927891, 9013333710",On grid,H No. 1110 Sec 15 Vasundhara GZB 201012,,Tata
+416,64327,2025-2026,10-10-2025,Saurav Agarwal,others,2,mono,2,9310428554,Offgrid,Alipur New Delhi 110036,Delhi,JA SOlar
+417,61012,2025-2026,20/09/2025,Salman,SPGs,4,4 X 5,4,9971754510,On grid,Modinagar Ghaziabad UP,Modinagar,Tata
+418,64325,2025-2026,12-10-2025,Nanhamal Urf Nain Singh,SPGs,2,2 X 4,2,"9643341421, 8449508612",On grid,H N 96 Near Shiv Mandir Muradnagar GZB - 201206,,BLUEBIRD
+419,61184,2025-2026,13/10/2025,Babli (Himanshu),SPGs,3,4 X 6,3,9971846697,On grid,Plot no 6 Kh no. 1130 Loni Gzb up 201102,Loni,Adani DCR
+420,56356,2025-2026,13/10/2025,Poonam Gupta,SPGs,8,2 X 4,8,8447750884,On grid,A 176 Sec - B-5/6 Tronica City 201103,,Tata
+421,,2025-2026,13/10/2025,Rajkumar Ji,SPGs,2,2 X 4,2,7060985734,On grid,Manauli Chaipur Muradnagar GZB,,BLUEBIRD
+422,,2025-2026,13/10/2025,Surendra Pal Singh,SPGs,7.85,7 X 9,8,9582801505,On grid,9/131 B-9 sec 3 Rajendra nagar sahibabad 201005,Rajendra nagar,Tata
+423,60896,2025-2026,18/10/2025,Dinesh kumar,SPGs,3,6X8,3,9990686976,On grid,Akash Nagar Indragarhi Dasna Dehat Tyagi hostel gali no 3,,Tata
+424,61344,2025-2026,18/10/2025,Harshad Mehta,C&I,20,mono,20,9810533008,On grid,B 92 Industrial area GT Karnal Road Ashok Vihar Delhi 110033,Delhi,Tata
+425,64306,2025-2026,22/10/2025,Abhishek Dwivedi,SPGs,3+3,mono 7X9,3+3,9953862885,On grid,3/169 Sector-2 Rajendra Nagar,Rajendra nagar,Tata
+426,64379,2025-2026,18/10/2025,Rajat Arora,SPGs,3,2X4,3,"9718115644, 8130774696",On grid,H no 102 sec 4 chiranjeev Vihar GZB,Chiranjiv vihar,Adani DCR
+427,60827,2025-2026,29/10/2025,Amit Kaushik (Durgaprashad),SPGs,5,6X8,5 I,7533955007,On grid,E 118 Janakpuri Ghaziabad UP 201001,,Tata
+428,5330,2025-2026,25/10/2025,Ravi Kumar,SPGs,5,8X10,5 I,"9350777003, 9315034163",On grid,B-71 Gagan Enclave Ghaziabad,,Tata
+429,64687,2025-2026,27/10/2025,Pradeep Kumar /Geeta Devi,SPGs,4,6X8,5 I,8287423410,On grid,48B Radhakunj Colony Banheta Rd Lal Kuan Ghaziabad,Lal kuan,Tata
+430,62539,2025-2026,31/10/2025,Rekha yadav/ Divy yadav,SPGs,10,7X9,10,"9868450979, 9716618317",On grid,M 169 sec 12 Pratap vihar Gzb,Pratap vihar,Vikram NDCR
+431,64828,2025-2026,30/10/2025,Dharampal Singh/ Ravikant,SPGs,2,2X4,2,9012637623,On grid,Saidpur Husainpur Deelna,,BLUEBIRD
+432,65010,2025-2026,02-11-2025,Ramesh Chand,SPGs,2,2X4,2,"9997974141, 9557081742",On grid,Hridaypur Bhandola Bhojpur Block Modinagar GZB,,BLUEBIRD
+433,,2025-2026,,Wave STP,C&I,550,,,,On grid,Wave City ghaziabad,,TATA NDCR
+434,,2025-2026,,Airmen Engineers,C&I,230,,,8588855726,On grid,Gajroula,,TATA NDCR
+435,,2025-2026,,Wave Vridhiya,C&I,72,,,,On grid,Wave City ghaziabad,,Sova
+436,65009,2025-2026,03-11-2025,Kunti Devi / Vikas,SPGs,3,2x4,2,9350529454,On grid,Shakalpura Chirodi,Chipiyana,BLUEBIRD
+437,32294,2025-2026,03-11-2025,Amit Pandey,SPGs,5,6x8,5,9810707606,On grid,D-171 Swaranjayantipuram GZB,,Tata
+438,61169,2025-2026,05-11-2025,Jairaj Sharma/ Anuj Sharma,SPGs,3,2x4,3,7017440527/ 8439184284,On grid,Tyagi Nagar Hapur,hAPUR,Tata
+439,61295,2025-2026,05-11-2025,Tarun Kumar,SPGs,3,6x8,3,9990610503,On grid,"Flat no. 1, 3rd floor plot no b108 Lal Bagh Vill Ahmednagar Loni GZB 201102",,Tata
+440,65136,2025-2026,10-11-2025,Santram,SPGs,2,2X4,2,9358340798,On grid,Vill Nagla Musa Post Painga Modinagar Bhojpur Block,,BLUEBIRD
+441,65132,2025-2026,10-11-2025,Dinesh Charan,SPGs,4.6,7X9,5,"7827029911, 9599977911",On grid,c 53 Block C Green Villa 2 Chipiyana Buzurg,Chipiyana,Tata
+442,59803,2025-2026,12-11-2025,SUNIL KUMAR,SPGs,3,2X4,3,8010062499,On grid,"1281, SHIV NAGAR LAL KUAN GZB",Lal kuan,Adani DCR
+443,65185,2025-2026,21/11/2025,Aditya Tyagi/ Renu Tyagi,SPGs,3,2x4,3,8077254228,On grid,h no 504 Nekpur Ghaziabad,,BLUEBIRD
+444,65184,2025-2026,21/11/2025,Atul Tyagi/Mamta Tyagi,SPGs,2,2x4,2,"9997298052, 7417671265",On grid,h no 379 Nekpur Ghaziabad,,Vikram DCR
+445,65177,2025-2026,21/11/2025,Vinod kumar,SPGs,3,2x4,3,7520689150,On grid,Nekpur Ghaziabad,,BLUEBIRD
+446,65188,2025-2026,25/11/2025,Mithlesh / Gaurav,SPGs,3,2x4,3,9634990446/ 8755363696,On grid,"Kannauja, Muradnagar",,BLUEBIRD
+447,65093,2025-2026,21/11/2025,Pradeep Kashyap (Sagar),SPGs,3,2x4,3,6398402071,On grid,Meerpur Hindu Loni,,BLUEBIRD
+448,65168,2025-2026,10-12-2025,Ashok Thakur,SPGs,5,6x8,8,9971112169,On grid,B-127 Sec 11 Pratap Vihar GZB,Pratap vihar,Tata
+449,65194,2025-2026,01-12-2025,Gyan SIngh SIwas,SPGs,4,6X8,5,8285525255,On grid,B 47 Panchsheel Colony lal kuan GB Nagar,Lal kuan,Tata
+450,26393,2025-2026,02-12-2025,Ravindra Singh,SPGs,3+2,2X4,5,9911522809,On grid,H N 167 B-Block Vrindavan garden Chipiyana Buzurg,Chipiyana,Tata
+451,65227,2025-2026,03-12-2025,Sunder Kumar,SPGs,3,2x4,3,"9634506541, 9690092795",On grid,H No. G 359 Village Morta 201001 GZB,,BLUEBIRD
+452,65249,2025-2026,8-12-2025,Yogendra Kumar,SPGs,3.45,7X9,3,"9958195885, 9818144437",On grid,B 295 Brij Vihar GZB,,Tata
+453,65273,2025-2026,13/12/2025,Ram Niwas,SPGs,5,8x10,8,9911598280,On grid,H.No. 151 Niti Khand - 3 Indrapuram GZB,,Tata
+454,65263,2025-2026,11-12-2025,Farooq Ali,SPGs,3,4x6,3,"9587021238, 9027285752",On grid,Arya Nagar Rajveer Wali Gali Muradnagar 201206,,BLUEBIRD
+455,65277,2025-2026,12-12-2025,Gaurav Mittal,SPGs,3+4,6x8,8,9810020961,On grid,IIB 6A Nehru Nagar GZB,,Adani DCR
+456,36237,2025-2026,08-12-2025,Omprakash Sharma,SPGs,4,4x6,5,7428147140,On grid,Rahispur ghaziabad,sanjay nagar,Adani DCR
+457,65300,2025-2026,24/12/2025,Sujeet Kumar Sinha,SPGs,4.64,mono,5,"8920151432, 7042529345",On grid,H no 2113 Sector 16A Vasundhara GZB,Vasundhara,Tata
+458,56319,2025-2026,26/12/2025,Amit Nandrajog,SPGs,3,3x5,3,9582252414,On grid,R-2/161 Rajnagar GZB,Raj nagar,Tata
+459,65310,2025-2026,25/12/2025,Pradeep Kumar Mishra,SPGs,3,10x12,3,8861407647,On grid,H No 256 Radhey Shyam Vihar Ph 1 Muradnagar,Murad nagar,Tata
+460,65302,2025-2026,29/12/2025,Mahmood Hasan,SPGs,2,8x10,2,"9871071282, 7827482136",On grid,H block Buddh Nagar Loni Dehat 201102,Loni,Vikram DCR
+461,59598,2025-2026,31/12/2025,Satendri Rathi,SPGs,3,4x6,3,"7023066704, 8791266026",On grid,Umesh park Modinagar GZB - 201204,Modinagar,Tata
+462,65011,2025-2026,31/12/2025,Devendra Malik,SPGs,4,6x8,5,"9811000922, 9759312643",On grid,H No 4 Balaji Enclave Main Gali Sadarpur Road Govindpuram,,Adani DCR
+463,65322,2025-2026,02-01-2026,Sudhir Kumar Singh,SPGs,4,7x9,5,"9582792598, 7903420320",On grid,C-180 SF3 2nd Floor Shalimar Garden Extn 2 GZB 201005,,Tata
+464,61262,2025-2026,02-01-2026,Suresh,SPGs,3,10x12,3,9818268183,On grid,D-381 Gali no 6 Mandoli Extn. SHahadra,,BLUEBIRD
+465,65306,2025-2026,22-12-2025,Aman Saxena,SPGs,4,0,4,"8376022400, 7065981218",On grid,Village Harsaon Post Dasna GZB,,Adani DCR
+466,65296,2025-2026,02-01-2026,Niranjan,SPGs,3,4x6,5,9910600775,On grid,"Dalegarh, Bilaspur, GB Nagar",,Tata
+467,65340,2025-2026,09-01-2026,Lata Saini,SPGs,3,4x6,3,"9810516572, 9818154977",On grid,H no 124 Maliwara Chowk Ghaziabad,,Tata
+468,65349,2025-2026,09-01-2026,Shahnavaj,SPGs,2,6x8,2,9012217649,On grid,319 kushaliya Dasna Ghaziabad,,Usha
+469,56373,2025-2026,07-01-2026,Kshitij Chaudhary,SPGs,5,mono,5 III,8826788923,On grid,A 140 Anand Vihar Ghaziabad,,Tata
+470,65333,2025-2026,06-01-2026,Mool Chand/ Neeraj,SPGs,3,15x6x3,3,"9650772318, 9873103424",On grid,5/10 Block A Lal Kuan Ghaziabad,,Vikram DCR
+471,61480,2025-2026,09-01-2026,Shalu Paliwal,SPGs,4,6x8,4,9650569480,On grid,"133, Village Nagla Firoz, Mohanpur, Attor, Ghaziabad",,Vikram DCR
+472,65395,2025-2026,22-01-2026,Azizur Rehman,SPGs,3,4x6,3,9310095299,On grid,Kushaliya Dasna Ghaziabad,Dasna,Vikram DCR
+473,65346,2025-2026,24-01-2026,Moolraj Tyagi,SPGs,5,6x8,5,9891080822,On grid,H No 241 Gali no 6 H Block Govindpuram GZB,Govindpuram,Tata
+474,65402,2025-2026,22-01-2026,Satish Kumar Sharma,SPGs,2,2x4,2,"8802203696, 9990015154",On grid,Behta Hajipur Thana Loni Border GZB,Loni,Vikram DCR
+475,27537,2025-2026,21-01-2026,Suraj Kr Gupta/ Rachit Gupta,SPGs,5,6.6 x 8.6,5 III,8909902760,On grid,H No 195 Sec 01 Chiranjiv Vihar Ghaziabad,Chiranjeev Vihar,Adani
+476,65392,2025-2026,20-01-2026,Kuldeep Sharma/ Sonu Sharma,SPGs,6,5x6,5,"7503985230, 9911620185",On grid,Nehru Nagar IInd A 140 GZB,Nehru Nagar,waree
+477,63484,2025-2026,22-01-2026,Satyapal Sharma,SPGs,2,,2,9990326967,On grid,Uttranchal Vihar Loni GZB,Loni,Vikram DCR
+478,64818,2025-2026,22/01/2026,Kamlesh/ Gopal Krishna,SPGs,3,6.6x8.6,3,"8750769274, 9315693190",On grid,khasra no 241 Sain Vihar Nai Basti Nye Pass Road Behind Neelam Dharam Kanta GZB,,Vikram DCR
+479,65406,2025-2026,22/01/2026,Pramod Kumar,SPGs,2,,,8979675214,On grid,"Samaipur, Katiyar",,Vikram DCR
+480,57411,2025-2026,22/01/2026,Veer Pal Singh,SPGs,2,,,8218807985,On grid,"Dheda, Muradnagar",Muradnagar,Vikram DCR
+481,29567,2025-2026,21/01/2026,Gurjit Singh,SPGs,3+6,6x8,10,9810008642,On grid,C-29 Model Town Ghaziabad 201001,Model Town,Vikram DCR
+482,65394,2025-2026,20/01/2026,Shri Gurunanak Public School,C&I,25,3x6,20,9871362858,On grid,C Block Lohia Nagar Ghaziabad,Lohia Nagar,TATA NDCR
+483,65393,2025-2026,20/01/2026,Shri Gurunanak Girls Inter College,C&I,25,3x6,20,9871362858,On grid,C Block Lohia Nagar Ghaziabad,Lohia Nagar,TATA NDCR
+484,65150,2025-2026,27/01/2026,Tabssum(Khalid Saifi),SPGs,3,6x8,3,"9871960695, 9910183781",On grid,Dasna,Dasna,Vikram DCR
+485,65427,2025-2026,28/01/2026,Indresh(Vikas),SPGs,3,2x4,3,7417936219,On grid,Gadana Garhi modinagar ghaziabad,Modinagar,Vikram DCR
+486,65361,2025-2026,29/01/2026,Rukan SIngh,SPGs,4,5x7,5,"8218260421, 8218260421",On grid,Shahjahanpur Modinagar,Modinagar,Tata
+487,65399,2025-2026,31/01/2026,Radhe Shyam(Madhav Tyagi),SPGs,3,6x8,3,"8077755942, 9312544501",On grid,Loni,Loni,Vikram DCR
+488,36482,2026-2026,01-12-2025,Pankaj Mittal,SPGs,7,6x10,8,9313436600,On grid,II F 118 Nehru nagar Ghaziabad,Nehru Nagar,Tata
+489,65360,2025-2026,31/01/2026,Anita Gole,SPGs,4,6x8,5,9911029098,On grid,Sahar Colony Chhapraula Ghaziabad,Chhapraula,Tata
+490,61596,2025-2026,02-02-2026,Deepak Kumar Agarwal,SPGs,3+4,6x8,8,9910401961,On grid,B-43 Sun Villas Rajnagar Ghaziabad,Raj nagar,Tata
+491,65841,2025-2026,05-02-2026,Jitendra Kumar,SPGs,4,5x7,5,9927568550,On grid,H No 614 Sadarpur Govindpuram,Govindpuram,Vikram DCR
+492,65842,2025-2026,07-02-26,Devendra,SPGs,2,2x4,2,"7065854346, 7678319300",On grid,"229, Agarola, Loni",Loni,Vikram DCR
+493,68774,2025-2026,11-02-26,Mahendra Tyagi(Naveen Tyagi),SPGs,4,4x6,4,"7599721524, 9412820755",On grid,"92, Bahadapur, Ghaziabad, 201003",,Vikram DCR
+494,65350,2025-2026,11-02-26,Ramendra Singh,SPGs,3,6x8,"3, battery: Cust scope",9456051726,Hybrid,"Rail Vihar, 2nd Girdharpur rd, Near Karnal Public School",,Adani
+495,60088,2025-2026,12-02-26,Anita Singh,SPGs,3,4x6,3(Solar Edge),"9837683635, 8755548123",On grid,"Jasroop Nagar, modinagar rd, hapur",Hapur,Adani
+496,65430,2025-2026,13/02/2026,Monika Upadhyay(Ashish Upadhyay),SPGs,3(Topconn),7 x 9,3,8130754803,On grid,"House Number: 655, 3rd floor, Sector 3f, vaishali, Ghaziabad",,Adani
+497,64665,2025-2026,15/02/2026,Yash Bansal,SPGs,4,6.6 x 8.6,5,"9811582237, 9873133085",On grid,"Plot no:31, Khasra: 712, MEP Royal Green City, Phase: 3, Village Morta, Ghaziabad, 201003",,Adani
+498,73962,2025-2026,18/02/2026,Mumtaz khatoon,SPGs,3,6x8,3,8303613749,On grid,"Village Yusufpur, chak shahberi, Opp. MBDM Public School, Greater Noida, 201301",Greater Noida,Vikram DCR
+499,73975,2025-2026,20/02/2026,Abdul Hamid(Sameer),SPGs,4,2 x 4,4,"9311516427, 6397685389",On grid,"H.no. 440, Bhoor Garhi, Dasna dehat ghaziabad, 201001",,Vikram DCR
+500,65845,2025-2026,20/02/2026,Sandeep Sharma,SPGs,3(610 Watt 5 Panel),6 x 8 (PreGI),3,8800948412,On grid,"Hari Nagar, Daulat Ram Colony, Dadri, 203207",,Adani
+501,65148,2025-2026,25/02/2026,Rohit Chaudhary,SPGs,,,,7982620019,On grid,,,
+502,65410,2025-2026,25/02/2026,Neelam Malhotra(Prateek),SPGs,3,7 X 9,3,9999077329,On grid,"House no. 5 and 6, 3rd floor block k.g pkt.23 sector 7 rohini 110085",,Adani
+503,62276,2025-2026,24/02/2026,Beena Devi(Ajay Kumar Mishra),SPGs,3,2 x 5,3,"9871429145, 9354303351",On grid,"E-15, Panchsheel Colony, Bhopura, Loni Rd",Bhopura,Adani
+504,65289,2025-2026,06-03-2026,Balwant Singh,SPGs,4,7 x 9,5 (I),9999206990,On grid,"Haldoni Hno 228, Gr. Noida, Gautam Budh Nagar, 201306",Noida,Adani
+505,73999,2025-2026,03-03-2026,Rajeev kumar Upadhyay,SPGs,5,8 x 10,5 (I),9811314341,On grid,"House No. 2, Sector 2, Chiranjeev Vihar, Ghaziabad, 201002",Chiranjeev Vihar,Adani
+506,74006,2025-2026,06-02-2026,Neeraj Devi,SPGs,3,6 x 8,3,8273074089,On grid,Rajbala enclave modinagar 201204,Modinagar,Tata
+507,65314,2025-2026,06-03-2026,Pankaj Yadav,SPGs,3,7 x 9,5 (I),9412447707,On grid,house no.418 gali no 6 bharampuri fafrana road modi nagar,Modinagar,Tata
+508,62099,2025-2026,05-03-2026,Deepa,SPGs,4,7 X 9,5 (I),7599186416,On grid,Rajbala enclave modinagar 201204,Modinagar,Tata
+509,73985,2025-2026,09-03-2026,Shirin Saxena,SPGs,3 (kit),6 x 8,5 (I),9818840629,On grid,"478,sector 2, Chiranjeev Vihar, Ghaziabad",Chiranjeev Vihar,waree
+510,74008,2025-2026,07-03-2026,Amit Kumar Saxena,SPGs,3,6 ft 6 inch x 8 ft 6 inch,3,9871876757,On grid,"Wz 1598K,Ashok Cottage, Nangan Raya, New Delhi-110046",New Delhi,Adani
+511,73953,2025-2026,11-03-2026,Tikam Singh,SPGs,3,6 x 8 (PreGI),3,9718961322,On grid,Jaitpur Baispur Greater Noida. 201301,Greater Noida,IB
+512,74015,2025-2026,11-03-2026,Diwakar,SPGs,4,6 x 8 ft,5 (I),9810671224,On grid,House no.15 New Shatabdipuram Ghaziabad 201013,,Adani
+513,74084,2025-2026,12-03-2026,Asha Saini,SPGs,3.6(6 Panel),4 x 6 (PreGI),3,,On grid,"Ramprastha Vihar, behta hazipur loni gzb 201102",,Adani Topconn
+514,73988,2025-2026,12-03-2026,Ramesh Chand Saini,SPGs,3.6(6 Panel),7 x 9 (PreGI),3,7838407600,On grid,"Nwe Ramprastha Vihar, behta band fatak loni gzb 201102",,Adani Topconn
+515,,,,,,,,,,,,,
+516,,,,,,,,,,,,,
+517,,,,,,,,,,,,,
+518,,,,,,,,,,,,,
+519,,,,,,,,,,,,,
+520,,,,,,,,,,,,,
+521,,,,,,,,,,,,,
+522,,,,,,,,,,,,,
+523,,,,,,,,,,,,,
+524,,,,,,,,,,,,,
+525,,,,,,,,,,,,,
+526,,,,,,,,,,,,,
+527,,,,,,,,,,,,,
+528,,,,,,,,,,,,,
