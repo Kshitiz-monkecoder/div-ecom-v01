@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { CreateTicketForm } from "@/components/create-ticket-form";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Order, OrderItem, Product } from "@prisma/client";
+import { type Order, type OrderItem, type Product } from "@/types";
 
 const STORAGE_KEY = "ticketCreateCooldownUntil";
 

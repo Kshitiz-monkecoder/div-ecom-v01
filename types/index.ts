@@ -1,6 +1,13 @@
-import { OrderStatus, TicketStatus, Role } from "@prisma/client";
+export const Role = {
+  USER: "USER",
+  ADMIN: "ADMIN",
+} as const;
 
-export type { OrderStatus, TicketStatus, Role };
+export type Role = (typeof Role)[keyof typeof Role];
+
+export type OrderStatus = "NEW" | "CONTACTED" | "CONFIRMED" | "INSTALLED" | "CANCELLED";
+
+export type TicketStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
 
 export const ORDER_STATUSES: OrderStatus[] = [
   "NEW",
@@ -80,7 +87,92 @@ export type DeliverySlot = (typeof DELIVERY_SLOTS)[number]["value"];
 
 export type ProductCategory = typeof PRODUCT_CATEGORIES[number];
 
-import { Product } from "@prisma/client";
+export interface User {
+  id: string;
+  name: string;
+  phone: string;
+  email?: string | null;
+  role: Role;
+  referralCode?: string | null;
+  isActive?: boolean;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  capacity: string;
+  category: ProductCategory | string;
+  images: string[];
+  isActive?: boolean;
+  sno?: string | null;
+  leadNo?: string | null;
+  tenure?: string | null;
+  date?: Date | string | null;
+  customerCompanyName?: string | null;
+  segmentProductType?: string | null;
+  kWp?: string | null;
+  structure?: string | null;
+  inverter?: string | null;
+  mobileNo?: string | null;
+  systemType?: string | null;
+  address?: string | null;
+  area?: string | null;
+  solarBrand?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+}
+
+export interface OrderItem {
+  id?: string;
+  orderId?: string;
+  productId?: string;
+  quantity: number;
+  unitPrice: number;
+  name: string;
+  description?: string | null;
+  capacity?: string | null;
+  product?: Product | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+}
+
+export interface Order {
+  id: string;
+  orderNumber: string;
+  status: OrderStatus;
+  address: string;
+  phone: string;
+  notes?: string | null;
+  deliveryDate?: Date | string | null;
+  deliverySlot?: string | null;
+  isMaterialDelivery?: boolean | null;
+  warrantyCardUrl?: string | null;
+  invoiceUrl?: string | null;
+  additionalFiles?: string[] | null;
+  userId?: string;
+  user?: User | null;
+  items?: OrderItem[];
+  createdAt: Date | string;
+  updatedAt?: Date | string;
+}
+
+export interface Ticket {
+  id: string;
+  category: TicketCategory | string;
+  description: string;
+  status: TicketStatus;
+  orderId?: string | null;
+  order?: Order | null;
+  user?: User | null;
+  images?: string[] | null;
+  subCategories?: string[] | null;
+  createdAt: Date | string;
+  updatedAt?: Date | string;
+}
 
 export type ParsedProduct = Omit<Product, "images"> & { images: string[] };
 

@@ -16,8 +16,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createTicket } from "@/app/actions/tickets";
-import { TICKET_CATEGORIES, TICKET_SUB_CATEGORIES } from "@/types";
-import { Order, OrderItem, Product } from "@prisma/client";
+import {
+  TICKET_CATEGORIES,
+  TICKET_SUB_CATEGORIES,
+  type Order,
+  type OrderItem,
+  type Product,
+} from "@/types";
 import { Sun, Wrench, Receipt, HelpCircle, ChevronLeft, Check, Search } from "lucide-react";
 
 interface CreateTicketFormProps {

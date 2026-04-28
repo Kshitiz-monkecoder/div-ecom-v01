@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TicketCard } from "@/components/ticket-card";
 import { CreateTicketButton } from "@/components/create-ticket-button";
 import { Wrench, FileCheck, Phone, MessageCircle } from "lucide-react";
-import type { Ticket } from "@prisma/client";
+import type { Ticket } from "@/types";
 
 const PHONE_NUMBER = "9310259325";
 const WHATSAPP_NUMBER = "919310259325";

@@ -7,8 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OrderCard } from "@/components/order-card";
 import { MediaCarousel, type MediaItem } from "@/components/media-carousel";
 import { ProductCard } from "@/components/product-card";
-import type { Order, OrderItem } from "@prisma/client";
-import type { ParsedProduct } from "@/types";
+import type { Order, OrderItem, ParsedProduct } from "@/types";
 
 const orderMedia: MediaItem[] = [
   { type: "video", url: "https://res.cloudinary.com/dmk66g4w2/video/upload/v1770089560/Ashish_Jain___Solar_Monitor___Kavinagar___DIVY_POWER_Pvt_Ltd___TATA_Power_Pvt_Ltd_oxmonq.mp4", alt: "Order Update" },

@@ -46,8 +46,8 @@ WHERE type='index' AND tbl_name='UserProduct' AND sql LIKE '%UNIQUE%';
 -- ============================================================
 -- 
 -- To apply the schema changes:
--- 1. The Prisma schema file (prisma/schema.prisma) has been updated
--- 2. Run: npx prisma generate (to regenerate Prisma Client)
+-- 1. The application schema/types have been updated
+-- 2. Ensure the application is rebuilt before deploying changes
 -- 3. Restart your Next.js development server
 --
 -- The database itself requires no changes.

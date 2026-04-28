@@ -14,8 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { updateOrderStatus } from "@/app/actions/orders";
-import { OrderStatus } from "@prisma/client";
-import { ORDER_STATUSES } from "@/types";
+import { ORDER_STATUSES, type OrderStatus } from "@/types";
 
 interface OrderStatusFormProps {
   orderId: string;

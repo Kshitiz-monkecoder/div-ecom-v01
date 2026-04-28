@@ -2,9 +2,9 @@
 
 import { getCurrentUser } from "@/lib/auth";
 import { requireAuth, requireAdmin } from "@/lib/proxy";
-import { TicketStatus } from "@prisma/client";
 import { z } from "zod";
 import { divyEngineFetch } from "@/lib/divy-engine-api";
+import { type TicketStatus } from "@/types";
 
 const createTicketSchema = z.object({
   category: z.enum(["Installation Issue", "Product Issue", "Billing / Payment", "General Query"]),

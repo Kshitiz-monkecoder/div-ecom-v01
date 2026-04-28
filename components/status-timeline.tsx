@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { StatusBadge } from "@/components/status-badge";
-import { OrderStatus, TicketStatus } from "@prisma/client";
 import { SafeImage } from "@/components/safe-image";
+import { type OrderStatus, type TicketStatus } from "@/types";
 
 type TimelineStatus = OrderStatus | TicketStatus;
 

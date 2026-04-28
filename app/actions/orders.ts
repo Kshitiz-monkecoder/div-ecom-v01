@@ -2,10 +2,10 @@
 
 import { getCurrentUser } from "@/lib/auth";
 import { requireAuth, requireAdmin } from "@/lib/proxy";
-import { OrderStatus } from "@prisma/client";
 import { z } from "zod";
 import { uploadDocument, uploadMultipleFiles } from "@/lib/cloudinary";
 import { divyEngineFetch } from "@/lib/divy-engine-api";
+import { type OrderStatus } from "@/types";
 
 const createOrderSchema = z.object({
   productId: z.string().min(1),

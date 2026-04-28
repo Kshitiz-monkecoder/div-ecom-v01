@@ -19,20 +19,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { createAdminOrder } from "@/app/actions/orders";
 import { getAllUsersForAssignment } from "@/app/actions/admin";
 import { getAllProducts } from "@/app/actions/products";
-import { User } from "@prisma/client";
 import { Trash2, Plus } from "lucide-react";
-
-type Product = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  capacity: string;
-  category: string;
-  images: string[];
-  isActive: boolean;
-  createdAt: Date;
-};
+import { type Product, type User } from "@/types";
 
 interface OrderItem {
   productId: string;

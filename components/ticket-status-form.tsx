@@ -14,8 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { updateTicketStatus } from "@/app/actions/tickets";
-import { TicketStatus } from "@prisma/client";
-import { TICKET_STATUSES } from "@/types";
+import { TICKET_STATUSES, type TicketStatus } from "@/types";
 
 interface TicketStatusFormProps {
   ticketId: string;

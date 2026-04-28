@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/components/language-provider";
-import { Ticket } from "@prisma/client";
 import { format } from "date-fns";
+import { type Ticket } from "@/types";
 
 interface TicketCardProps {
   ticket: Ticket & {

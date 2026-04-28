@@ -1,4 +1,4 @@
-import { Order, OrderItem, User } from "@prisma/client";
+import { type Order, type OrderItem, type User } from "@/types";
 
 interface WarrantyData {
   order: Order & {

@@ -1,6 +1,6 @@
 import { CheckCircle2, Circle, CircleDot, XCircle } from "lucide-react";
 import { format } from "date-fns";
-import { OrderStatus } from "@prisma/client";
+import { type OrderStatus } from "@/types";
 
 type HistoryItem = {
   status: OrderStatus;

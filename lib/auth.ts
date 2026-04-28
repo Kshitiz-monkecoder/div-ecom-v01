@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
-import { Role, type User } from "@prisma/client";
 import { divyEngineFetch } from "@/lib/divy-engine-api";
 import { cache } from "react";
+import { Role, type User } from "@/types";
 
 const SESSION_COOKIE_NAME = "auth_session";
 

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { Role, type User } from "@prisma/client";
 import { getCurrentUser } from "@/lib/auth";
+import { Role, type User } from "@/types";
 
 /**
  * Layout-level auth guards (server components).
@@ -21,4 +21,3 @@ export async function requireAdmin(): Promise<User> {
   }
   return user;
 }
-

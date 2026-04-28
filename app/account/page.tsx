@@ -9,9 +9,9 @@ export default async function AccountPage() {
     <CustomerLayout>
       <AccountPageClient
         name={user.name}
-        email={user.email}
+        email={user.email ?? null}
         phone={user.phone}
-        createdAt={user.createdAt}
+        createdAt={user.createdAt ? new Date(user.createdAt) : new Date()}
       />
     </CustomerLayout>
   );

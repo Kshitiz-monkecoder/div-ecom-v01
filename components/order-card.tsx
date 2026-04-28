@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/components/language-provider";
-import { Order, OrderItem } from "@prisma/client";
 import { format } from "date-fns";
+import { type Order, type OrderItem } from "@/types";
 
 interface OrderCardProps {
   order: Order & {
