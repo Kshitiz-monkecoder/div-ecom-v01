@@ -1,9 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ParsedProduct } from "@/types";
+import { SafeImage } from "@/components/safe-image";
 
 interface ProductCardProps {
   product: ParsedProduct;
@@ -16,11 +16,10 @@ export function ProductCard({ product }: ProductCardProps) {
     <Card className="flex flex-col h-full">
       <div className="relative w-full h-52 overflow-hidden rounded-t-lg">
         {product.images.length > 0 ? (
-          <Image
+          <SafeImage
             src={product.images[0]}
             alt={product.name}
-            fill
-            className="object-cover"
+            className="h-full w-full object-cover"
           />
         ) : (
           <div className="w-full h-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center">

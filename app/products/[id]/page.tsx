@@ -2,8 +2,8 @@ import { getProduct } from "@/app/actions/products";
 import { Navbar } from "@/components/navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { SafeImage } from "@/components/safe-image";
 import { getCurrentUser } from "@/lib/auth";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -32,11 +32,10 @@ export default async function ProductDetailPage({
           <div>
             {product.images.length > 0 ? (
               <div className="relative w-full h-96 rounded-lg overflow-hidden">
-                <Image
+                <SafeImage
                   src={product.images[0]}
                   alt={product.name}
-                  fill
-                  className="object-cover"
+                  className="h-full w-full object-cover"
                 />
               </div>
             ) : (

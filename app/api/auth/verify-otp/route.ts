@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
-import { Role, type User } from "@prisma/client";
-import { getOTP, deleteOTP } from "@/lib/otp-store";
-import { generateReferralCode } from "@/lib/referral";
+import { divyEngineFetch } from "@/lib/divy-engine-api";
 
 const SESSION_COOKIE_NAME = "auth_session";
-const SESSION_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days
+const SESSION_DURATION = 30 * 24 * 60 * 60 * 1000;
 
 function cleanPhoneNumber(phone: string): string {
   return phone.replace(/\D/g, "");
@@ -19,115 +16,51 @@ function generateSessionToken(): string {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { phone, otp } = body;
+    const cleanPhone = cleanPhoneNumber(body.phone || "");
+    const otp = String(body.otp || "");
 
-    if (!phone || !otp) {
-      return NextResponse.json(
-        { error: "Phone number and OTP are required" },
-        { status: 400 }
-      );
+    if (!cleanPhone || !otp) {
+      return NextResponse.json({ error: "Phone number and OTP are required" }, { status: 400 });
     }
 
-    // Clean phone number
-    const cleanPhone = cleanPhoneNumber(phone);
-
-    // Verify OTP
-    const storedOtp = getOTP(cleanPhone);
-
-    if (!storedOtp) {
-      return NextResponse.json(
-        { error: "OTP not found. Please request a new OTP." },
-        { status: 400 }
-      );
-    }
-
-    if (Date.now() > storedOtp.expiresAt) {
-      deleteOTP(cleanPhone);
-      return NextResponse.json(
-        { error: "OTP has expired. Please request a new OTP." },
-        { status: 400 }
-      );
-    }
-
-    if (storedOtp.otp !== otp) {
-      return NextResponse.json(
-        { error: "Invalid OTP" },
-        { status: 400 }
-      );
-    }
-
-    // OTP verified, delete it
-    deleteOTP(cleanPhone);
-
-    // Find or create user
-    let user = await prisma.user.findUnique({
-      where: { phone: cleanPhone },
+    const user = await divyEngineFetch<{
+      id: string;
+      name: string;
+      phone: string;
+      email: string | null;
+      role: "USER" | "ADMIN";
+      referralCode: string;
+    }>("/api/ecom/auth/verify-otp", {
+      method: "POST",
+      body: JSON.stringify({ phone: cleanPhone, otp }),
     });
 
-    if (!user) {
-      // Create new user
-      let createdUser: User | null = null;
-      for (let attempt = 0; attempt < 10; attempt++) {
-        const referralCode = generateReferralCode();
-        try {
-          createdUser = await prisma.user.create({
-            data: {
-              phone: cleanPhone,
-              name: `User ${cleanPhone}`,
-              role: Role.USER,
-              referralCode,
-            },
-          });
-          break;
-        } catch (err: any) {
-          // Referral code collision; retry.
-          if (err?.code === "P2002") continue;
-          throw err;
-        }
-      }
-
-      if (!createdUser) {
-        return NextResponse.json(
-          { error: "Failed to create user" },
-          { status: 500 }
-        );
-      }
-
-      user = createdUser;
-    }
-
-    // Create session
     const sessionToken = generateSessionToken();
     const cookieStore = await cookies();
-    
-    cookieStore.set(SESSION_COOKIE_NAME, JSON.stringify({
-      userId: user.id,
-      token: sessionToken,
-    }), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: SESSION_DURATION / 1000,
-      path: "/",
-    });
-
-    return NextResponse.json({
-      success: true,
-      user: {
-        id: user.id,
-        name: user.name,
-        phone: user.phone,
-        email: user.email,
+    cookieStore.set(
+      SESSION_COOKIE_NAME,
+      JSON.stringify({
+        userId: user.id,
         role: user.role,
-       referralCode: user.referralCode,
-      },
-    });
+        token: sessionToken,
+      }),
+      {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: SESSION_DURATION / 1000,
+        path: "/",
+      }
+    );
+
+    return NextResponse.json({ success: true, user });
   } catch (error) {
     console.error("Error verifying OTP:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    const message = error instanceof Error ? error.message : "Internal server error";
+    const status =
+      message.includes("Invalid OTP") || message.includes("expired") || message.includes("not found")
+        ? 400
+        : 500;
+    return NextResponse.json({ error: message }, { status });
   }
 }
-

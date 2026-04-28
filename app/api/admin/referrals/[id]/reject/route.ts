@@ -1,36 +1,23 @@
-import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
+import { divyEngineFetch } from "@/lib/divy-engine-api";
 
 export async function POST(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    await requireAdmin();
-
-    // ✅ unwrap params properly
+    const admin = await requireAdmin();
     const { id } = await context.params;
-    const referralId = Number(id);
 
-    if (isNaN(referralId)) {
-      return NextResponse.json(
-        { error: "Invalid referral ID" },
-        { status: 400 }
-      );
-    }
-
-    const referral = await prisma.referral.update({
-      where: { id: referralId },
-      data: { status: "REJECTED" },
+    const referral = await divyEngineFetch<any>(`/api/ecom/admin/referrals/${id}/reject`, {
+      method: "POST",
+      actor: { id: admin.id, role: admin.role },
     });
 
     return NextResponse.json(referral);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: "Failed to reject referral" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to reject referral" }, { status: 500 });
   }
 }

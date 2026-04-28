@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 
 interface ProductImageCarouselProps {
   images: string[];
@@ -36,11 +36,10 @@ export function ProductImageCarousel({ images, alt, className = "" }: ProductIma
 
   if (!hasMultipleImages) {
     return (
-      <Image
+      <SafeImage
         src={images[0]}
         alt={alt}
-        fill
-        className={`object-cover ${className}`}
+        className={`h-full w-full object-cover ${className}`}
       />
     );
   }
@@ -58,11 +57,10 @@ export function ProductImageCarousel({ images, alt, className = "" }: ProductIma
             index === currentIndex ? "opacity-100" : "opacity-0"
           }`}
         >
-          <Image
+          <SafeImage
             src={image}
             alt={`${alt} - Image ${index + 1}`}
-            fill
-            className={`object-cover ${className}`}
+            className={`h-full w-full object-cover ${className}`}
           />
         </div>
       ))}

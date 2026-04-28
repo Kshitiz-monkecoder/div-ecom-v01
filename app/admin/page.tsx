@@ -63,9 +63,9 @@ export default async function AdminDashboard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {stats.recentOrders.map((order) => {
+              {stats.recentOrders.map((order: any) => {
                 const totalAmount = order.items.reduce(
-                  (sum, item) => sum + item.unitPrice * item.quantity,
+                  (sum: number, item: any) => sum + item.unitPrice * item.quantity,
                   0
                 );
                 const itemCount = order.items.length;

@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { divyEngineFetch } from "@/lib/divy-engine-api";
 
-/**
- * Diagnostic endpoint to verify document URLs in database
- * GET /api/verify-document?orderId=xxx
- */
 export async function GET(request: NextRequest) {
   try {
-    await requireAuth();
+    const user = await requireAuth();
 
     const searchParams = request.nextUrl.searchParams;
     const orderId = searchParams.get("orderId");
@@ -17,25 +13,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Order ID required" }, { status: 400 });
     }
 
-    const order = await prisma.order.findUnique({
-      where: { id: orderId },
-      select: {
-        id: true,
-        orderNumber: true,
-        warrantyCardUrl: true,
-        invoiceUrl: true,
-        additionalFiles: true,
-      },
+    const order = await divyEngineFetch<{
+      id: string;
+      orderNumber: string;
+      warrantyCardUrl: string | null;
+      invoiceUrl: string | null;
+      additionalFiles: string[];
+    }>(`/api/ecom/orders/${orderId}/documents`, {
+      actor: { id: user.id, role: user.role },
     });
 
-    if (!order) {
-      return NextResponse.json({ error: "Order not found" }, { status: 404 });
-    }
-
-    const additionalFiles = order.additionalFiles ? JSON.parse(order.additionalFiles) : [];
-
-    // Test each URL
-    const urlChecks = [];
+    const urlChecks: Array<Record<string, unknown>> = [];
 
     if (order.warrantyCardUrl) {
       try {
@@ -75,12 +63,12 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    for (let i = 0; i < additionalFiles.length; i++) {
+    for (let i = 0; i < order.additionalFiles.length; i++) {
       try {
-        const response = await fetch(additionalFiles[i], { method: "HEAD" });
+        const response = await fetch(order.additionalFiles[i], { method: "HEAD" });
         urlChecks.push({
           type: `additional-${i + 1}`,
-          url: additionalFiles[i],
+          url: order.additionalFiles[i],
           status: response.status,
           contentType: response.headers.get("content-type"),
           valid: response.ok,
@@ -88,7 +76,7 @@ export async function GET(request: NextRequest) {
       } catch (error) {
         urlChecks.push({
           type: `additional-${i + 1}`,
-          url: additionalFiles[i],
+          url: order.additionalFiles[i],
           error: error instanceof Error ? error.message : "Unknown error",
         });
       }

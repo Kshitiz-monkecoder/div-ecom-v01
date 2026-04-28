@@ -7,8 +7,8 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
 import { TICKET_SUB_CATEGORIES } from "@/types";
+import { SafeImage } from "@/components/safe-image";
 
 export default async function TicketDetailPage({
   params,
@@ -22,7 +22,7 @@ export default async function TicketDetailPage({
     notFound();
   }
 
-  const statusTimeline = ticket.statusHistory.map((entry) => {
+  const statusTimeline = ticket.statusHistory.map((entry: any) => {
     let images: string[] = [];
     if (entry.imagesJson) {
       try {
@@ -116,13 +116,12 @@ export default async function TicketDetailPage({
             <div>
               <h2 className="text-xl font-semibold mb-2">Supporting Images</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {ticket.images.map((image, index) => (
+                {ticket.images.map((image: any, index: number) => (
                   <div key={image.id} className="relative h-28 w-full">
-                    <Image
+                    <SafeImage
                       src={image.url}
                       alt={`Support image ${index + 1}`}
-                      fill
-                      className="rounded-md object-cover"
+                      className="h-full w-full rounded-md object-cover"
                     />
                   </div>
                 ))}

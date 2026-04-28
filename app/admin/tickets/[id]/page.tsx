@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { TICKET_SUB_CATEGORIES } from "@/types";
+import { parseTicketSubCategories } from "@/lib/ticket-subcategories";
 
 export default async function AdminTicketDetailPage({
   params,
@@ -20,18 +21,7 @@ export default async function AdminTicketDetailPage({
     notFound();
   }
 
-  // Parse sub-categories
-  let subCategories: string[] = [];
-  if (ticket.subCategories) {
-    try {
-      const parsed = JSON.parse(ticket.subCategories);
-      if (Array.isArray(parsed)) {
-        subCategories = parsed;
-      }
-    } catch {
-      subCategories = [];
-    }
-  }
+  const subCategories = parseTicketSubCategories(ticket.subCategories);
 
   // Get labels for sub-categories
   const getSubCategoryLabel = (value: string) => {

@@ -36,9 +36,9 @@ export default async function AdminOrdersPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {orders.map((order) => {
+              {orders.map((order: any) => {
                 const totalAmount = order.items.reduce(
-                  (sum, item) => sum + item.unitPrice * item.quantity,
+                  (sum: number, item: any) => sum + item.unitPrice * item.quantity,
                   0
                 );
                 const itemCount = order.items.length;

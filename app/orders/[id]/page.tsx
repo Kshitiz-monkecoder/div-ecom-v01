@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, ExternalLink, Shield, Receipt, Paperclip } from "lucide-react";
 import { OrderDeliverySlotForm } from "@/components/order-delivery-slot-form";
+import { parseStringArray } from "@/lib/json";
 
 export default async function OrderDetailPage({
   params,
@@ -23,23 +24,18 @@ export default async function OrderDetailPage({
   }
 
   const totalAmount = order.items.reduce(
-    (sum, item) => sum + item.unitPrice * item.quantity,
+    (sum: number, item: any) => sum + item.unitPrice * item.quantity,
     0
   );
   const totalInRupees = (totalAmount / 100).toFixed(2);
 
-  const additionalFiles = order.additionalFiles
-    ? JSON.parse(order.additionalFiles)
-    : [];
+  const additionalFiles = parseStringArray(order.additionalFiles);
 
-  const statusTimeline = order.statusHistory.map((entry) => {
+  const statusTimeline = order.statusHistory.map((entry: any) => {
     let images: string[] = [];
     if (entry.imagesJson) {
       try {
-        const parsed = JSON.parse(entry.imagesJson);
-        if (Array.isArray(parsed)) {
-          images = parsed;
-        }
+        images = parseStringArray(entry.imagesJson);
       } catch {
         images = [];
       }
@@ -59,9 +55,14 @@ export default async function OrderDetailPage({
     <CustomerLayout>
       <div className="max-w-5xl">
         <div className="mb-6">
-          <Link href="/orders">
-            <Button variant="ghost">← Back to Orders</Button>
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link href="/orders">
+              <Button variant="ghost">← Back to Orders</Button>
+            </Link>
+            <Link href={`/orders/${order.id}/pipeline`}>
+              <Button variant="outline">View Pipeline</Button>
+            </Link>
+          </div>
         </div>
 
         <div className="space-y-6">
@@ -87,7 +88,7 @@ export default async function OrderDetailPage({
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {order.items.map((item) => (
+                {order.items.map((item: any) => (
                   <div
                     key={item.id}
                     className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
@@ -276,7 +277,7 @@ export default async function OrderDetailPage({
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {order.tickets.map((ticket) => (
+                  {order.tickets.map((ticket: any) => (
                     <Link
                       key={ticket.id}
                       href={`/tickets/${ticket.id}`}

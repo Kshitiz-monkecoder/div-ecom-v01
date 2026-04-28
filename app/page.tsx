@@ -18,7 +18,7 @@ export default async function Home() {
     orderNumber: o.orderNumber,
     status: o.status,
     deliveryDate: o.deliveryDate?.toISOString() ?? null,
-    items: o.items.map((i) => ({ name: i.name, capacity: i.capacity })),
+    items: o.items.map((i: any) => ({ name: i.name, capacity: i.capacity })),
   }));
 
   return (

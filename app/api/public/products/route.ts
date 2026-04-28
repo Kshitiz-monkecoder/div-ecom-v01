@@ -1,30 +1,22 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { parseImages } from "@/lib/product-helpers";
+import { divyEngineFetch } from "@/lib/divy-engine-api";
 
 export async function GET() {
   try {
-    const products = await prisma.product.findMany({
-      where: { isActive: true },
-      orderBy: { createdAt: "desc" },
-      take: 12,
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        capacity: true,
-        category: true,
-        images: true,
-        price: true,
-      },
-    });
+    const response = await divyEngineFetch<{
+      success: boolean;
+      data: Array<{
+        id: string;
+        name: string;
+        description: string;
+        capacity: string;
+        category: string;
+        images: string[];
+        price: number;
+      }>;
+    }>("/api/ecom/public/products");
 
-    return NextResponse.json(
-      products.map((p) => ({
-        ...p,
-        images: parseImages(p.images),
-      }))
-    );
+    return NextResponse.json(response.data);
   } catch (error) {
     console.error("Public products API error:", error);
     return NextResponse.json(
@@ -33,4 +25,3 @@ export async function GET() {
     );
   }
 }
-

@@ -1,132 +1,39 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/proxy";
-import { generateReferralCode } from "@/lib/referral"; 
+import { divyEngineFetch } from "@/lib/divy-engine-api";
+
 export async function getDashboardStats() {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
-  const [totalOrders, openTickets, recentOrders, recentTickets] = await Promise.all([
-    prisma.order.count(),
-    prisma.ticket.count({
-      where: {
-        status: {
-          in: ["OPEN", "IN_PROGRESS"],
-        },
-      },
-    }),
-    prisma.order.findMany({
-      take: 10,
-      include: {
-        items: {
-          include: {
-            product: true,
-          },
-        },
-        user: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    }),
-    prisma.ticket.findMany({
-      take: 10,
-      include: {
-        user: true,
-        order: {
-          include: {
-            items: {
-              include: {
-                product: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    }),
-  ]);
-
-  return {
-    totalOrders,
-    openTickets,
-    recentOrders,
-    recentTickets,
-  };
+  return divyEngineFetch<{
+    totalOrders: number;
+    openTickets: number;
+    recentOrders: any[];
+    recentTickets: any[];
+  }>("/api/ecom/admin/dashboard", {
+    actor: { id: admin.id, role: admin.role },
+  });
 }
 
 export async function getAllUsers() {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
-  const users = await prisma.user.findMany({
-    include: {
-      _count: {
-        select: {
-          orders: true,
-          tickets: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
+  return divyEngineFetch<any[]>("/api/ecom/admin/users", {
+    actor: { id: admin.id, role: admin.role },
   });
-
-  return users;
 }
 
 export async function getUserDetails(id: string) {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   if (!id) {
     throw new Error("User ID is required");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id },
-    include: {
-      orders: {
-        include: {
-          items: {
-            include: {
-              product: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-      tickets: {
-        include: {
-          order: {
-            include: {
-              items: {
-                include: {
-                  product: true,
-                },
-              },
-            },
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-      products: {
-        include: {
-          product: true,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-    },
+  return divyEngineFetch<any>(`/api/ecom/admin/users/${id}`, {
+    actor: { id: admin.id, role: admin.role },
   });
-
-  return user;
 }
 
 export async function createUser(data: {
@@ -134,45 +41,22 @@ export async function createUser(data: {
   phone: string;
   email?: string;
 }) {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
-  // Clean phone number
   const cleanPhone = data.phone.replace(/\D/g, "");
-
   if (cleanPhone.length !== 10) {
     throw new Error("Phone number must be 10 digits");
   }
 
-  // Check if user already exists
-  const existingUser = await prisma.user.findUnique({
-    where: { phone: cleanPhone },
+  return divyEngineFetch<any>("/api/ecom/admin/users", {
+    method: "POST",
+    actor: { id: admin.id, role: admin.role },
+    body: JSON.stringify({
+      name: data.name,
+      phone: cleanPhone,
+      email: data.email || null,
+    }),
   });
-
-  if (existingUser) {
-    throw new Error("User with this phone number already exists");
-  }
-
-  for (let attempt = 0; attempt < 10; attempt++) {
-    const referralCode = generateReferralCode();
-    try {
-      const user = await prisma.user.create({
-        data: {
-          name: data.name,
-          phone: cleanPhone,
-          email: data.email || null,
-          role: "USER",
-          referralCode,
-        },
-      });
-      return user;
-    } catch (err: any) {
-      // Retry only for referralCode collisions.
-      if (err?.code === "P2002") continue;
-      throw err;
-    }
-  }
-
-  throw new Error("Failed to generate unique referral code");
 }
 
 export async function assignProductsToUser(userId: string, productIds: string[]) {
@@ -180,22 +64,13 @@ export async function assignProductsToUser(userId: string, productIds: string[])
     throw new Error("User ID is required");
   }
 
-  await requireAdmin();
+  const admin = await requireAdmin();
 
-  // Remove existing assignments
-  await prisma.userProduct.deleteMany({
-    where: { userId },
+  await divyEngineFetch<{ success: true }>(`/api/ecom/admin/users/${userId}/assign-products`, {
+    method: "POST",
+    actor: { id: admin.id, role: admin.role },
+    body: JSON.stringify({ productIds }),
   });
-
-  // Create new assignments
-  if (productIds.length > 0) {
-    await prisma.userProduct.createMany({
-      data: productIds.map((productId) => ({
-        userId,
-        productId,
-      })),
-    });
-  }
 
   return { success: true };
 }
@@ -205,42 +80,53 @@ export async function getUserAssignedProducts(userId: string) {
     throw new Error("User ID is required");
   }
 
-  await requireAdmin();
+  const admin = await requireAdmin();
 
-  const userProducts = await prisma.userProduct.findMany({
-    where: { userId },
-    include: {
-      product: true,
-    },
+  return divyEngineFetch<any[]>(`/api/ecom/admin/users/${userId}/assigned-products`, {
+    actor: { id: admin.id, role: admin.role },
   });
-
-  return userProducts.map((up) => up.product);
 }
 
 export async function getAllProducts() {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
-  const products = await prisma.product.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
+  return divyEngineFetch<any[]>("/api/ecom/admin/products", {
+    actor: { id: admin.id, role: admin.role },
   });
-
-  return products;
 }
 
 export async function getAllProductUserAssignments() {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
-  const assignments = await prisma.userProduct.findMany({
-    include: {
-      user: true,
-      product: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const [products, users] = await Promise.all([
+    divyEngineFetch<any[]>("/api/ecom/admin/products", {
+      actor: { id: admin.id, role: admin.role },
+    }),
+    divyEngineFetch<any[]>("/api/ecom/admin/users", {
+      actor: { id: admin.id, role: admin.role },
+    }),
+  ]);
+
+  const userMap = new Map(users.map((user) => [user.id, user]));
+  const assignments: any[] = [];
+
+  for (const product of products) {
+    const assignedUsers = await divyEngineFetch<any[]>(
+      `/api/ecom/admin/products/${product.id}/assigned-users`,
+      {
+        actor: { id: admin.id, role: admin.role },
+      }
+    );
+
+    for (const user of assignedUsers) {
+      assignments.push({
+        id: `${user.id}-${product.id}`,
+        createdAt: new Date().toISOString(),
+        user: userMap.get(user.id) || user,
+        product,
+      });
+    }
+  }
 
   return assignments;
 }
@@ -250,22 +136,13 @@ export async function assignProductToUsers(productId: string, userIds: string[])
     throw new Error("Product ID is required");
   }
 
-  await requireAdmin();
+  const admin = await requireAdmin();
 
-  // Remove existing assignments for this product
-  await prisma.userProduct.deleteMany({
-    where: { productId },
+  await divyEngineFetch<{ success: true }>(`/api/ecom/admin/products/${productId}/assign-users`, {
+    method: "POST",
+    actor: { id: admin.id, role: admin.role },
+    body: JSON.stringify({ userIds }),
   });
-
-  // Create new assignments
-  if (userIds.length > 0) {
-    await prisma.userProduct.createMany({
-      data: userIds.map((userId) => ({
-        userId,
-        productId,
-      })),
-    });
-  }
 
   return { success: true };
 }
@@ -275,28 +152,19 @@ export async function getProductAssignedUsers(productId: string) {
     throw new Error("Product ID is required");
   }
 
-  await requireAdmin();
+  const admin = await requireAdmin();
 
-  const userProducts = await prisma.userProduct.findMany({
-    where: { productId },
-    include: {
-      user: true,
-    },
+  return divyEngineFetch<any[]>(`/api/ecom/admin/products/${productId}/assigned-users`, {
+    actor: { id: admin.id, role: admin.role },
   });
-
-  return userProducts.map((up) => up.user);
 }
 
 export async function getAllUsersForAssignment() {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
-  const users = await prisma.user.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
+  return divyEngineFetch<any[]>("/api/ecom/admin/users-for-assignment", {
+    actor: { id: admin.id, role: admin.role },
   });
-
-  return users;
 }
 
 export async function updateUser(
@@ -312,49 +180,13 @@ export async function updateUser(
     throw new Error("User ID is required");
   }
 
-  await requireAdmin();
+  const admin = await requireAdmin();
 
-  // Check if user exists
-  const existingUser = await prisma.user.findUnique({
-    where: { id: userId },
+  return divyEngineFetch<any>(`/api/ecom/admin/users/${userId}`, {
+    method: "PATCH",
+    actor: { id: admin.id, role: admin.role },
+    body: JSON.stringify(data),
   });
-
-  if (!existingUser) {
-    throw new Error("User not found");
-  }
-
-  // If phone is being updated, clean it and check for duplicates
-  if (data.phone !== undefined) {
-    const cleanPhone = data.phone.replace(/\D/g, "");
-
-    if (cleanPhone.length !== 10) {
-      throw new Error("Phone number must be 10 digits");
-    }
-
-    // Check if phone number is already taken by another user
-    const userWithPhone = await prisma.user.findUnique({
-      where: { phone: cleanPhone },
-    });
-
-    if (userWithPhone && userWithPhone.id !== userId) {
-      throw new Error("Phone number is already in use by another user");
-    }
-
-    data.phone = cleanPhone;
-  }
-
-  // Update the user
-  const updatedUser = await prisma.user.update({
-    where: { id: userId },
-    data: {
-      ...(data.name !== undefined && { name: data.name }),
-      ...(data.email !== undefined && { email: data.email || null }),
-      ...(data.phone !== undefined && { phone: data.phone }),
-      ...(data.role !== undefined && { role: data.role }),
-    },
-  });
-
-  return updatedUser;
 }
 
 export async function deleteUser(userId: string) {
@@ -362,27 +194,12 @@ export async function deleteUser(userId: string) {
     throw new Error("User ID is required");
   }
 
-  const currentUser = await requireAdmin();
+  const admin = await requireAdmin();
 
-  // Prevent deleting yourself
-  if (currentUser.id === userId) {
-    throw new Error("You cannot delete your own account");
-  }
-
-  // Check if user exists and is not an admin (or allow admins to delete other admins)
-  const userToDelete = await prisma.user.findUnique({
-    where: { id: userId },
-  });
-
-  if (!userToDelete) {
-    throw new Error("User not found");
-  }
-
-  // Delete the user (cascade will handle related records)
-  await prisma.user.delete({
-    where: { id: userId },
+  await divyEngineFetch<{ success: true }>(`/api/ecom/admin/users/${userId}`, {
+    method: "DELETE",
+    actor: { id: admin.id, role: admin.role },
   });
 
   return { success: true };
 }
-

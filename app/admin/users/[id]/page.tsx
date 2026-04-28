@@ -72,7 +72,7 @@ export default async function AdminUserDetailPage({
         <div className="bg-white dark:bg-gray-900 rounded-lg border p-6">
           <h2 className="text-xl font-semibold mb-4">Orders</h2>
           <div className="space-y-4">
-            {user.orders.map((order) => (
+            {user.orders.map((order: any) => (
               <Link
                 key={order.id}
                 href={`/admin/orders/${order.id}`}
@@ -126,7 +126,7 @@ export default async function AdminUserDetailPage({
         <div className="bg-white dark:bg-gray-900 rounded-lg border p-6">
           <h2 className="text-xl font-semibold mb-4">Tickets</h2>
           <div className="space-y-4">
-            {user.tickets.map((ticket) => (
+            {user.tickets.map((ticket: any) => (
               <Link
                 key={ticket.id}
                 href={`/admin/tickets/${ticket.id}`}
@@ -155,4 +155,3 @@ export default async function AdminUserDetailPage({
     </div>
   );
 }
-

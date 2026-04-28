@@ -1,7 +1,7 @@
-import Image from "next/image";
 import { format } from "date-fns";
 import { StatusBadge } from "@/components/status-badge";
 import { OrderStatus, TicketStatus } from "@prisma/client";
+import { SafeImage } from "@/components/safe-image";
 
 type TimelineStatus = OrderStatus | TicketStatus;
 
@@ -51,11 +51,10 @@ export function StatusTimeline({ items, type, title = "Status Timeline" }: Statu
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {item.images.map((url, index) => (
                   <div key={`${item.id}-${index}`} className="relative h-28 w-full">
-                    <Image
+                    <SafeImage
                       src={url}
                       alt={`${type} status ${item.status} image ${index + 1}`}
-                      fill
-                      className="rounded-md object-cover"
+                      className="h-full w-full rounded-md object-cover"
                     />
                   </div>
                 ))}

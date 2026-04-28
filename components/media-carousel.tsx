@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { SafeImage } from "@/components/safe-image";
 
 export type MediaItem = {
   type: "image" | "video";
@@ -55,11 +55,10 @@ export function MediaCarousel({ items, className = "" }: MediaCarouselProps) {
             loop
           />
         ) : (
-          <Image
+          <SafeImage
             src={currentItem.url}
             alt={currentItem.alt || "Carousel image"}
-            fill
-            className="object-cover"
+            className="h-full w-full object-cover"
           />
         )}
       </div>

@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { StatusBadge } from "@/components/status-badge";
 import { Badge } from "@/components/ui/badge";
 import { TICKET_STATUSES, TICKET_SUB_CATEGORIES } from "@/types";
+import { parseTicketSubCategories } from "@/lib/ticket-subcategories";
 import Link from "next/link";
 import { format } from "date-fns";
 
@@ -17,24 +18,18 @@ export default async function AdminTicketsPage({
 
   // Helper to parse and get sub-category labels
   const getSubCategoryLabels = (ticket: typeof tickets[0]) => {
-    if (!ticket.subCategories) return [];
-    
-    try {
-      const parsed = JSON.parse(ticket.subCategories);
-      if (!Array.isArray(parsed)) return [];
-      
-      if (ticket.category === "General Query") {
-        return parsed;
-      }
-      
-      const categorySubCats = TICKET_SUB_CATEGORIES[ticket.category] || [];
-      return parsed.map((value: string) => {
-        const found = categorySubCats.find((sc) => sc.value === value);
-        return found ? found.label : value;
-      });
-    } catch {
-      return [];
+    const parsed = parseTicketSubCategories(ticket.subCategories);
+    if (parsed.length === 0) return [];
+
+    if (ticket.category === "General Query") {
+      return parsed;
     }
+
+    const categorySubCats = TICKET_SUB_CATEGORIES[ticket.category] || [];
+    return parsed.map((value: string) => {
+      const found = categorySubCats.find((sc) => sc.value === value);
+      return found ? found.label : value;
+    });
   };
 
   return (

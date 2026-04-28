@@ -16,6 +16,7 @@ import {
 import { FileText, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OrderMaterialDeliveryToggle } from "@/components/order-material-delivery-toggle";
+import { parseStringArray } from "@/lib/json";
 
 export default async function AdminOrderDetailPage({
   params,
@@ -30,21 +31,24 @@ export default async function AdminOrderDetailPage({
   }
 
   const totalAmount = order.items.reduce(
-    (sum, item) => sum + item.unitPrice * item.quantity,
+    (sum: number, item: any) => sum + item.unitPrice * item.quantity,
     0
   );
   const totalInRupees = (totalAmount / 100).toFixed(2);
 
-  const additionalFiles = order.additionalFiles
-    ? JSON.parse(order.additionalFiles)
-    : [];
+  const additionalFiles = parseStringArray(order.additionalFiles);
 
   return (
     <div>
       <div className="mb-6">
-        <Link href="/admin/orders">
-          <Button variant="ghost">← Back to Orders</Button>
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link href="/admin/orders">
+            <Button variant="ghost">← Back to Orders</Button>
+          </Link>
+          <Link href={`/admin/orders/${order.id}/pipeline`}>
+            <Button variant="outline">View Pipeline</Button>
+          </Link>
+        </div>
       </div>
 
       <div className="space-y-6">
@@ -100,7 +104,7 @@ export default async function AdminOrderDetailPage({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {order.items.map((item) => (
+                {order.items.map((item: any) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell>{item.capacity}</TableCell>

@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { Role } from "@prisma/client";
 
 const SESSION_COOKIE_NAME = "auth_session";
 
-function getSession(request: NextRequest): { userId: string; token: string } | null {
+function getSession(
+  request: NextRequest
+): { userId: string; role?: "USER" | "ADMIN"; token: string } | null {
   try {
     const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME);
     
@@ -13,7 +13,11 @@ function getSession(request: NextRequest): { userId: string; token: string } | n
       return null;
     }
 
-    const session = JSON.parse(sessionCookie.value) as { userId: string; token: string };
+    const session = JSON.parse(sessionCookie.value) as {
+      userId: string;
+      role?: "USER" | "ADMIN";
+      token: string;
+    };
     return session;
   } catch {
     return null;
@@ -39,16 +43,9 @@ export default async function middleware(request: NextRequest) {
   try {
     const session = getSession(request);
 
-    if (session) {
-      const user = await prisma.user.findUnique({
-        where: { id: session.userId },
-        select: { role: true },
-      });
-
-      // If user is admin and trying to access non-admin routes, redirect to /admin
-      if (user && user.role === Role.ADMIN) {
-        return NextResponse.redirect(new URL("/admin", request.url));
-      }
+    // If user is admin and trying to access non-admin routes, redirect to /admin
+    if (session?.role === "ADMIN") {
+      return NextResponse.redirect(new URL("/admin", request.url));
     }
   } catch (error) {
     // If there's an error, continue with the request
