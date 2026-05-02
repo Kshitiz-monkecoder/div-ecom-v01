@@ -141,6 +141,21 @@ export async function updateOrderDeliverySlot(
   return { success: true };
 }
 
+export async function verifyOrderMaterialDetails(orderId: string) {
+  if (!orderId) {
+    throw new Error("Order ID is required");
+  }
+
+  const user = await requireAuth();
+
+  await divyEngineFetch<{ success: true }>(`/api/ecom/orders/${orderId}/material-verified`, {
+    method: "PATCH",
+    actor: { id: user.id, role: user.role },
+  });
+
+  return { success: true };
+}
+
 export async function updateOrderMaterialDelivery(orderId: string, isMaterialDelivery: boolean) {
   if (!orderId) {
     throw new Error("Order ID is required");

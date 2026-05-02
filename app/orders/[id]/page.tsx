@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, ExternalLink, Shield, Receipt, Paperclip } from "lucide-react";
 import { OrderDeliverySlotForm } from "@/components/order-delivery-slot-form";
+import { OrderMaterialVerificationForm } from "@/components/order-material-verification-form";
 import { parseStringArray } from "@/lib/json";
 
 export default async function OrderDetailPage({
@@ -30,6 +31,8 @@ export default async function OrderDetailPage({
   const totalInRupees = (totalAmount / 100).toFixed(2);
 
   const additionalFiles = parseStringArray(order.additionalFiles);
+  const bomStage = order.canonicalStages?.find((stage: any) => stage.stageName === "BOM");
+  const bomCompleted = bomStage?.status === "completed";
 
   const statusTimeline = order.statusHistory.map((entry: any) => {
     let images: string[] = [];
@@ -123,6 +126,15 @@ export default async function OrderDetailPage({
                   </div>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Material Verification</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <OrderMaterialVerificationForm orderId={order.id} bomCompleted={Boolean(bomCompleted)} />
             </CardContent>
           </Card>
 

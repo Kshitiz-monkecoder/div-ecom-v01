@@ -156,6 +156,17 @@ export interface Order {
   userId?: string;
   user?: User | null;
   items?: OrderItem[];
+  canonicalStages?: Array<{
+    id: string;
+    stageNumber: number;
+    stageName: string;
+    status: string;
+    responsibleParty?: string | null;
+    tatHours?: number | null;
+    startedAt?: Date | string | null;
+    completedAt?: Date | string | null;
+    createdAt?: Date | string;
+  }>;
   createdAt: Date | string;
   updatedAt?: Date | string;
 }

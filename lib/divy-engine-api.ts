@@ -25,7 +25,11 @@ export async function divyEngineFetch<T>(path: string, init: EngineFetchInit = {
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   const headers = new Headers(init.headers || {});
-  headers.set("content-type", headers.get("content-type") || "application/json");
+  const hasBody = init.body !== undefined && init.body !== null;
+  const isFormData = typeof FormData !== "undefined" && init.body instanceof FormData;
+  if (hasBody && !isFormData) {
+    headers.set("content-type", headers.get("content-type") || "application/json");
+  }
   headers.set("x-api-key", getApiKey());
 
   if (init.actor) {
