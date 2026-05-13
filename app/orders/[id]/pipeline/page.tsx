@@ -34,7 +34,7 @@ export default async function CustomerOrderPipelinePage({
           <p className="text-muted-foreground mt-1">Order #{order.orderNumber}</p>
         </div>
 
-        <OrderPipeline currentStatus={order.status} statusHistory={order.statusHistory} />
+        <OrderPipeline stages={order.canonicalStages ?? []} />
       </div>
     </CustomerLayout>
   );

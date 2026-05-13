@@ -141,16 +141,36 @@ export async function updateOrderDeliverySlot(
   return { success: true };
 }
 
-export async function verifyOrderMaterialDetails(orderId: string) {
+export async function requestOrderBomVerificationOtp(orderId: string) {
   if (!orderId) {
     throw new Error("Order ID is required");
   }
 
   const user = await requireAuth();
 
-  await divyEngineFetch<{ success: true }>(`/api/ecom/orders/${orderId}/material-verified`, {
-    method: "PATCH",
+  await divyEngineFetch<{ success: true }>(`/api/ecom/orders/${orderId}/bom-verification/request-otp`, {
+    method: "POST",
     actor: { id: user.id, role: user.role },
+  });
+
+  return { success: true };
+}
+
+export async function verifyOrderBomVerificationOtp(orderId: string, otp: string) {
+  if (!orderId) {
+    throw new Error("Order ID is required");
+  }
+
+  if (!otp || otp.trim().length !== 6) {
+    throw new Error("OTP must be 6 digits");
+  }
+
+  const user = await requireAuth();
+
+  await divyEngineFetch<{ success: true }>(`/api/ecom/orders/${orderId}/bom-verification/verify-otp`, {
+    method: "POST",
+    actor: { id: user.id, role: user.role },
+    body: JSON.stringify({ otp: otp.trim() }),
   });
 
   return { success: true };
@@ -167,6 +187,21 @@ export async function updateOrderMaterialDelivery(orderId: string, isMaterialDel
     method: "PATCH",
     actor: { id: admin.id, role: admin.role },
     body: JSON.stringify({ isMaterialDelivery }),
+  });
+
+  return { success: true };
+}
+
+export async function manuallyApproveOrder(orderId: string) {
+  if (!orderId) {
+    throw new Error("Order ID is required");
+  }
+
+  const admin = await requireAdmin();
+
+  await divyEngineFetch<{ success: true }>(`/api/ecom/admin/orders/${orderId}/manual-approve`, {
+    method: "POST",
+    actor: { id: admin.id, role: admin.role },
   });
 
   return { success: true };

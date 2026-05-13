@@ -16,6 +16,7 @@ import {
 import { FileText, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OrderMaterialDeliveryToggle } from "@/components/order-material-delivery-toggle";
+import { OrderManualApprovalForm } from "@/components/order-manual-approval-form";
 import { parseStringArray } from "@/lib/json";
 
 export default async function AdminOrderDetailPage({
@@ -37,6 +38,10 @@ export default async function AdminOrderDetailPage({
   const totalInRupees = (totalAmount / 100).toFixed(2);
 
   const additionalFiles = parseStringArray(order.additionalFiles);
+  const manualApprovedStage = order.canonicalStages?.find(
+    (stage: any) => stage.stageName === "MANUAL_APPROVED"
+  );
+  const manuallyApproved = manualApprovedStage?.status === "completed";
 
   return (
     <div>
@@ -207,6 +212,18 @@ export default async function AdminOrderDetailPage({
             {!order.warrantyCardUrl && !order.invoiceUrl && additionalFiles.length === 0 && (
               <p className="text-center text-gray-500 py-4">No documents uploaded</p>
             )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Manual Approval</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <OrderManualApprovalForm
+              orderId={order.id}
+              manuallyApproved={Boolean(manuallyApproved)}
+            />
           </CardContent>
         </Card>
 
