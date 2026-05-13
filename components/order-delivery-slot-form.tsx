@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -38,13 +39,13 @@ export function OrderDeliverySlotForm({
     currentDeliverySlot ?? DELIVERY_SLOTS[0].value
   );
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       await updateOrderDeliverySlot(orderId, new Date(deliveryDate), deliverySlot);
-      toast.success("Delivery slot updated successfully!");
+      toast.success("Delivery slot updated successfully");
       router.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to update delivery slot");
@@ -58,14 +59,17 @@ export function OrderDeliverySlotForm({
   return (
     <div className="space-y-4">
       {currentDeliveryDate && currentDeliverySlot && (
-        <p className="text-sm text-muted-foreground">
-          Current slot: {format(new Date(currentDeliveryDate), "MMM dd, yyyy")} — {slotLabel}
-        </p>
+        <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+          <span className="font-semibold">Current slot:</span>{" "}
+          {format(new Date(currentDeliveryDate), "MMM dd, yyyy")} - {slotLabel}
+        </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label htmlFor="deliveryDate">Delivery Date</Label>
+      <form onSubmit={handleSubmit} className="grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
+        <div className="space-y-2">
+          <Label htmlFor="deliveryDate" className="text-sm font-semibold text-slate-700">
+            Delivery date
+          </Label>
           <Input
             id="deliveryDate"
             type="date"
@@ -73,14 +77,16 @@ export function OrderDeliverySlotForm({
             value={deliveryDate}
             onChange={(e) => setDeliveryDate(e.target.value)}
             required
-            className="mt-2"
+            className="h-12 rounded-2xl border-slate-200 bg-white shadow-none"
           />
         </div>
 
-        <div>
-          <Label htmlFor="deliverySlot">4-Hour Slot</Label>
+        <div className="space-y-2">
+          <Label htmlFor="deliverySlot" className="text-sm font-semibold text-slate-700">
+            4-hour slot
+          </Label>
           <Select value={deliverySlot} onValueChange={setDeliverySlot}>
-            <SelectTrigger className="mt-2">
+            <SelectTrigger className="h-12 w-full rounded-2xl border-slate-200 bg-white shadow-none">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -93,8 +99,8 @@ export function OrderDeliverySlotForm({
           </Select>
         </div>
 
-        <Button type="submit" disabled={loading}>
-          {loading ? "Updating..." : currentDeliveryDate ? "Update Slot" : "Set Delivery Slot"}
+        <Button type="submit" disabled={loading} className="h-12 rounded-2xl bg-primary px-5 text-white hover:bg-slate-800">
+          {loading ? "Updating..." : currentDeliveryDate ? "Update slot" : "Set slot"}
         </Button>
       </form>
     </div>

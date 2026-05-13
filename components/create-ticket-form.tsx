@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { ElementType, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useLanguage } from "@/components/language-provider";
@@ -23,7 +24,7 @@ import {
   type OrderItem,
   type Product,
 } from "@/types";
-import { Sun, Wrench, Receipt, HelpCircle, ChevronLeft, Check, Search } from "lucide-react";
+import { Check, ChevronLeft, HelpCircle, Receipt, Search, Sun, UploadCloud, Wrench } from "lucide-react";
 
 interface CreateTicketFormProps {
   orders: (Order & {
@@ -31,51 +32,55 @@ interface CreateTicketFormProps {
   })[];
 }
 
-// Progress indicator component
 function ProgressIndicator({ currentStep }: { currentStep: number }) {
+  const steps = ["Category", "Issue", "Details"];
   return (
     <div className="mb-8">
-      <div className="flex items-center justify-center space-x-2">
-        {[1, 2, 3].map((step) => (
-          <div key={step} className="flex items-center">
+      <div className="grid grid-cols-3 gap-3">
+        {steps.map((label, index) => {
+          const step = index + 1;
+          const complete = step < currentStep;
+          const active = step === currentStep;
+          return (
             <div
-              className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-colors ${
-                step < currentStep
-                  ? "bg-primary border-primary text-primary-foreground"
-                  : step === currentStep
-                  ? "border-primary text-primary"
-                  : "border-gray-300 text-gray-400"
+              key={label}
+              className={`rounded-2xl border p-3 transition-colors ${
+                complete
+                  ? "border-emerald-200 bg-emerald-50"
+                  : active
+                  ? "border-slate-950 bg-white"
+                  : "border-slate-200 bg-slate-50"
               }`}
             >
-              {step < currentStep ? <Check className="w-4 h-4" /> : step}
+              <div className="flex items-center gap-2">
+                <span
+                  className={`flex size-7 items-center justify-center rounded-xl text-xs font-semibold ${
+                    complete
+                      ? "bg-emerald-600 text-white"
+                      : active
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-white text-slate-400"
+                  }`}
+                >
+                  {complete ? <Check className="size-3.5" /> : step}
+                </span>
+                <span className="truncate text-xs font-semibold text-slate-700">{label}</span>
+              </div>
             </div>
-            {step < 3 && (
-              <div
-                className={`w-12 h-0.5 mx-1 transition-colors ${
-                  step < currentStep ? "bg-primary" : "bg-gray-300"
-                }`}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-      <div className="flex justify-center mt-2 text-xs text-muted-foreground">
-        <span className="w-24 text-center">Category</span>
-        <span className="w-24 text-center">Issues</span>
-        <span className="w-24 text-center">Details</span>
+          );
+        })}
       </div>
     </div>
   );
 }
 
-// Category card component
 function CategoryCard({
   icon: Icon,
   title,
   subtitle,
   onClick,
 }: {
-  icon: React.ElementType;
+  icon: ElementType;
   title: string;
   subtitle: string;
   onClick: () => void;
@@ -84,24 +89,23 @@ function CategoryCard({
     <button
       type="button"
       onClick={onClick}
-      className="p-6 border-2 rounded-lg hover:border-primary hover:bg-primary/5 transition-all text-left w-full group"
+      className="group rounded-[1.35rem] border border-slate-200 bg-white p-5 text-left transition-all hover:-translate-y-0.5 hover:border-emerald-200 hover:bg-emerald-50/40 hover:shadow-[0_18px_50px_-38px_rgba(15,23,42,0.75)] customer-focus-ring"
     >
-      <Icon className="w-8 h-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
-      <h3 className="font-bold text-lg mb-1">{title}</h3>
-      <p className="text-sm text-muted-foreground">{subtitle}</p>
+      <span className="flex size-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground transition-colors group-hover:bg-emerald-700">
+        <Icon className="size-5" />
+      </span>
+      <h3 className="mt-4 text-base font-semibold text-orange-900">{title}</h3>
+      <p className="mt-1 text-sm leading-6 text-slate-500">{subtitle}</p>
     </button>
   );
 }
 
-// Checkbox card component
-function CheckboxCard({
+function IssueCard({
   label,
-  value,
   checked,
   onToggle,
 }: {
   label: string;
-  value: string;
   checked: boolean;
   onToggle: () => void;
 }) {
@@ -109,21 +113,19 @@ function CheckboxCard({
     <button
       type="button"
       onClick={onToggle}
-      className={`w-full p-4 border rounded-lg text-left transition-all ${
-        checked
-          ? "border-l-4 border-l-primary bg-primary/5 border-primary/30"
-          : "border-gray-300 hover:border-gray-400"
+      className={`w-full rounded-2xl border p-4 text-left transition-all customer-focus-ring ${
+        checked ? "border-emerald-300 bg-emerald-50" : "border-slate-200 bg-white hover:border-orange-200 hover:bg-slate-50"
       }`}
     >
-      <div className="flex items-start space-x-3">
-        <div
-          className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
-            checked ? "bg-primary border-primary" : "border-gray-400"
+      <div className="flex items-start gap-3">
+        <span
+          className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border ${
+            checked ? "border-emerald-600 bg-emerald-600 text-white" : "border-orange-200 bg-white"
           }`}
         >
-          {checked && <Check className="w-3 h-3 text-white" />}
-        </div>
-        <span className={`text-sm ${checked ? "font-medium" : ""}`}>{label}</span>
+          {checked && <Check className="size-3.5" />}
+        </span>
+        <span className={`text-sm leading-6 ${checked ? "font-semibold text-orange-950" : "text-slate-700"}`}>{label}</span>
       </div>
     </button>
   );
@@ -134,16 +136,10 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
   const { t } = useLanguage();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  
-  // Step 1 data
   const [selectedCategory, setSelectedCategory] = useState<typeof TICKET_CATEGORIES[number] | "">("");
-  
-  // Step 2 data
   const [selectedSubIssues, setSelectedSubIssues] = useState<string[]>([]);
   const [generalQueryText, setGeneralQueryText] = useState("");
   const [searchFilter, setSearchFilter] = useState("");
-  
-  // Step 3 data
   const [orderId, setOrderId] = useState("");
   const [description, setDescription] = useState("");
   const [supportImages, setSupportImages] = useState<File[]>([]);
@@ -151,29 +147,28 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
   const minDescriptionLength = 100;
   const descriptionLength = description.trim().length;
 
-  // Category configuration
   const categoryConfig = [
     {
       value: "Installation Issue",
       icon: Sun,
-      subtitle: "Material delivery, panel, inverter brand issues",
+      subtitle: "Delivery, installation, panel, inverter, civil work, or earthing issues.",
     },
     {
       value: "Product Issue",
       icon: Wrench,
-      subtitle: "Inverter, generation, meter, cable issues",
+      subtitle: "Generation, inverter, meter, app, cable, shadow, or warranty concerns.",
     },
     {
       value: "Billing / Payment",
       icon: Receipt,
-      subtitle: "Portal config, units, bills, name change",
+      subtitle: "Bills, exported units, portal configuration, or payment questions.",
     },
     {
       value: "General Query",
       icon: HelpCircle,
-      subtitle: "Any other questions or concerns",
+      subtitle: "Anything else where you need guidance from the Divy Power team.",
     },
-  ];
+  ] as const;
 
   const handleCategorySelect = (category: typeof TICKET_CATEGORIES[number]) => {
     setSelectedCategory(category);
@@ -196,7 +191,7 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
     return selectedSubIssues.length > 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (descriptionLength < minDescriptionLength) {
@@ -243,10 +238,10 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
 
       const ticket = await createTicket({
         category: selectedCategory as typeof TICKET_CATEGORIES[number],
-        description: description,
-        orderId: orderId,
+        description,
+        orderId,
         images: imageUrls,
-        subCategories: subCategories,
+        subCategories,
       });
       
       toast.success(t("toasts.ticketCreated", { number: ticket.id.slice(-6).toUpperCase() }));
@@ -265,7 +260,6 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
     }
   };
 
-  // Get filtered sub-categories for current category
   const getSubCategories = () => {
     if (!selectedCategory || selectedCategory === "General Query") return [];
     const subCats = TICKET_SUB_CATEGORIES[selectedCategory] || [];
@@ -276,100 +270,88 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div>
       <ProgressIndicator currentStep={step} />
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Step 1: Category Selection */}
         {step === 1 && (
-          <div className="space-y-4 animate-in fade-in slide-in-from-left-4 duration-300">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold mb-2">Select Issue Category</h2>
-              <p className="text-muted-foreground">Choose the category that best describes your issue</p>
+          <div className="animate-slide-up">
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold tracking-tight text-orange-900">Choose the request type</h2>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">Pick the closest category so the request reaches the right team faster.</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid gap-4 md:grid-cols-2">
               {categoryConfig.map((cat) => (
                 <CategoryCard
                   key={cat.value}
                   icon={cat.icon}
                   title={cat.value}
                   subtitle={cat.subtitle}
-                  onClick={() => handleCategorySelect(cat.value as typeof TICKET_CATEGORIES[number])}
+                  onClick={() => handleCategorySelect(cat.value)}
                 />
               ))}
             </div>
           </div>
         )}
 
-        {/* Step 2: Sub-Issue Selection */}
         {step === 2 && (
-          <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setStep(1)}
-                className="flex items-center"
-              >
-                <ChevronLeft className="w-4 h-4 mr-1" />
+          <div className="animate-slide-up space-y-5">
+            <div className="flex items-center justify-between gap-3">
+              <Button type="button" variant="ghost" onClick={() => setStep(1)} className="rounded-full text-muted-foreground">
+                <ChevronLeft className="size-4" />
                 Back
               </Button>
-              <div className="text-sm text-muted-foreground">{selectedCategory}</div>
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500">{selectedCategory}</span>
             </div>
 
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold mb-2">
-                {selectedCategory === "General Query" ? "Describe Your Query" : "Select Issues"}
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight text-orange-900">
+                {selectedCategory === "General Query" ? "Describe your query" : "Select the issues you noticed"}
               </h2>
-              <p className="text-muted-foreground">
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 {selectedCategory === "General Query"
-                  ? "Tell us what you need help with"
-                  : "You can select multiple issues that apply"}
+                  ? "A short summary helps us route your question."
+                  : "Select every option that applies. More context means fewer follow-up calls."}
               </p>
             </div>
 
             {selectedCategory === "General Query" ? (
-              <div>
+              <div className="space-y-2">
                 <Textarea
                   value={generalQueryText}
                   onChange={(e) => setGeneralQueryText(e.target.value)}
-                  placeholder="Briefly describe what your query is about..."
+                  placeholder="Briefly describe what you need help with..."
                   rows={4}
-                  className="w-full"
+                  className="min-h-32 rounded-2xl border-slate-200 bg-white shadow-none"
                 />
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {generalQueryText.trim().length}/10 characters minimum
-                </p>
+                <p className="text-xs text-slate-500">{generalQueryText.trim().length}/10 characters minimum</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {selectedCategory === "Product Issue" && (
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
                     <Input
                       type="text"
-                      placeholder="Search issues..."
+                      placeholder="Search issues"
                       value={searchFilter}
                       onChange={(e) => setSearchFilter(e.target.value)}
-                      className="pl-10"
+                      className="h-12 rounded-full border-slate-200 bg-white pl-11 shadow-none"
                     />
                   </div>
                 )}
-                
-                <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
+                <div className="max-h-[440px] space-y-2 overflow-y-auto pr-1">
                   {getSubCategories().map((subCat) => (
-                    <CheckboxCard
+                    <IssueCard
                       key={subCat.value}
                       label={subCat.label}
-                      value={subCat.value}
                       checked={selectedSubIssues.includes(subCat.value)}
                       onToggle={() => handleSubIssueToggle(subCat.value)}
                     />
                   ))}
                 </div>
-                
                 {getSubCategories().length === 0 && searchFilter && (
-                  <p className="text-center text-muted-foreground py-8">
+                  <p className="rounded-2xl bg-slate-50 p-6 text-center text-sm text-slate-500">
                     No issues found matching "{searchFilter}"
                   </p>
                 )}
@@ -380,38 +362,32 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
               type="button"
               onClick={() => setStep(3)}
               disabled={!canProceedFromStep2()}
-              className="w-full"
+              className="h-12 w-full rounded-2xl bg-primary text-primary-foreground hover:bg-slate-800"
             >
-              Continue to Details
+              Continue to details
             </Button>
           </div>
         )}
 
-        {/* Step 3: Details */}
         {step === 3 && (
-          <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setStep(2)}
-                className="flex items-center"
-              >
-                <ChevronLeft className="w-4 h-4 mr-1" />
+          <div className="animate-slide-up space-y-5">
+            <div className="flex items-center justify-between gap-3">
+              <Button type="button" variant="ghost" onClick={() => setStep(2)} className="rounded-full text-muted-foreground">
+                <ChevronLeft className="size-4" />
                 Back
               </Button>
-              <div className="text-sm text-muted-foreground">{selectedCategory}</div>
-            </div>
-
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold mb-2">Provide Details</h2>
-              <p className="text-muted-foreground">Help us understand your issue better</p>
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500">{selectedCategory}</span>
             </div>
 
             <div>
-              <Label htmlFor="order">Related Order *</Label>
+              <h2 className="text-2xl font-semibold tracking-tight text-orange-900">Add order, details, and photos</h2>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">The more specific you are, the faster the team can diagnose and resolve the issue.</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="order" className="text-sm font-semibold text-slate-700">Related order</Label>
               <Select value={orderId} onValueChange={setOrderId} required>
-                <SelectTrigger>
+                <SelectTrigger className="h-12 w-full rounded-2xl border-slate-200 bg-white shadow-none">
                   <SelectValue placeholder="Select an order" />
                 </SelectTrigger>
                 <SelectContent>
@@ -426,38 +402,44 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
               </Select>
             </div>
 
-            <div>
-              <Label htmlFor="description">Detailed Description *</Label>
+            <div className="space-y-2">
+              <Label htmlFor="description" className="text-sm font-semibold text-slate-700">Detailed description</Label>
               <Textarea
                 id="description"
                 required
                 minLength={minDescriptionLength}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Provide a detailed description of your issue..."
+                placeholder="Describe the issue, when it started, what you tried, and anything visible in the photos..."
                 rows={6}
+                className="min-h-40 rounded-2xl border-slate-200 bg-white shadow-none"
               />
-              <p className="mt-2 text-xs text-muted-foreground">
+              <p className={`text-xs ${descriptionLength >= minDescriptionLength ? "text-orange-600" : "text-slate-500"}`}>
                 {descriptionLength}/{minDescriptionLength} characters minimum
               </p>
             </div>
 
-            <div>
-              <Label htmlFor="supportImages">Supporting Images *</Label>
-              <Input
-                id="supportImages"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(e) => setSupportImages(Array.from(e.target.files || []))}
-              />
-              <p className="mt-2 text-xs text-muted-foreground">
-                Please upload at least one image showing the issue. {supportImages.length > 0 && `(${supportImages.length} selected)`}
-              </p>
+            <div className="space-y-2">
+              <Label htmlFor="supportImages" className="text-sm font-semibold text-slate-700">Supporting images</Label>
+              <label className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-orange-200 bg-slate-50 px-4 py-8 text-center transition-colors hover:bg-white customer-focus-ring">
+                <UploadCloud className="size-7 text-slate-400" />
+                <span className="mt-3 text-sm font-semibold text-orange-900">Upload photos of the issue</span>
+                <span className="mt-1 text-xs text-slate-500">
+                  {supportImages.length > 0 ? `${supportImages.length} selected` : "At least one image is required"}
+                </span>
+                <Input
+                  id="supportImages"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => setSupportImages(Array.from(e.target.files || []))}
+                  className="sr-only"
+                />
+              </label>
             </div>
 
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "Creating Ticket..." : "Submit Ticket"}
+            <Button type="submit" disabled={loading} className="h-12 w-full rounded-2xl bg-emerald-700 text-white hover:bg-emerald-800">
+              {loading ? "Creating ticket..." : "Submit ticket"}
             </Button>
           </div>
         )}

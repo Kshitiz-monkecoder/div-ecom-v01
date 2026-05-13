@@ -1,6 +1,6 @@
 "use client";
 
-import { CustomerNav, CustomerHeader } from "@/components/customer-nav";
+import { CustomerHeader, CustomerMobileNav, CustomerSidebar } from "@/components/customer-nav";
 
 export default function CustomerShell({
   children,
@@ -8,12 +8,13 @@ export default function CustomerShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="customer-portal min-h-screen text-foreground">
       <CustomerHeader />
-      <main className="flex-1 p-4 md:p-8 overflow-auto pb-24 md:pb-8">
-        {children}
-      </main>
-      <CustomerNav />
+      <div className="mx-auto flex w-full max-w-[1640px] gap-6 px-0 lg:px-5">
+        <CustomerSidebar />
+        <main className="min-w-0 flex-1 pb-28 lg:pb-10">{children}</main>
+      </div>
+      <CustomerMobileNav />
     </div>
   );
 }

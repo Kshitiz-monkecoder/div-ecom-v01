@@ -32,7 +32,7 @@ export function MediaCarousel({ items, className = "" }: MediaCarouselProps) {
 
   if (!safeItems || safeItems.length === 0) {
     return (
-      <div className={`w-full h-56 rounded-lg border flex items-center justify-center text-sm text-muted-foreground ${className}`}>
+      <div className={`flex h-56 w-full items-center justify-center rounded-2xl border border-dashed border-orange-200 bg-slate-50 text-sm text-slate-500 ${className}`}>
         No media available yet.
       </div>
     );
@@ -43,7 +43,7 @@ export function MediaCarousel({ items, className = "" }: MediaCarouselProps) {
 
   return (
     <div className={`relative w-full ${className}`}>
-      <div className="relative aspect-video w-full overflow-hidden rounded-lg border bg-muted">
+      <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/80 bg-slate-100">
         {currentItem.type === "video" ? (
           <video
             src={currentItem.url}
@@ -69,7 +69,7 @@ export function MediaCarousel({ items, className = "" }: MediaCarouselProps) {
             type="button"
             variant="outline"
             size="icon"
-            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80"
+            className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border-white/80 bg-white/90 shadow-lg"
             onClick={() =>
               setCurrentIndex((prev) => (prev - 1 + safeItems.length) % safeItems.length)
             }
@@ -81,7 +81,7 @@ export function MediaCarousel({ items, className = "" }: MediaCarouselProps) {
             type="button"
             variant="outline"
             size="icon"
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80"
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border-white/80 bg-white/90 shadow-lg"
             onClick={() => setCurrentIndex((prev) => (prev + 1) % safeItems.length)}
             aria-label="Next media"
           >

@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/components/language-provider";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { FileText, Download, Bell, Globe, Lock, LogOut } from "lucide-react";
+import { CustomerCard, CustomerPage, CustomerPageHeader, MetricCard, SectionHeader } from "@/components/customer-portal-ui";
+import { Bell, Download, FileText, Globe, Lock, LogOut, Phone, ShieldCheck, UserRound } from "lucide-react";
 import { format } from "date-fns";
 
 type AccountPageClientProps = {
@@ -17,12 +18,12 @@ type AccountPageClientProps = {
 
 function formatDate(date: Date) {
   const d = new Date(date);
-  if (isNaN(d.getTime())) return "—";
+  if (isNaN(d.getTime())) return "--";
   return format(d, "MMMM dd, yyyy");
 }
 
 export function AccountPageClient({ name, email, phone, createdAt }: AccountPageClientProps) {
-  const { t } = useLanguage();
+  const { t, locale, setLocale } = useLanguage();
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -31,91 +32,142 @@ export function AccountPageClient({ name, email, phone, createdAt }: AccountPage
     router.refresh();
   };
 
+  const initials = name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
-    <div className="max-w-2xl space-y-8">
-      <h1 className="text-2xl md:text-3xl font-bold">{t("account.title")}</h1>
+    <CustomerPage className="space-y-8">
+      <CustomerPageHeader
+        eyebrow="Account"
+        title={t("account.title")}
+        description="Manage your customer identity, language preference, document shortcuts, and secure session access."
+      />
 
-      <Card>
-        <CardContent className="pt-6 space-y-4">
-          <h2 className="text-lg font-semibold">{t("account.profile")}</h2>
-          <div className="space-y-3">
-            <p className="font-medium">{name}</p>
-            <p className="text-sm text-muted-foreground">
-              {t("account.phone")}: {phone}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {t("account.email")}: {email || "—"}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Member since: {formatDate(createdAt)}
-            </p>
+      <section className="grid gap-4 md:grid-cols-3">
+        <MetricCard label="Member since" value={formatDate(createdAt)} icon={<ShieldCheck className="size-5" />} detail="Your customer account creation date." tone="green" />
+        <MetricCard label="Login method" value="WhatsApp OTP" icon={<Phone className="size-5" />} detail="Secure one-time code authentication." tone="blue" />
+        <MetricCard label="Language" value={locale === "hi" ? "Hindi" : "English"} icon={<Globe className="size-5" />} detail="Portal content preference." tone="solar" />
+      </section>
+
+      <section className="grid gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
+        <CustomerCard className="overflow-hidden">
+          <div className="bg-primary p-6 text-white">
+            <div className="flex size-16 items-center justify-center rounded-3xl bg-white/10 text-xl font-semibold">
+              {initials || <UserRound className="size-7" />}
+            </div>
+            <h2 className="mt-5 text-2xl font-semibold tracking-tight">{name}</h2>
+            <p className="mt-1 text-sm text-white/60">Divy Power customer</p>
           </div>
-          <Button variant="outline" size="sm" className="min-h-[48px]" asChild>
-            <Link href="/account">{t("account.updateProfile")}</Link>
-          </Button>
-        </CardContent>
-      </Card>
+          <div className="space-y-3 p-5">
+            <ProfileRow label={t("account.phone")} value={phone} />
+            <ProfileRow label={t("account.email")} value={email || "--"} />
+            <ProfileRow label="Member since" value={formatDate(createdAt)} />
+          </div>
+        </CustomerCard>
 
-      <div className="space-y-2">
-        <h2 className="text-lg font-semibold">Quick links</h2>
-        <ul className="space-y-2">
-          <li>
-            <Button variant="ghost" className="w-full justify-start min-h-[48px]" asChild>
-              <Link href="/orders">
-                <FileText className="h-4 w-4 mr-2" />
-                {t("account.downloadWarranty")}
-              </Link>
-            </Button>
-          </li>
-          <li>
-            <Button variant="ghost" className="w-full justify-start min-h-[48px]" asChild>
-              <Link href="/orders">
-                <Download className="h-4 w-4 mr-2" />
-                {t("account.downloadInvoice")}
-              </Link>
-            </Button>
-          </li>
-          <li>
-            <Button variant="ghost" className="w-full justify-start min-h-[48px]" asChild>
-              <Link href="/orders">{t("account.subsidyStatus")}</Link>
-            </Button>
-          </li>
-          <li>
-            <Button variant="ghost" className="w-full justify-start min-h-[48px]" asChild>
-              <Link href="/account">
-                <Bell className="h-4 w-4 mr-2" />
-                {t("account.notifications")}
-              </Link>
-            </Button>
-          </li>
-          <li>
-            <Button variant="ghost" className="w-full justify-start min-h-[48px]" asChild>
-              <Link href="/account">
-                <Globe className="h-4 w-4 mr-2" />
-                {t("account.changeLanguage")}
-              </Link>
-            </Button>
-          </li>
-          <li>
-            <Button variant="ghost" className="w-full justify-start min-h-[48px]" asChild>
-              <Link href="/account">
-                <Lock className="h-4 w-4 mr-2" />
-                {t("account.changePassword")}
-              </Link>
-            </Button>
-          </li>
-          <li>
-            <Button
-              variant="ghost"
-              className="w-full justify-start min-h-[48px] text-destructive hover:text-destructive"
-              onClick={handleSignOut}
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              {t("account.signOut")}
-            </Button>
-          </li>
-        </ul>
-      </div>
+        <div className="space-y-6">
+          <CustomerCard className="p-5">
+            <SectionHeader
+              title="Document shortcuts"
+              description="Jump to the order workspace to open available warranty cards, invoices, and subsidy status."
+            />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <ActionLink href="/orders" icon={<FileText className="size-5" />} title={t("account.downloadWarranty")} description="Open warranty documents from orders." />
+              <ActionLink href="/orders" icon={<Download className="size-5" />} title={t("account.downloadInvoice")} description="Find invoices and project files." />
+              <ActionLink href="/orders" icon={<ShieldCheck className="size-5" />} title={t("account.subsidyStatus")} description="Review subsidy and project status." />
+              <ActionLink href="/tickets" icon={<Bell className="size-5" />} title={t("account.notifications")} description="Use tickets as your active update stream." />
+            </div>
+          </CustomerCard>
+
+          <CustomerCard className="p-5">
+            <SectionHeader
+              title="Preferences and security"
+              description="Keep account actions clear and predictable."
+            />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setLocale(locale === "hi" ? "en" : "hi")}
+                className="h-auto justify-start rounded-2xl border-slate-200 bg-white p-4 text-left"
+              >
+                <Globe className="size-5 text-orange-600" />
+                <span>
+                  <span className="block font-semibold">{t("account.changeLanguage")}</span>
+                  <span className="mt-1 block text-xs font-normal text-slate-500">Switch between English and Hindi.</span>
+                </span>
+              </Button>
+              <Button asChild variant="outline" className="h-auto justify-start rounded-2xl border-slate-200 bg-white p-4 text-left">
+                <Link href="/account">
+                  <Lock className="size-5 text-slate-500" />
+                  <span>
+                    <span className="block font-semibold">{t("account.changePassword")}</span>
+                    <span className="mt-1 block text-xs font-normal text-slate-500">OTP login keeps this account passwordless.</span>
+                  </span>
+                </Link>
+              </Button>
+            </div>
+          </CustomerCard>
+
+          <CustomerCard className="border-rose-100 bg-rose-50/80 p-5">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-rose-950">Sign out securely</h2>
+                <p className="mt-1 text-sm leading-6 text-rose-800/75">End this session on the current device.</p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleSignOut}
+                className="rounded-full border-rose-200 bg-white text-rose-700 hover:bg-rose-100 hover:text-rose-800"
+              >
+                <LogOut className="size-4" />
+                {t("account.signOut")}
+              </Button>
+            </div>
+          </CustomerCard>
+        </div>
+      </section>
+    </CustomerPage>
+  );
+}
+
+function ProfileRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl bg-slate-50 px-4 py-3">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{label}</p>
+      <p className="mt-1 break-words text-sm font-semibold text-slate-800">{value}</p>
     </div>
+  );
+}
+
+function ActionLink({
+  href,
+  icon,
+  title,
+  description,
+}: {
+  href: string;
+  icon: ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="flex gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors hover:bg-white customer-focus-ring"
+    >
+      <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white text-orange-600">
+        {icon}
+      </span>
+      <span>
+        <span className="block text-sm font-semibold text-orange-900">{title}</span>
+        <span className="mt-1 block text-xs leading-5 text-slate-500">{description}</span>
+      </span>
+    </Link>
   );
 }

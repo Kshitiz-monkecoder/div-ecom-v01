@@ -1,137 +1,21 @@
 import { getAllTickets } from "@/app/actions/tickets";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { StatusBadge } from "@/components/status-badge";
-import { Badge } from "@/components/ui/badge";
-import { TICKET_STATUSES, TICKET_SUB_CATEGORIES } from "@/types";
-import { parseTicketSubCategories } from "@/lib/ticket-subcategories";
-import Link from "next/link";
-import { format } from "date-fns";
+import { AdminTicketsCRM } from "@/components/admin-tickets-crm";
+import { TICKET_STATUSES } from "@/types";
 
 export default async function AdminTicketsPage({
   searchParams,
 }: {
-  searchParams: { status?: string };
+  searchParams: Promise<{ status?: string; id?: string }>;
 }) {
-  const tickets = await getAllTickets(
-    searchParams.status as any
-  );
-
-  // Helper to parse and get sub-category labels
-  const getSubCategoryLabels = (ticket: typeof tickets[0]) => {
-    const parsed = parseTicketSubCategories(ticket.subCategories);
-    if (parsed.length === 0) return [];
-
-    if (ticket.category === "General Query") {
-      return parsed;
-    }
-
-    const categorySubCats = TICKET_SUB_CATEGORIES[ticket.category] || [];
-    return parsed.map((value: string) => {
-      const found = categorySubCats.find((sc) => sc.value === value);
-      return found ? found.label : value;
-    });
-  };
+  const params = await searchParams;
+  const tickets = await getAllTickets(params.status as any).catch(() => []);
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-8">Tickets</h1>
-
-      {/* Status Filter */}
-      <div className="mb-8 flex gap-4 flex-wrap">
-        <Link
-          href="/admin/tickets"
-          className={`px-4 py-2 rounded ${
-            !searchParams.status
-              ? "bg-primary text-primary-foreground"
-              : "bg-gray-200 dark:bg-gray-800"
-          }`}
-        >
-          All
-        </Link>
-        {TICKET_STATUSES.map((status) => (
-          <Link
-            key={status}
-            href={`/admin/tickets?status=${status}`}
-            className={`px-4 py-2 rounded ${
-              searchParams.status === status
-                ? "bg-primary text-primary-foreground"
-                : "bg-gray-200 dark:bg-gray-800"
-            }`}
-          >
-            {status.replace("_", " ")}
-          </Link>
-        ))}
-      </div>
-
-      <div className="bg-white dark:bg-gray-900 rounded-lg border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Category</TableHead>
-              <TableHead>Customer</TableHead>
-              <TableHead>Sub-Issues</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {tickets.map((ticket) => {
-              const subCategoryLabels = getSubCategoryLabels(ticket);
-              const displayLabels = subCategoryLabels.slice(0, 2);
-              const remaining = subCategoryLabels.length - displayLabels.length;
-
-              return (
-                <TableRow key={ticket.id}>
-                  <TableCell>{ticket.category}</TableCell>
-                  <TableCell>{ticket.user.name}</TableCell>
-                  <TableCell>
-                    {subCategoryLabels.length > 0 ? (
-                      <div className="flex flex-wrap gap-1 max-w-xs">
-                        {ticket.category === "General Query" ? (
-                          <Badge variant="outline" className="text-xs">
-                            General Query
-                          </Badge>
-                        ) : (
-                          <>
-                            {displayLabels.map((label, index) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {label.length > 30 ? `${label.substring(0, 30)}...` : label}
-                              </Badge>
-                            ))}
-                            {remaining > 0 && (
-                              <Badge variant="secondary" className="text-xs">
-                                +{remaining} more
-                              </Badge>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    ) : (
-                      <span className="text-muted-foreground text-sm">—</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <StatusBadge status={ticket.status} type="ticket" />
-                  </TableCell>
-                  <TableCell>
-                    {format(new Date(ticket.createdAt), "MMM dd, yyyy")}
-                  </TableCell>
-                  <TableCell>
-                    <Link href={`/admin/tickets/${ticket.id}`}>
-                      <span className="text-primary hover:underline">View</span>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        {tickets.length === 0 && (
-          <p className="text-center text-gray-500 py-8">No tickets found.</p>
-        )}
-      </div>
-    </div>
+    <AdminTicketsCRM
+      tickets={tickets}
+      statusFilter={params.status}
+      selectedTicketId={params.id}
+      allStatuses={TICKET_STATUSES}
+    />
   );
 }
-

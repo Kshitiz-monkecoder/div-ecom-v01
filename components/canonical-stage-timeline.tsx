@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
+import { CheckCircle2 } from "lucide-react";
 
 type CanonicalStage = {
   id: string;
@@ -13,7 +13,7 @@ interface CanonicalStageTimelineProps {
   stages: CanonicalStage[];
 }
 
-const prettyStageName = (value: string) => value.replace(/_/g, " ");
+const prettyStageName = (value: string) => value.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 
 export function CanonicalStageTimeline({ stages }: CanonicalStageTimelineProps) {
   const completedStages = stages
@@ -26,28 +26,36 @@ export function CanonicalStageTimeline({ stages }: CanonicalStageTimelineProps) 
 
   if (completedStages.length === 0) {
     return (
-      <div className="rounded-lg border p-6 text-sm text-muted-foreground">
-        No stage activity available yet.
+      <div className="rounded-[1.5rem] border border-dashed border-orange-200 bg-white/65 p-8 text-center text-sm text-slate-500">
+        Stage activity will appear here as mileoranges are completed.
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border p-6 space-y-4">
-      <h2 className="text-xl font-semibold">Stage Activity</h2>
-      <div className="space-y-4">
+    <section className="rounded-[1.5rem] border border-white/80 bg-white/90 p-5 shadow-sm">
+      <div className="mb-5">
+        <h2 className="text-lg font-semibold tracking-tight text-orange-900">Stage activity</h2>
+        <p className="mt-1 text-sm text-slate-500">A timeline of completed operational mileoranges.</p>
+      </div>
+      <div className="space-y-3">
         {completedStages.map((stage) => (
-          <div key={stage.id} className="rounded-lg border p-4 space-y-2">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <Badge variant="secondary">Completed</Badge>
-              <div className="text-xs text-muted-foreground">
-                {format(new Date(stage.completedAt as string | Date), "MMM dd, yyyy 'at' HH:mm")}
+          <div key={stage.id} className="flex gap-3 rounded-2xl bg-slate-50 p-4">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-emerald-600 text-white">
+              <CheckCircle2 className="size-5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm font-semibold text-orange-900">{prettyStageName(stage.stageName)}</p>
+                <p className="text-xs text-slate-500">
+                  {format(new Date(stage.completedAt as string | Date), "MMM dd, yyyy 'at' HH:mm")}
+                </p>
               </div>
+              <p className="mt-1 text-xs font-medium text-orange-600">Completed</p>
             </div>
-            <p className="text-sm font-medium">{prettyStageName(stage.stageName)}</p>
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }

@@ -75,3 +75,40 @@ export async function updateTicketStatus(
     body: JSON.stringify({ status, note, imageUrls }),
   });
 }
+
+export async function sendAdminReply(ticketId: string, message: string, imageUrls?: string[]) {
+  if (!ticketId) throw new Error("Ticket ID is required");
+  if (!message?.trim()) throw new Error("Message cannot be empty");
+
+  const admin = await requireAdmin();
+
+  return divyEngineFetch<any>(`/api/ecom/admin/tickets/${ticketId}/messages`, {
+    method: "POST",
+    actor: { id: admin.id, role: admin.role },
+    body: JSON.stringify({ message: message.trim(), imageUrls: imageUrls ?? [] }),
+  });
+}
+
+export async function sendCustomerMessage(ticketId: string, message: string) {
+  if (!ticketId) throw new Error("Ticket ID is required");
+  if (!message?.trim()) throw new Error("Message cannot be empty");
+
+  const user = await requireAuth();
+
+  return divyEngineFetch<any>(`/api/ecom/tickets/${ticketId}/messages`, {
+    method: "POST",
+    actor: { id: user.id, role: user.role },
+    body: JSON.stringify({ message: message.trim() }),
+  });
+}
+
+export async function getTicketMessages(ticketId: string) {
+  if (!ticketId) throw new Error("Ticket ID is required");
+
+  const user = await getCurrentUser();
+  if (!user) throw new Error("Unauthorized");
+
+  return divyEngineFetch<any[]>(`/api/ecom/tickets/${ticketId}/messages`, {
+    actor: { id: user.id, role: user.role },
+  });
+}

@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { Menu, X, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { LayoutDashboard, LogOut, Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function Navbar() {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -14,7 +15,6 @@ export function Navbar() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is logged in
     fetch("/api/check-admin")
       .then((res) => res.json())
       .then((data) => {
@@ -39,143 +39,95 @@ export function Navbar() {
     }
   };
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
-
   return (
-    <nav className="border-b bg-white dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/divy-power-logo.png"
-              alt="DIVY Power"
-              width={120}
-              height={40}
-              className="h-10 w-auto"
-              priority
-            />
-          </Link>
+    <header className="sticky top-0 z-50 border-b border-white/70 bg-white/90 backdrop-blur-2xl">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="flex items-center gap-3 rounded-2xl customer-focus-ring">
+          <Image
+            src="/divy-power-logo.png"
+            alt="Divy Power"
+            width={132}
+            height={46}
+            className="h-10 w-auto"
+            priority
+          />
+          <span className="hidden text-xs font-semibold uppercase tracking-[0.18em] text-orange-600 sm:inline">Solar customer portal</span>
+        </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-4">
-            {/* Products link removed - users see assigned products on orders page */}
-            {/* <Link href="/products">
-              <Button variant="ghost">Products</Button>
-            </Link> */}
+        <nav className="hidden items-center gap-2 md:flex">
+          {isSignedIn ? (
+            <>
+              <Button asChild variant="ghost" className="rounded-full text-muted-foreground hover:bg-slate-100 hover:text-orange-900">
+                <Link href="/orders">My orders</Link>
+              </Button>
+              <Button asChild variant="ghost" className="rounded-full text-muted-foreground hover:bg-slate-100 hover:text-orange-900">
+                <Link href="/tickets">Support</Link>
+              </Button>
+              <Button asChild variant="ghost" className="rounded-full text-muted-foreground hover:bg-slate-100 hover:text-orange-900">
+                <Link href="/account">Account</Link>
+              </Button>
+              {isAdmin && (
+                <Button asChild variant="outline" className="rounded-full bg-white">
+                  <Link href="/admin">
+                    <LayoutDashboard className="size-4" />
+                    Admin
+                  </Link>
+                </Button>
+              )}
+              <Button variant="ghost" onClick={handleSignOut} className="rounded-full text-slate-500 hover:bg-rose-50 hover:text-rose-700">
+                <LogOut className="size-4" />
+                Sign out
+              </Button>
+            </>
+          ) : (
+            <Button asChild className="rounded-full bg-primary px-5 text-white hover:bg-slate-800">
+              <Link href="/login">Sign in</Link>
+            </Button>
+          )}
+        </nav>
 
+        <button
+          onClick={() => setIsMobileMenuOpen((open) => !open)}
+          className="rounded-full p-2 text-muted-foreground hover:bg-slate-100 md:hidden"
+          aria-label="Toggle menu"
+        >
+          {isMobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+        </button>
+      </div>
+
+      {isMobileMenuOpen && (
+        <div className="border-t border-slate-100 bg-white/95 px-4 py-4 md:hidden">
+          <div className="mx-auto flex max-w-7xl flex-col gap-2">
             {isSignedIn ? (
               <>
-                <Link href="/orders">
-                  <Button variant="ghost">My Orders</Button>
-                </Link>
-                <Link href="/tickets">
-                  <Button variant="ghost">Support</Button>
-                </Link>
-                <Link href="/account">
-                  <Button variant="ghost">Account</Button>
-                </Link>
-                {isAdmin && (
-                  <Link href="/admin">
-                    <Button variant="ghost">Admin</Button>
-                  </Link>
-                )}
-                <Button
-                  variant="ghost"
-                  onClick={handleSignOut}
-                  className="flex items-center gap-2"
+                <MobileLink href="/orders" onClick={() => setIsMobileMenuOpen(false)}>My orders</MobileLink>
+                <MobileLink href="/tickets" onClick={() => setIsMobileMenuOpen(false)}>Support</MobileLink>
+                <MobileLink href="/account" onClick={() => setIsMobileMenuOpen(false)}>Account</MobileLink>
+                {isAdmin && <MobileLink href="/admin" onClick={() => setIsMobileMenuOpen(false)}>Admin</MobileLink>}
+                <button
+                  className="rounded-2xl px-4 py-3 text-left text-sm font-semibold text-rose-700 hover:bg-rose-50"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleSignOut();
+                  }}
                 >
-                  <LogOut className="h-4 w-4" />
-                  Sign Out
-                </Button>
+                  Sign out
+                </button>
               </>
             ) : (
-              <>
-                <Link href="/login">
-                  <Button>Sign In</Button>
-                </Link>
-              </>
+              <MobileLink href="/login" onClick={() => setIsMobileMenuOpen(false)}>Sign in</MobileLink>
             )}
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={toggleMobileMenu}
-            className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
         </div>
-
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t pt-4">
-            <div className="flex flex-col gap-2">
-              {/* Products link removed - users see assigned products on orders page */}
-              {/* <Link href="/products" onClick={closeMobileMenu}>
-                <Button variant="ghost" className="w-full justify-start">
-                  Products
-                </Button>
-              </Link> */}
-
-              {isSignedIn ? (
-                <>
-                  <Link href="/orders" onClick={closeMobileMenu}>
-                    <Button variant="ghost" className="w-full justify-start">
-                      My Orders
-                    </Button>
-                  </Link>
-                  <Link href="/tickets" onClick={closeMobileMenu}>
-                    <Button variant="ghost" className="w-full justify-start">
-                      Support
-                    </Button>
-                  </Link>
-                  <Link href="/account" onClick={closeMobileMenu}>
-                    <Button variant="ghost" className="w-full justify-start">
-                      Account
-                    </Button>
-                  </Link>
-                  {isAdmin && (
-                    <Link href="/admin" onClick={closeMobileMenu}>
-                      <Button variant="ghost" className="w-full justify-start">
-                        Admin
-                      </Button>
-                    </Link>
-                  )}
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start"
-                    onClick={() => {
-                      closeMobileMenu();
-                      handleSignOut();
-                    }}
-                  >
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Link href="/login" onClick={closeMobileMenu}>
-                    <Button className="w-full justify-start">Sign In</Button>
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    </nav>
+      )}
+    </header>
   );
 }
 
+function MobileLink({ href, onClick, children }: { href: string; onClick: () => void; children: ReactNode }) {
+  return (
+    <Link href={href} onClick={onClick} className="rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100">
+      {children}
+    </Link>
+  );
+}

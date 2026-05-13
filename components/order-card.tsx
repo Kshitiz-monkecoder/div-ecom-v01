@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { useLanguage } from "@/components/language-provider";
 import { format } from "date-fns";
+import { ArrowRight, CalendarDays, FileText, MapPin, Package } from "lucide-react";
+import { StatusBadge } from "@/components/status-badge";
+import { useLanguage } from "@/components/language-provider";
 import { type Order, type OrderItem } from "@/types";
 
 interface OrderCardProps {
@@ -13,62 +13,69 @@ interface OrderCardProps {
   };
 }
 
-const statusColors: Record<string, string> = {
-  NEW: "bg-amber-100 text-amber-800",
-  CONTACTED: "bg-amber-100 text-amber-800",
-  CONFIRMED: "bg-blue-100 text-blue-800",
-  INSTALLED: "bg-green-100 text-green-800",
-  CANCELLED: "bg-red-100 text-red-800",
-};
-
 export function OrderCard({ order }: OrderCardProps) {
   const { t } = useLanguage();
   const totalAmount = order.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
-  const totalInRupees = (totalAmount / 100).toFixed(2);
-  const itemCount = order.items.length;
-  const statusLabel = t(`orderStatus.${order.status}`);
+  const totalInRupees = (totalAmount / 100).toLocaleString("en-IN", { maximumFractionDigits: 0 });
+  const firstItem = order.items[0];
+  const itemSummary =
+    order.items.length === 0
+      ? "Solar order"
+      : order.items.length === 1
+      ? firstItem.name
+      : `${firstItem.name} +${order.items.length - 1} more`;
 
   return (
-    <Link href={`/orders/${order.id}`}>
-      <Card className="hover:shadow-lg transition-shadow">
-        <CardHeader>
-          <div className="flex justify-between items-start">
-            <div>
-              <CardTitle className="text-lg">
-                ☀️ {order.items[0]?.name || "Order"} — {order.items[0]?.capacity || ""}
-              </CardTitle>
-              <CardDescription>
-                {t("orders.orderNumber")}: #{order.orderNumber}
-              </CardDescription>
-              {order.deliveryDate && (
-                <CardDescription>
-                  {t("orders.installationDate")}: {format(new Date(order.deliveryDate), "dd MMM yyyy")}
-                </CardDescription>
-              )}
-            </div>
-            <Badge className={statusColors[order.status] || "bg-gray-100 text-gray-800"} variant="secondary">
-              {statusLabel}
-            </Badge>
+    <Link
+      href={`/orders/${order.id}`}
+      className="group flex h-full flex-col rounded-[1.5rem] border border-white/80 bg-white/90 p-5 shadow-sm transition-all hover:-translate-y-1 hover:bg-white hover:shadow-[0_24px_70px_-42px_rgba(15,23,42,0.75)] customer-focus-ring"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+            {t("orders.orderNumber")} #{order.orderNumber}
+          </p>
+          <h3 className="mt-2 line-clamp-2 text-lg font-semibold leading-snug text-orange-900">
+            {itemSummary}
+          </h3>
+          {firstItem?.capacity && <p className="mt-1 text-sm text-slate-500">{firstItem.capacity}</p>}
+        </div>
+        <StatusBadge status={order.status} type="order" />
+      </div>
+
+      <div className="mt-5 grid gap-2 text-sm">
+        <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-muted-foreground">
+          <Package className="size-4 text-slate-400" />
+          <span>{order.items.length} item{order.items.length === 1 ? "" : "s"}</span>
+        </div>
+        {order.deliveryDate && (
+          <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-muted-foreground">
+            <CalendarDays className="size-4 text-slate-400" />
+            <span>{format(new Date(order.deliveryDate), "dd MMM yyyy")}</span>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-2 mb-3">
-            <Link href={`/orders/${order.id}`}>
-              <Badge variant="outline" className="cursor-pointer">{t("orders.warrantyCard")}</Badge>
-            </Link>
-            <Badge variant="outline">{t("orders.downloadInvoice")}</Badge>
-            <Badge variant="outline">{t("orders.subsidyStatus")}</Badge>
-          </div>
-          <div className="space-y-1 text-sm">
-            <p>
-              <span className="font-medium">{t("orders.productDetails")}:</span> {itemCount} item(s)
-              {itemCount > 0 && ` — ${order.items[0]?.name}${itemCount > 1 ? ` +${itemCount - 1}` : ""}`}
-            </p>
-            <p><span className="font-medium">Total:</span> ₹{totalInRupees}</p>
-            <p><span className="font-medium">Address:</span> {order.address}</p>
-          </div>
-        </CardContent>
-      </Card>
+        )}
+        <div className="flex items-start gap-2 rounded-xl bg-slate-50 px-3 py-2 text-muted-foreground">
+          <MapPin className="mt-0.5 size-4 shrink-0 text-slate-400" />
+          <span className="line-clamp-2">{order.address}</span>
+        </div>
+      </div>
+
+      <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-5">
+        <div>
+          <p className="text-xs text-slate-400">Project value</p>
+          <p className="text-lg font-semibold text-orange-900">Rs {totalInRupees}</p>
+        </div>
+        <div className="flex items-center gap-3 text-sm font-semibold text-orange-600">
+          <span className="hidden items-center gap-1 sm:inline-flex">
+            <FileText className="size-4" />
+            Documents
+          </span>
+          <span className="inline-flex items-center gap-1">
+            Open
+            <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+          </span>
+        </div>
+      </div>
     </Link>
   );
 }

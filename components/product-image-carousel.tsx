@@ -28,7 +28,7 @@ export function ProductImageCarousel({ images, alt, className = "" }: ProductIma
 
   if (!images || images.length === 0) {
     return (
-      <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+      <div className="flex h-full w-full items-center justify-center bg-slate-100 text-sm text-slate-400">
         No image available
       </div>
     );
@@ -64,6 +64,14 @@ export function ProductImageCarousel({ images, alt, className = "" }: ProductIma
           />
         </div>
       ))}
+      <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+        {images.map((_, index) => (
+          <span
+            key={index}
+            className={`h-1.5 rounded-full transition-all ${index === currentIndex ? "w-6 bg-white" : "w-1.5 bg-white/55"}`}
+          />
+        ))}
+      </div>
     </div>
   );
 }

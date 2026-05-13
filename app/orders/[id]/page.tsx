@@ -1,13 +1,28 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import { notFound } from "next/navigation";
+import { format } from "date-fns";
+import {
+  ArrowLeft,
+  CalendarDays,
+  ChevronRight,
+  ExternalLink,
+  FileText,
+  GitBranch,
+  MapPin,
+  Package,
+  Paperclip,
+  Phone,
+  Receipt,
+  Shield,
+  StickyNote,
+} from "lucide-react";
 import CustomerLayout from "@/components/customer-layout";
 import { StatusBadge } from "@/components/status-badge";
 import { StatusTimeline } from "@/components/status-timeline";
 import { getOrder } from "@/app/actions/orders";
-import { notFound } from "next/navigation";
-import { format } from "date-fns";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, ExternalLink, Shield, Receipt, Paperclip } from "lucide-react";
+import { CustomerCard, CustomerPage, CustomerPageHeader, MetricCard, SectionHeader } from "@/components/customer-portal-ui";
 import { OrderDeliverySlotForm } from "@/components/order-delivery-slot-form";
 import { OrderMaterialVerificationForm } from "@/components/order-material-verification-form";
 import { CanonicalStageTimeline } from "@/components/canonical-stage-timeline";
@@ -29,7 +44,7 @@ export default async function OrderDetailPage({
     (sum: number, item: any) => sum + item.unitPrice * item.quantity,
     0
   );
-  const totalInRupees = (totalAmount / 100).toFixed(2);
+  const totalInRupees = (totalAmount / 100).toLocaleString("en-IN", { maximumFractionDigits: 0 });
 
   const additionalFiles = parseStringArray(order.additionalFiles);
   const manualApprovedStage = order.canonicalStages?.find((stage: any) => stage.stageName === "MANUAL_APPROVED");
@@ -57,270 +72,208 @@ export default async function OrderDetailPage({
     };
   });
 
+  const hasDocuments = order.warrantyCardUrl || order.invoiceUrl || additionalFiles.length > 0;
+  const completedStages = (order.canonicalStages ?? []).filter((stage: any) => stage.status === "completed").length;
+
   return (
     <CustomerLayout>
-      <div className="max-w-5xl">
-        <div className="mb-6">
-          <div className="flex flex-wrap items-center gap-3">
+      <CustomerPage className="space-y-8">
+        <div className="flex flex-wrap items-center gap-3">
+          <Button asChild variant="ghost" className="rounded-full text-muted-foreground hover:bg-white/70 hover:text-stone-900">
             <Link href="/orders">
-              <Button variant="ghost">← Back to Orders</Button>
+              <ArrowLeft className="size-4" />
+              All orders
             </Link>
+          </Button>
+          <Button asChild variant="outline" className="ml-auto rounded-full border-slate-200 bg-white/80">
             <Link href={`/orders/${order.id}/pipeline`}>
-              <Button variant="outline">View Pipeline</Button>
+              <GitBranch className="size-4" />
+              View pipeline
             </Link>
-          </div>
+          </Button>
         </div>
 
-        <div className="space-y-6">
-          {/* Header */}
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h1 className="text-3xl font-bold mb-2">Order {order.orderNumber}</h1>
-                  <p className="text-gray-500">
-                    Placed on {format(new Date(order.createdAt), "MMMM dd, yyyy 'at' HH:mm")}
-                  </p>
-                </div>
-                <StatusBadge status={order.status} type="order" />
-              </div>
-            </CardContent>
-          </Card>
+        <CustomerPageHeader
+          eyebrow="Order detail"
+          title={`Order #${order.orderNumber}`}
+          description={`Placed ${format(new Date(order.createdAt), "MMMM dd, yyyy 'at' HH:mm")}. Review materials, documents, delivery timing, and support linked to this project.`}
+          actions={<StatusBadge status={order.status} type="order" />}
+        />
 
-          {/* Products Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Products ({order.items.length})</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <MetricCard label="Project value" value={`Rs ${totalInRupees}`} icon={<Receipt className="size-5" />} detail="Total value across all order items." tone="dark" />
+          <MetricCard label="Products" value={order.items.length} icon={<Package className="size-5" />} detail="Items included in this order." tone="green" />
+          <MetricCard label="Stages complete" value={`${completedStages}/${order.canonicalStages?.length ?? 0}`} icon={<GitBranch className="size-5" />} detail="Operational pipeline progress." tone="blue" />
+          <MetricCard label="Documents" value={hasDocuments ? "Ready" : "Pending"} icon={<FileText className="size-5" />} detail="Warranty, invoice, and uploaded files." tone="solar" />
+        </section>
+
+        <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
+          <div className="space-y-6">
+            <CustomerCard className="p-5">
+              <SectionHeader
+                title="Products and pricing"
+                description="The materials and products currently attached to this order."
+                action={<span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500">{order.items.length} items</span>}
+              />
+              <div className="space-y-3">
                 {order.items.map((item: any) => (
-                  <div
-                    key={item.id}
-                    className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="font-semibold text-lg">{item.name}</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          {item.capacity}
-                        </p>
+                  <div key={item.id} className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="min-w-0">
+                        <p className="text-base font-semibold text-stone-900">{item.name}</p>
+                        {item.capacity && <p className="mt-1 text-sm font-medium text-orange-600">{item.capacity}</p>}
+                        {item.description && <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p>}
                       </div>
-                      <div className="text-right">
-                        <p className="font-semibold">
-                          ₹{((item.unitPrice * item.quantity) / 100).toFixed(2)}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          ₹{(item.unitPrice / 100).toFixed(2)} × {item.quantity}
-                        </p>
+                      <div className="shrink-0 text-left sm:text-right">
+                        <p className="text-lg font-semibold text-stone-900">Rs {((item.unitPrice * item.quantity) / 100).toLocaleString("en-IN")}</p>
+                        <p className="mt-1 text-xs text-slate-500">Rs {(item.unitPrice / 100).toLocaleString("en-IN")} x {item.quantity}</p>
                       </div>
                     </div>
-                    {item.description && (
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                        {item.description}
-                      </p>
-                    )}
                   </div>
                 ))}
-                <div className="pt-4 border-t">
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold">Total Amount</span>
-                    <span className="text-2xl font-bold">₹{totalInRupees}</span>
-                  </div>
+                <div className="flex items-center justify-between border-t border-slate-100 px-1 pt-4">
+                  <span className="text-sm font-semibold text-muted-foreground">Total order value</span>
+                  <span className="text-xl font-semibold text-stone-900">Rs {totalInRupees}</span>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </CustomerCard>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>BOM Verification</CardTitle>
-            </CardHeader>
-            <CardContent>
+            <CustomerCard className="p-5">
+              <SectionHeader
+                title="Material verification"
+                description="Use OTP verification only when the team has made BOM confirmation available."
+              />
               <OrderMaterialVerificationForm
                 orderId={order.id}
                 bomCompleted={Boolean(bomCompleted)}
                 manuallyApproved={Boolean(manuallyApproved)}
               />
-              {!manuallyApproved && (
-                <p className="text-sm text-muted-foreground mt-3">
-                  BOM verification will be available after manual approval is completed by the admin team.
-                </p>
-              )}
-            </CardContent>
-          </Card>
+            </CustomerCard>
 
-          {/* Documents Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Documents & Certificates</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {order.warrantyCardUrl && (
-                <div className="p-4 border rounded-lg hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                        <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                      </div>
-                      <div>
-                        <p className="font-semibold">Warranty Card</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Your warranty certificate for this order
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      asChild
-                    >
-                      <a href={order.warrantyCardUrl} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        View
-                      </a>
-                    </Button>
+            <CanonicalStageTimeline stages={order.canonicalStages ?? []} />
+            <StatusTimeline items={statusTimeline} type="order" title="Order status history" />
+          </div>
+
+          <aside className="space-y-6 xl:sticky xl:top-24 xl:self-start">
+            <CustomerCard className="p-5">
+              <SectionHeader title="Documents" description="Open warranty, invoice, and additional files." />
+              <div className="space-y-3">
+                {order.warrantyCardUrl && (
+                  <DocumentLink href={order.warrantyCardUrl} title="Warranty card" description="Warranty certificate for this order" icon={<Shield className="size-5" />} />
+                )}
+                {order.invoiceUrl && (
+                  <DocumentLink href={order.invoiceUrl} title="Invoice" description="Order invoice and payment details" icon={<Receipt className="size-5" />} />
+                )}
+                {additionalFiles.map((fileUrl: string, index: number) => (
+                  <DocumentLink key={fileUrl} href={fileUrl} title={`File ${index + 1}`} description="Additional project document" icon={<Paperclip className="size-5" />} />
+                ))}
+                {!hasDocuments && (
+                  <div className="rounded-2xl border border-dashed border-orange-200 bg-slate-50 p-6 text-center">
+                    <FileText className="mx-auto size-7 text-slate-400" />
+                    <p className="mt-3 text-sm font-semibold text-stone-900">No documents yet</p>
+                    <p className="mt-1 text-xs leading-5 text-slate-500">Documents will appear here when the team uploads them.</p>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
+            </CustomerCard>
 
-              {order.invoiceUrl && (
-                <div className="p-4 border rounded-lg hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
-                        <Receipt className="w-6 h-6 text-green-600 dark:text-green-400" />
-                      </div>
-                      <div>
-                        <p className="font-semibold">Invoice</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Order invoice and payment details
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      asChild
-                    >
-                      <a href={order.invoiceUrl} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        View
-                      </a>
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {additionalFiles.length > 0 && (
-                <div>
-                  <h3 className="font-semibold mb-3 flex items-center gap-2">
-                    <Paperclip className="w-5 h-5" />
-                    Additional Files ({additionalFiles.length})
-                  </h3>
-                  <div className="space-y-2">
-                    {additionalFiles.map((fileUrl: string, index: number) => (
-                      <div
-                        key={index}
-                        className="p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 flex items-center justify-between"
-                      >
-                        <div className="flex items-center gap-3">
-                          <FileText className="w-5 h-5 text-gray-500" />
-                          <span className="text-sm font-medium">File {index + 1}</span>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          asChild
-                        >
-                          <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            View
-                          </a>
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {!order.warrantyCardUrl && !order.invoiceUrl && additionalFiles.length === 0 && (
-                <div className="text-center py-8 text-gray-500">
-                  <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                  <p>No documents available for this order</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Delivery Slot */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Delivery Slot</CardTitle>
-              <p className="text-sm text-muted-foreground font-normal">
-                Select your preferred date and 4-hour time slot for delivery.
-              </p>
-            </CardHeader>
-            <CardContent>
+            <CustomerCard className="p-5">
+              <SectionHeader
+                title="Delivery slot"
+                description="Choose the most convenient 4-hour delivery window."
+              />
               <OrderDeliverySlotForm
                 orderId={order.id}
                 currentDeliveryDate={order.deliveryDate}
                 currentDeliverySlot={order.deliverySlot}
               />
-            </CardContent>
-          </Card>
+            </CustomerCard>
 
-          {/* Installation Details */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Installation Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div>
-                <span className="font-medium text-gray-600 dark:text-gray-400">Address:</span>
-                <p className="mt-1">{order.address}</p>
+            <CustomerCard className="p-5">
+              <SectionHeader title="Installation details" />
+              <div className="space-y-3">
+                <InfoRow icon={<MapPin className="size-4" />} label="Address" value={order.address} />
+                <InfoRow icon={<Phone className="size-4" />} label="Contact" value={order.phone} />
+                {order.deliveryDate && (
+                  <InfoRow icon={<CalendarDays className="size-4" />} label="Delivery date" value={format(new Date(order.deliveryDate), "MMM dd, yyyy")} />
+                )}
+                {order.notes && <InfoRow icon={<StickyNote className="size-4" />} label="Notes" value={order.notes} />}
               </div>
-              <div>
-                <span className="font-medium text-gray-600 dark:text-gray-400">Contact Phone:</span>
-                <p className="mt-1">{order.phone}</p>
-              </div>
-              {order.notes && (
-                <div>
-                  <span className="font-medium text-gray-600 dark:text-gray-400">Notes:</span>
-                  <p className="mt-1">{order.notes}</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+            </CustomerCard>
 
-          {/* Related Tickets */}
-          {order.tickets && order.tickets.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Related Support Tickets</CardTitle>
-              </CardHeader>
-              <CardContent>
+            {order.tickets && order.tickets.length > 0 && (
+              <CustomerCard className="p-5">
+                <SectionHeader title="Related support tickets" />
                 <div className="space-y-2">
                   {order.tickets.map((ticket: any) => (
                     <Link
                       key={ticket.id}
                       href={`/tickets/${ticket.id}`}
-                      className="block p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+                      className="flex items-start justify-between gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 transition-colors hover:bg-white customer-focus-ring"
                     >
-                      <p className="font-medium">{ticket.category}</p>
-                      <p className="text-sm text-gray-500">{ticket.description}</p>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-stone-900">{ticket.category}</p>
+                        {ticket.description && <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-500">{ticket.description}</p>}
+                      </div>
+                      <ChevronRight className="mt-0.5 size-4 shrink-0 text-slate-400" />
                     </Link>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
-          )}
-
-          <CanonicalStageTimeline stages={order.canonicalStages ?? []} />
-          <StatusTimeline items={statusTimeline} type="order" title="Order Status History" />
-        </div>
-      </div>
+              </CustomerCard>
+            )}
+          </aside>
+        </section>
+      </CustomerPage>
     </CustomerLayout>
   );
 }
 
+function DocumentLink({
+  href,
+  title,
+  description,
+  icon,
+}: {
+  href: string;
+  title: string;
+  description: string;
+  icon: ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 transition-colors hover:bg-white customer-focus-ring"
+    >
+      <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white text-orange-600">
+        {icon}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-semibold text-stone-900">{title}</span>
+        <span className="block text-xs leading-5 text-slate-500">{description}</span>
+      </span>
+      <ExternalLink className="size-4 text-slate-400 transition-colors group-hover:text-orange-600" />
+    </a>
+  );
+}
+
+function InfoRow({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: ReactNode;
+}) {
+  return (
+    <div className="flex gap-3 rounded-2xl bg-slate-50 p-3">
+      <span className="mt-0.5 text-slate-400">{icon}</span>
+      <div className="min-w-0">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{label}</p>
+        <p className="mt-1 wrap-break-word text-sm leading-6 text-slate-700">{value}</p>
+      </div>
+    </div>
+  );
+}

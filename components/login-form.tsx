@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowLeft, MessageCircle, Phone, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Phone, MessageCircle, ShieldCheck } from "lucide-react";
 
 export function LoginForm() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export function LoginForm() {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSendOTP = async (e: React.FormEvent) => {
+  const handleSendOTP = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -36,7 +36,7 @@ export function LoginForm() {
         return;
       }
 
-      toast.success("OTP sent successfully to your WhatsApp");
+      toast.success("OTP sent to your WhatsApp");
       setStep("otp");
     } catch {
       toast.error("Failed to send OTP. Please try again.");
@@ -45,7 +45,7 @@ export function LoginForm() {
     }
   };
 
-  const handleVerifyOTP = async (e: React.FormEvent) => {
+  const handleVerifyOTP = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -65,9 +65,8 @@ export function LoginForm() {
         return;
       }
 
-      toast.success("Login successful!");
+      toast.success("Login successful");
       
-      // Redirect admin users to admin panel, regular users to orders
       if (data.user?.role === "ADMIN") {
         router.push("/admin");
       } else {
@@ -84,106 +83,95 @@ export function LoginForm() {
   const maskedPhone = phone.length >= 6 ? `${phone.slice(0, 2)}******${phone.slice(-2)}` : phone;
 
   return (
-    <Card className="w-full border border-border/60 bg-card/80 shadow-sm backdrop-blur-sm">
-      <CardHeader className="space-y-3 pb-2">
-        <div className="flex items-center justify-center gap-2 text-primary">
-          <ShieldCheck className="h-6 w-6" aria-hidden />
+    <div className="rounded-[1.75rem] border border-white/80 bg-white/90 p-5 shadow-[0_30px_90px_-60px_rgba(15,23,42,0.75)] backdrop-blur-xl sm:p-6">
+      <div className="mb-6 text-center">
+        <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+          <ShieldCheck className="size-6" />
         </div>
-        <CardTitle className="text-2xl font-semibold tracking-tight text-center">
-          {step === "phone" ? "Sign in" : "Enter code"}
-        </CardTitle>
-        <p className="text-sm text-muted-foreground text-center leading-relaxed max-w-[320px] mx-auto">
-          {step === "phone" ? (
-            <>
-              Sign in to your Divy Power account to view orders, track deliveries, and manage your profile. We&apos;ll send a one-time code to your WhatsApp.
-            </>
-          ) : (
-            <>
-              We sent a 6-digit code to <span className="font-medium text-foreground">{maskedPhone}</span>. Enter it below to continue.
-            </>
-          )}
+        <h2 className="mt-4 text-2xl font-semibold tracking-tight text-orange-900">
+          {step === "phone" ? "Sign in securely" : "Enter verification code"}
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          {step === "phone"
+            ? "Use your registered mobile number. We will send a one-time code on WhatsApp."
+            : `We sent a 6-digit code to ${maskedPhone}.`}
         </p>
-      </CardHeader>
-      <CardContent className="space-y-5">
-        {step === "phone" ? (
-          <form onSubmit={handleSendOTP} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-sm font-medium flex items-center gap-2">
-                <Phone className="h-4 w-4 text-muted-foreground" aria-hidden />
-                Phone number
-              </Label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="9876543210"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
-                maxLength={10}
-                required
-                disabled={loading}
-                className="h-11 bg-background"
-              />
-              <p className="text-xs text-muted-foreground">
-                Enter your 10-digit Indian mobile number
-              </p>
-            </div>
+      </div>
+
+      {step === "phone" ? (
+        <form onSubmit={handleSendOTP} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+              <Phone className="size-4 text-slate-400" />
+              Phone number
+            </Label>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="9876543210"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+              maxLength={10}
+              required
+              disabled={loading}
+              className="h-12 rounded-2xl border-slate-200 bg-white text-base shadow-none"
+            />
+            <p className="text-xs text-slate-500">Enter your 10-digit Indian mobile number.</p>
+          </div>
+          <Button
+            type="submit"
+            className="h-12 w-full rounded-2xl bg-primary font-semibold text-white hover:bg-slate-800"
+            disabled={loading || phone.length !== 10}
+          >
+            {loading ? "Sending code..." : "Send code via WhatsApp"}
+          </Button>
+        </form>
+      ) : (
+        <form onSubmit={handleVerifyOTP} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="otp" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+              <MessageCircle className="size-4 text-slate-400" />
+              Verification code
+            </Label>
+            <Input
+              id="otp"
+              type="text"
+              inputMode="numeric"
+              placeholder="000000"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+              maxLength={6}
+              required
+              disabled={loading}
+              autoFocus
+              className="h-12 rounded-2xl border-slate-200 bg-white text-center font-mono text-xl tracking-[0.35em] shadow-none"
+            />
+            <p className="text-xs text-slate-500">Code sent to WhatsApp. It expires after a few minutes.</p>
+          </div>
+          <div className="grid grid-cols-[auto_1fr] gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              className="h-12 rounded-2xl bg-white"
+              onClick={() => {
+                setStep("phone");
+                setOtp("");
+              }}
+              disabled={loading}
+            >
+              <ArrowLeft className="size-4" />
+              Back
+            </Button>
             <Button
               type="submit"
-              className="w-full h-11 font-medium"
-              disabled={loading || phone.length !== 10}
+              className="h-12 rounded-2xl bg-emerald-700 font-semibold text-white hover:bg-emerald-800"
+              disabled={loading || otp.length !== 6}
             >
-              {loading ? "Sending code…" : "Send code via WhatsApp"}
+              {loading ? "Verifying..." : "Verify and continue"}
             </Button>
-          </form>
-        ) : (
-          <form onSubmit={handleVerifyOTP} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="otp" className="text-sm font-medium flex items-center gap-2">
-                <MessageCircle className="h-4 w-4 text-muted-foreground" aria-hidden />
-                Verification code
-              </Label>
-              <Input
-                id="otp"
-                type="text"
-                inputMode="numeric"
-                placeholder="000000"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                maxLength={6}
-                required
-                disabled={loading}
-                autoFocus
-                className="h-11 bg-background text-center text-lg tracking-[0.35em] font-mono tabular-nums"
-              />
-              <p className="text-xs text-muted-foreground">
-                Code sent to WhatsApp · Expires in a few minutes
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                className="flex-1 h-11"
-                onClick={() => {
-                  setStep("phone");
-                  setOtp("");
-                }}
-                disabled={loading}
-              >
-                Back
-              </Button>
-              <Button
-                type="submit"
-                className="flex-1 h-11 font-medium"
-                disabled={loading || otp.length !== 6}
-              >
-                {loading ? "Verifying…" : "Verify"}
-              </Button>
-            </div>
-          </form>
-        )}
-      </CardContent>
-    </Card>
+          </div>
+        </form>
+      )}
+    </div>
   );
 }
-

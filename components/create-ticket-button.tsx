@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/components/language-provider";
 
@@ -36,19 +37,20 @@ export function CreateTicketButton() {
     return () => clearInterval(interval);
   }, []);
 
-  const disabled = remainingMs > 0;
-
-  if (disabled) {
+  if (remainingMs > 0) {
     return (
-      <Button disabled variant="secondary">
-        {t("support.newComplaint")} — {formatRemaining(remainingMs)}
+      <Button disabled variant="secondary" className="h-11 rounded-full px-5">
+        {t("support.newComplaint")} - {formatRemaining(remainingMs)}
       </Button>
     );
   }
 
   return (
-    <Link href="/tickets/new">
-      <Button className="min-h-[48px]">{t("support.newComplaint")}</Button>
-    </Link>
+    <Button asChild className="h-11 rounded-full bg-primary px-5 text-white hover:bg-slate-800">
+      <Link href="/tickets/new">
+        <Plus className="size-4" />
+        {t("support.newComplaint")}
+      </Link>
+    </Button>
   );
 }

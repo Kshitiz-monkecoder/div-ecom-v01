@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import type { ChangeEvent, FormEvent, ReactNode } from "react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -15,23 +16,28 @@ import {
 } from "@/components/ui/select";
 
 const BILL_RANGES = [
-  { value: "500-1000", label: "₹500-1000" },
-  { value: "1000-2000", label: "₹1000-2000" },
-  { value: "2000-5000", label: "₹2000-5000" },
-  { value: "5000-8000", label: "₹5000-8000" },
-  { value: "8000+", label: "₹8000+" },
+  { value: "500-1000", label: "Rs 500 - 1,000" },
+  { value: "1000-2000", label: "Rs 1,000 - 2,000" },
+  { value: "2000-5000", label: "Rs 2,000 - 5,000" },
+  { value: "5000-8000", label: "Rs 5,000 - 8,000" },
+  { value: "8000+", label: "Rs 8,000+" },
 ];
 
 const PROPERTY_TYPES = [
-  { value: "मकान", label: "मकान" },
-  { value: "फ्लैट", label: "फ्लैट" },
-  { value: "दुकान", label: "दुकान" },
-  { value: "फैक्ट्री", label: "फैक्ट्री" },
+  { value: "House", label: "House" },
+  { value: "Apartment", label: "Apartment" },
+  { value: "Shop", label: "Shop" },
+  { value: "Factory", label: "Factory" },
 ];
 
 const AREAS = [
-  "इंदिरापुरम", "वसुंधरा", "राजेंद्र नगर", "कविनगर", "वैशाली", "गाजियाबाद शहर",
-  "अन्य (Ghaziabad)",
+  "Indirapuram",
+  "Vasundhara",
+  "Rajendra Nagar",
+  "Kavi Nagar",
+  "Vaishali",
+  "Ghaziabad City",
+  "Other Ghaziabad area",
 ];
 
 export default function ReferForm({ referralCode }: { referralCode: string | null }) {
@@ -48,12 +54,12 @@ export default function ReferForm({ referralCode }: { referralCode: string | nul
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     if (error) setError(null);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -94,10 +100,13 @@ export default function ReferForm({ referralCode }: { referralCode: string | nul
 
   if (submitted) {
     return (
-      <div className="text-center py-4">
-        <p className="text-lg font-semibold">धन्यवाद!</p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          हमें आपका रिक्वेस्ट मिल गया है। हमारी टीम जल्द ही संपर्क करेगी।
+      <div className="py-8 text-center">
+        <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-emerald-100 text-orange-600">
+          <CheckCircle2 className="size-7" />
+        </div>
+        <p className="mt-4 text-xl font-semibold text-orange-900">Request received</p>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          The Divy Power team will contact you soon for a free solar consultation.
         </p>
       </div>
     );
@@ -106,25 +115,23 @@ export default function ReferForm({ referralCode }: { referralCode: string | nul
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <Alert variant="destructive">
-          <AlertCircle />
+        <Alert variant="destructive" className="rounded-2xl">
+          <AlertCircle className="size-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <div className="space-y-2">
-        <Label htmlFor="name">आपका नाम</Label>
+      <Field label="Your name">
         <Input
           id="name"
           name="name"
-          placeholder="नाम"
+          placeholder="Full name"
           required
           value={formData.name}
           onChange={handleChange}
-          className="min-h-[48px]"
+          className="h-12 rounded-2xl border-slate-200 bg-white shadow-none"
         />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="phone">मोबाइल नंबर</Label>
+      </Field>
+      <Field label="Mobile number">
         <Input
           id="phone"
           name="phone"
@@ -132,70 +139,77 @@ export default function ReferForm({ referralCode }: { referralCode: string | nul
           placeholder="10-digit number"
           required
           value={formData.phone}
-          onChange={handleChange}
-          className="min-h-[48px]"
+          onChange={(event) => {
+            setFormData((prev) => ({ ...prev, phone: event.target.value.replace(/\D/g, "").slice(0, 10) }));
+            if (error) setError(null);
+          }}
+          className="h-12 rounded-2xl border-slate-200 bg-white shadow-none"
         />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="email">ईमेल (वैकल्पिक)</Label>
+      </Field>
+      <Field label="Email (optional)">
         <Input
           id="email"
           name="email"
           type="email"
-          placeholder="Email"
+          placeholder="you@example.com"
           value={formData.email}
           onChange={handleChange}
-          className="min-h-[48px]"
+          className="h-12 rounded-2xl border-slate-200 bg-white shadow-none"
         />
-      </div>
-      <div className="space-y-2">
-        <Label>मासिक बिजली बिल (लगभग)</Label>
+      </Field>
+      <Field label="Approximate monthly electricity bill">
         <Select value={formData.billRange} onValueChange={(v) => setFormData((p) => ({ ...p, billRange: v }))}>
-          <SelectTrigger className="min-h-[48px]">
-            <SelectValue placeholder="चुनें" />
+          <SelectTrigger className="h-12 w-full rounded-2xl border-slate-200 bg-white shadow-none">
+            <SelectValue placeholder="Select range" />
           </SelectTrigger>
           <SelectContent>
-            {BILL_RANGES.map((r) => (
-              <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+            {BILL_RANGES.map((range) => (
+              <SelectItem key={range.value} value={range.value}>{range.label}</SelectItem>
             ))}
           </SelectContent>
         </Select>
-      </div>
-      <div className="space-y-2">
-        <Label>प्रॉपर्टी का प्रकार</Label>
+      </Field>
+      <Field label="Property type">
         <Select value={formData.propertyType} onValueChange={(v) => setFormData((p) => ({ ...p, propertyType: v }))}>
-          <SelectTrigger className="min-h-[48px]">
-            <SelectValue placeholder="चुनें" />
+          <SelectTrigger className="h-12 w-full rounded-2xl border-slate-200 bg-white shadow-none">
+            <SelectValue placeholder="Select property" />
           </SelectTrigger>
           <SelectContent>
-            {PROPERTY_TYPES.map((r) => (
-              <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+            {PROPERTY_TYPES.map((type) => (
+              <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
             ))}
           </SelectContent>
         </Select>
-      </div>
-      <div className="space-y-2">
-        <Label>एरिया</Label>
+      </Field>
+      <Field label="Area">
         <Select value={formData.area} onValueChange={(v) => setFormData((p) => ({ ...p, area: v }))}>
-          <SelectTrigger className="min-h-[48px]">
-            <SelectValue placeholder="चुनें" />
+          <SelectTrigger className="h-12 w-full rounded-2xl border-slate-200 bg-white shadow-none">
+            <SelectValue placeholder="Select area" />
           </SelectTrigger>
           <SelectContent>
-            {AREAS.map((a) => (
-              <SelectItem key={a} value={a}>{a}</SelectItem>
+            {AREAS.map((area) => (
+              <SelectItem key={area} value={area}>{area}</SelectItem>
             ))}
           </SelectContent>
         </Select>
-      </div>
+      </Field>
       {referralCode && (
-        <div className="space-y-2">
-          <Label>रेफरल कोड</Label>
-          <Input value={referralCode} readOnly className="min-h-[48px] bg-muted" />
-        </div>
+        <Field label="Referral code">
+          <Input value={referralCode} readOnly className="h-12 rounded-2xl border-slate-200 bg-slate-50 font-mono tracking-[0.16em] shadow-none" />
+        </Field>
       )}
-      <Button type="submit" className="w-full min-h-[48px] bg-[#27AE60] hover:bg-[#20a350]" disabled={loading}>
-        {loading ? "लोड हो रहा है..." : "फ्री कंसल्टेशन बुक करें →"}
+      <Button type="submit" className="h-12 w-full rounded-2xl bg-emerald-700 text-white hover:bg-emerald-800" disabled={loading}>
+        {loading ? "Submitting..." : "Book free consultation"}
       </Button>
     </form>
+  );
+}
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="space-y-2">
+      <Label className="text-sm font-semibold text-slate-700">{label}</Label>
+      {children}
+    </div>
   );
 }
