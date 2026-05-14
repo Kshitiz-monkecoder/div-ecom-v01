@@ -200,7 +200,7 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
         </div>
       </section>
 
-      <section>
+      {/* <section>
         <SectionHeader
           title="Assigned product browsing"
           description="Explore products currently available to your account. Selection and ordering behavior stays exactly as configured by Divy Power."
@@ -263,7 +263,7 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
             ))}
           </div>
         )}
-      </section>
+      </section> */}
     </CustomerPage>
   );
 }

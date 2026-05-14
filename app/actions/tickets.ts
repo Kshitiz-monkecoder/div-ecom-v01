@@ -18,10 +18,23 @@ export async function createTicket(data: unknown) {
   const user = await requireAuth();
   const validated = createTicketSchema.parse(data);
 
+  const CATEGORY_MAPPING: Record<string, string> = {
+    "Installation Issue": "Plant On",
+    "Product Issue": "DG BreakDown",
+    "Billing / Payment": "INC",
+    "General Query": "BOM Visit",
+  };
+
+  const mappedCategory =
+    CATEGORY_MAPPING[validated.category] ?? validated.category;
+
   return divyEngineFetch<any>("/api/ecom/tickets", {
     method: "POST",
     actor: { id: user.id, role: user.role },
-    body: JSON.stringify(validated),
+    body: JSON.stringify({
+      ...validated,
+      category: mappedCategory,
+    }),
   });
 }
 
@@ -43,11 +56,19 @@ export async function getTicket(id: string) {
     throw new Error("Unauthorized");
   }
 
-  return divyEngineFetch<any>(`/api/ecom/tickets/${id}`, {
-    actor: { id: user.id, role: user.role },
-  });
-}
+  console.log('getTicket called', { id, userId: user.id, userRole: user.role });
 
+  try {
+    const result = await divyEngineFetch<any>(`/api/ecom/tickets/${id}`, {
+      actor: { id: user.id, role: user.role },
+    });
+    console.log('getTicket success', result);
+    return result;
+  } catch (err) {
+    console.error('getTicket error', err);
+    throw err;
+  }
+}
 export async function getAllTickets(status?: TicketStatus) {
   const admin = await requireAdmin();
 

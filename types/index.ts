@@ -181,9 +181,10 @@ export interface Ticket {
   user?: User | null;
   images?: string[] | null;
   subCategories?: string[] | null;
+  assignedAgentEmpId?: string | null;
+  unoloTaskId?: string | null;
   createdAt: Date | string;
   updatedAt?: Date | string;
 }
 
 export type ParsedProduct = Omit<Product, "images"> & { images: string[] };
-

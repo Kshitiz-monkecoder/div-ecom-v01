@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { format } from "date-fns";
-import { ArrowRight, CalendarDays, Package, MessageSquare } from "lucide-react";
+import { ArrowRight, CalendarDays, CheckCircle2, Clock, Package, MessageSquare, UserCheck } from "lucide-react";
 import { StatusBadge } from "@/components/status-badge";
 import { type Ticket } from "@/types";
 
@@ -23,6 +23,9 @@ export function TicketCard({ ticket }: TicketCardProps) {
       ? ticket.order.items[0]?.product?.name || ticket.order.items[0]?.name
       : `${ticket.order.items.length} order items`
     : null;
+
+  const agentAssigned = !!ticket.assignedAgentEmpId;
+  const taskSynced = !!ticket.unoloTaskId;
 
   return (
     <Link
@@ -48,6 +51,24 @@ export function TicketCard({ ticket }: TicketCardProps) {
           <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-muted-foreground">
             <Package className="size-4 text-slate-400" />
             <span className="truncate">{orderLabel}</span>
+          </div>
+        )}
+
+        {/* Agent / visit status pill */}
+        {taskSynced ? (
+          <div className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-emerald-700">
+            <CheckCircle2 className="size-4 shrink-0" />
+            <span className="text-xs font-semibold">Visit scheduled</span>
+          </div>
+        ) : agentAssigned ? (
+          <div className="flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-blue-700">
+            <UserCheck className="size-4 shrink-0" />
+            <span className="text-xs font-semibold">Agent assigned</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-amber-700">
+            <Clock className="size-4 shrink-0" />
+            <span className="text-xs font-semibold">Awaiting agent</span>
           </div>
         )}
       </div>
