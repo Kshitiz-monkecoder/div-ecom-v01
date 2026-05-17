@@ -1,10 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle2, Coins, Copy, Gift, Link2, Send, Share2, TrendingUp, UserRound, Zap } from "lucide-react";
+import {
+  CheckCircle2,
+  Coins,
+  Copy,
+  Gift,
+  Link2,
+  Send,
+  TrendingUp,
+  UserRound,
+  Zap,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CustomerCard, CustomerPage, CustomerPageHeader, EmptyState, MetricCard, SectionHeader } from "@/components/customer-portal-ui";
+import {
+  CustomerCard,
+  CustomerPage,
+  CustomerPageHeader,
+  EmptyState,
+  MetricCard,
+  SectionHeader,
+} from "@/components/customer-portal-ui";
 import { StatusBadge } from "@/components/status-badge";
 import { toast } from "sonner";
 
@@ -25,13 +42,6 @@ interface Token {
   usedAt?: string | null;
 }
 
-function formatPhone(raw: string): string {
-  const digits = raw.replace(/\D/g, "");
-  if (digits.length === 10) return `91${digits}`;
-  if (digits.length === 12 && digits.startsWith("91")) return digits;
-  return digits;
-}
-
 export default function ReferralsClient() {
   const [referralCode, setReferralCode] = useState("");
   const [loadingCode, setLoadingCode] = useState(true);
@@ -39,8 +49,12 @@ export default function ReferralsClient() {
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [tokens, setTokens] = useState<Token[]>([]);
   const [loadingReferrals, setLoadingReferrals] = useState(true);
+
+  // WhatsApp send state
   const [waPhone, setWaPhone] = useState("");
+  const [waName, setWaName] = useState("");
   const [waPhoneError, setWaPhoneError] = useState("");
+  const [waSending, setWaSending] = useState(false);
 
   const totalEarned = referrals
     .filter((r) => r.status === "APPROVED")
@@ -100,25 +114,33 @@ export default function ReferralsClient() {
     fetchTokens();
   }, []);
 
-  const buildWAMessage = (targetPhone?: string) => {
-    const message = `I installed solar with Divy Power and wanted to share this with you. You can book a free consultation here: ${shareLink}. Referral code: ${referralCode}`;
-
-    if (targetPhone) {
-      return `https://wa.me/${targetPhone}?text=${encodeURIComponent(message)}`;
+  const handleSendWhatsApp = async () => {
+    const digits = waPhone.replace(/\D/g, "");
+    if (digits.length !== 10) {
+      setWaPhoneError("Please enter a valid 10-digit number");
+      return;
     }
-    return `https://wa.me/?text=${encodeURIComponent(message)}`;
-  };
-
-  const handleDirectWAShare = () => {
-    const rawDigits = waPhone.replace(/\D/g, "");
-    if (rawDigits.length !== 10) {
-      setWaPhoneError("Please enter a valid 10-digit phone number");
+    if (!waName.trim()) {
+      setWaPhoneError("Please enter the person's name");
       return;
     }
     setWaPhoneError("");
-    const phone = formatPhone(rawDigits);
-    window.open(buildWAMessage(phone), "_blank");
-    toast.success("Opening WhatsApp");
+    setWaSending(true);
+    try {
+      const res = await fetch("/api/user/send-referral-whatsapp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: digits, referredToName: waName.trim() }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      toast.success("WhatsApp message sent!");
+      setWaPhone("");
+      setWaName("");
+    } catch {
+      toast.error("Failed to send. Please try again.");
+    } finally {
+      setWaSending(false);
+    }
   };
 
   return (
@@ -130,10 +152,34 @@ export default function ReferralsClient() {
       />
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Total earned" value={loadingCode ? "--" : totalEarned} icon={<TrendingUp className="size-5" />} detail="Approved referral reward tokens." tone="dark" />
-        <MetricCard label="Available" value={remaining} icon={<CheckCircle2 className="size-5" />} detail="Tokens not yet utilized." tone="green" />
-        <MetricCard label="Utilized" value={utilized} icon={<Coins className="size-5" />} detail="Tokens already consumed." tone="solar" />
-        <MetricCard label="Successful" value={successfulCount} icon={<Gift className="size-5" />} detail="Approved referrals." tone="blue" />
+        <MetricCard
+          label="Total earned"
+          value={loadingCode ? "--" : totalEarned}
+          icon={<TrendingUp className="size-5" />}
+          detail="Approved referral reward tokens."
+          tone="dark"
+        />
+        <MetricCard
+          label="Available"
+          value={remaining}
+          icon={<CheckCircle2 className="size-5" />}
+          detail="Tokens not yet utilized."
+          tone="green"
+        />
+        <MetricCard
+          label="Utilized"
+          value={utilized}
+          icon={<Coins className="size-5" />}
+          detail="Tokens already consumed."
+          tone="solar"
+        />
+        <MetricCard
+          label="Successful"
+          value={successfulCount}
+          icon={<Gift className="size-5" />}
+          detail="Approved referrals."
+          tone="blue"
+        />
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
@@ -143,12 +189,17 @@ export default function ReferralsClient() {
               <Gift className="size-6" />
             </div>
             <h2 className="mt-5 text-2xl font-semibold tracking-tight">Your referral power</h2>
-            <p className="mt-2 text-sm leading-6 text-white/65">Share Divy Power with friends, family, and neighbours from one polished referral hub.</p>
+            <p className="mt-2 text-sm leading-6 text-white/65">
+              Share Divy Power with friends, family, and neighbours from one polished referral hub.
+            </p>
           </div>
 
           <div className="space-y-5 p-5">
+            {/* Referral code */}
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Referral code</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                Referral code
+              </p>
               <div className="mt-2 flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-3">
                 <span className="min-w-0 flex-1 truncate font-mono text-2xl font-semibold tracking-[0.18em] text-orange-900">
                   {loadingCode ? "--" : referralCode || "--"}
@@ -168,11 +219,16 @@ export default function ReferralsClient() {
               </div>
             </div>
 
+            {/* Referral link */}
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Referral link</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                Referral link
+              </p>
               <div className="mt-2 flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-3">
                 <Link2 className="size-4 shrink-0 text-slate-400" />
-                <span className="min-w-0 flex-1 truncate text-xs font-medium text-muted-foreground">{shareLink || "Generating link..."}</span>
+                <span className="min-w-0 flex-1 truncate text-xs font-medium text-muted-foreground">
+                  {shareLink || "Generating link..."}
+                </span>
                 <Button
                   size="icon"
                   variant="outline"
@@ -188,51 +244,61 @@ export default function ReferralsClient() {
               </div>
             </div>
 
+            {/* Send on WhatsApp — server-side */}
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Send on WhatsApp</p>
-              <div className="mt-2 flex gap-2">
-                <div className="flex-1">
-                  <Input
-                    type="tel"
-                    placeholder="10-digit mobile number"
-                    value={waPhone}
-                    onChange={(e) => {
-                      setWaPhone(e.target.value.replace(/\D/g, ""));
-                      setWaPhoneError("");
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleDirectWAShare();
-                    }}
-                    className="h-11 rounded-full border-slate-200 bg-white shadow-none"
-                    maxLength={10}
-                  />
-                  {waPhoneError && <p className="mt-1 text-xs text-rose-600">{waPhoneError}</p>}
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                Send on WhatsApp
+              </p>
+              <div className="mt-2 space-y-2">
+                <Input
+                  placeholder="Their name"
+                  value={waName}
+                  onChange={(e) => {
+                    setWaName(e.target.value);
+                    setWaPhoneError("");
+                  }}
+                  className="h-11 rounded-full border-slate-200 bg-white shadow-none"
+                />
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <Input
+                      type="tel"
+                      placeholder="10-digit mobile number"
+                      value={waPhone}
+                      onChange={(e) => {
+                        setWaPhone(e.target.value.replace(/\D/g, ""));
+                        setWaPhoneError("");
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSendWhatsApp();
+                      }}
+                      className="h-11 rounded-full border-slate-200 bg-white shadow-none"
+                      maxLength={10}
+                    />
+                    {waPhoneError && (
+                      <p className="mt-1 text-xs text-rose-600">{waPhoneError}</p>
+                    )}
+                  </div>
+                  <Button
+                    className="h-11 rounded-full bg-[#168f4d] px-5 text-white hover:bg-[#117940]"
+                    onClick={handleSendWhatsApp}
+                    disabled={!referralCode || !waPhone || !waName || waSending}
+                  >
+                    <Send className="size-4" />
+                    {waSending ? "Sending..." : "Send"}
+                  </Button>
                 </div>
-                <Button
-                  className="h-11 rounded-full bg-[#168f4d] px-5 text-white hover:bg-[#117940]"
-                  onClick={handleDirectWAShare}
-                  disabled={!referralCode || !waPhone}
-                >
-                  <Send className="size-4" />
-                  Send
-                </Button>
               </div>
-              <Button
-                variant="outline"
-                className="mt-3 h-11 w-full rounded-full border-emerald-200 bg-white text-orange-600 hover:bg-emerald-50 hover:text-orange-800"
-                onClick={() => window.open(buildWAMessage(), "_blank")}
-                disabled={!referralCode}
-              >
-                <Share2 className="size-4" />
-                Share to any contact
-              </Button>
             </div>
           </div>
         </CustomerCard>
 
         <div className="space-y-6">
           <CustomerCard className="p-5">
-            <SectionHeader title="How rewards work" description="Simple, trackable, and visible from your customer portal." />
+            <SectionHeader
+              title="How rewards work"
+              description="Simple, trackable, and visible from your customer portal."
+            />
             <div className="grid gap-3 md:grid-cols-3">
               {[
                 ["1", "Share your code", "Send the link to someone interested in solar."],
@@ -240,7 +306,9 @@ export default function ReferralsClient() {
                 ["3", "Reward on install", "Approved installations add tokens to your account."],
               ].map(([step, title, desc]) => (
                 <div key={step} className="rounded-2xl bg-slate-50 p-4">
-                  <span className="flex size-8 items-center justify-center rounded-xl bg-white text-sm font-semibold text-orange-900">{step}</span>
+                  <span className="flex size-8 items-center justify-center rounded-xl bg-white text-sm font-semibold text-orange-900">
+                    {step}
+                  </span>
                   <p className="mt-3 text-sm font-semibold text-orange-900">{title}</p>
                   <p className="mt-1 text-xs leading-5 text-slate-500">{desc}</p>
                 </div>
@@ -268,7 +336,10 @@ export default function ReferralsClient() {
             ) : (
               <div className="space-y-3">
                 {referrals.map((referral) => (
-                  <div key={referral.id} className="flex flex-col gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div
+                    key={referral.id}
+                    className="flex flex-col gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                  >
                     <div className="flex items-center gap-3">
                       <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-white text-slate-500">
                         <UserRound className="size-5" />
@@ -277,7 +348,9 @@ export default function ReferralsClient() {
                         <p className="text-sm font-semibold text-orange-900">{referral.name}</p>
                         <p className="mt-1 text-xs leading-5 text-slate-500">{referral.product}</p>
                         {referral.submittedAt && (
-                          <p className="mt-1 text-xs text-slate-400">{new Date(referral.submittedAt).toLocaleDateString("en-IN")}</p>
+                          <p className="mt-1 text-xs text-slate-400">
+                            {new Date(referral.submittedAt).toLocaleDateString("en-IN")}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -301,13 +374,24 @@ export default function ReferralsClient() {
               <SectionHeader title="Token usage history" />
               <div className="space-y-2">
                 {tokens.map((token) => (
-                  <div key={token.id} className="flex items-center justify-between rounded-2xl bg-slate-50 p-3 text-sm">
+                  <div
+                    key={token.id}
+                    className="flex items-center justify-between rounded-2xl bg-slate-50 p-3 text-sm"
+                  >
                     <div className="flex items-center gap-2">
-                      <Zap className={`size-4 ${token.status === "USED" ? "text-amber-500" : "text-emerald-600"}`} />
+                      <Zap
+                        className={`size-4 ${
+                          token.status === "USED" ? "text-amber-500" : "text-emerald-600"
+                        }`}
+                      />
                       <span className="font-semibold text-orange-900">{token.amount} tokens</span>
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                        token.status === "USED" ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-orange-800"
-                      }`}>
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                          token.status === "USED"
+                            ? "bg-amber-100 text-amber-800"
+                            : "bg-emerald-100 text-orange-800"
+                        }`}
+                      >
                         {token.status === "USED" ? "Utilized" : "Available"}
                       </span>
                     </div>
