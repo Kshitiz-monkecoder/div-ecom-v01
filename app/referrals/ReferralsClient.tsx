@@ -101,7 +101,7 @@ export default function ReferralsClient() {
 
     const fetchTokens = async () => {
       try {
-        const res = await fetch("/api/user/tokens.ts");
+        const res = await fetch("/api/user/tokens");
         const data = await res.json();
         setTokens(Array.isArray(data) ? data : []);
       } catch {

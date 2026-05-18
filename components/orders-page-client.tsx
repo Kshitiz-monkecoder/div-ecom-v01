@@ -123,7 +123,7 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
                 className="h-12 rounded-full border-slate-200 bg-white pl-11 shadow-none"
               />
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div className="flex gap-2 overflow-x-auto pb-1 snap-x snap-mandatory">
               <button
                 type="button"
                 onClick={() => setStatusFilter(allStatuses)}

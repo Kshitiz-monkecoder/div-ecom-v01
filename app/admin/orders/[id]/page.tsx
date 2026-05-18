@@ -13,11 +13,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FileText, ExternalLink } from "lucide-react";
+import { FileText, ExternalLink, Coins } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OrderMaterialDeliveryToggle } from "@/components/order-material-delivery-toggle";
 import { OrderManualApprovalForm } from "@/components/order-manual-approval-form";
 import { parseStringArray } from "@/lib/json";
+import { OrderUseTokensForm } from "@/components/order-use-tokens-form";
+import { divyEngineFetch } from "@/lib/divy-engine-api";
 
 export default async function AdminOrderDetailPage({
   params,
@@ -30,6 +32,14 @@ export default async function AdminOrderDetailPage({
   if (!order) {
     notFound();
   }
+
+  const tokens = await divyEngineFetch<any[]>(`/api/ecom/tokens`, {
+    actor: { id: order.user.id, role: "USER" },
+  }).catch(() => []);
+
+  const availableTokens = tokens
+    .filter((t: any) => t.status === "UNUSED")
+    .reduce((sum: number, t: any) => sum + t.amount, 0);
 
   const totalAmount = order.items.reduce(
     (sum: number, item: any) => sum + item.unitPrice * item.quantity,
@@ -78,6 +88,22 @@ export default async function AdminOrderDetailPage({
               <p><span className="font-medium">Phone:</span> {order.user.phone}</p>
             </CardContent>
           </Card>
+
+          {order.referralInfo && (
+            <Card className="border-amber-200 bg-amber-50">
+              <CardHeader>
+                <CardTitle className="text-amber-800 flex items-center gap-2">
+                  🪙 Referred Customer
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                <p><span className="font-medium">Referred by:</span> {order.referralInfo.referrer?.name}</p>
+                <p><span className="font-medium">Referrer phone:</span> {order.referralInfo.referrer?.phone}</p>
+                <p><span className="font-medium">Referral code used:</span> {order.referralInfo.referrer?.referralCode}</p>
+                <p><span className="font-medium">Status:</span> {order.referralInfo.status}</p>
+              </CardContent>
+            </Card>
+          )}
 
           <Card>
             <CardHeader>
@@ -145,11 +171,7 @@ export default async function AdminOrderDetailPage({
                     <p className="text-sm text-gray-500">PDF Document</p>
                   </div>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                >
+                <Button variant="outline" size="sm" asChild>
                   <a href={order.warrantyCardUrl} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="w-4 h-4 mr-2" />
                     View
@@ -167,11 +189,7 @@ export default async function AdminOrderDetailPage({
                     <p className="text-sm text-gray-500">PDF Document</p>
                   </div>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                >
+                <Button variant="outline" size="sm" asChild>
                   <a href={order.invoiceUrl} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="w-4 h-4 mr-2" />
                     View
@@ -193,11 +211,7 @@ export default async function AdminOrderDetailPage({
                         <FileText className="w-4 h-4 text-gray-500" />
                         <p className="text-sm">File {index + 1}</p>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                      >
+                      <Button variant="outline" size="sm" asChild>
                         <a href={fileUrl} target="_blank" rel="noopener noreferrer">
                           <ExternalLink className="w-4 h-4 mr-2" />
                           View
@@ -250,8 +264,26 @@ export default async function AdminOrderDetailPage({
             <OrderStatusForm orderId={order.id} currentStatus={order.status} />
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Coins className="h-5 w-5 text-amber-500" />
+              Utilize Customer Tokens
+            </CardTitle>
+            <p className="text-sm text-muted-foreground font-normal">
+              Apply referral tokens as a discount or benefit on this order.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <OrderUseTokensForm
+              orderId={order.id}
+              userId={order.user.id}
+              availableTokens={availableTokens}
+            />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
 }
-

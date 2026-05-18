@@ -30,7 +30,7 @@ export function OrderCard({ order }: OrderCardProps) {
       href={`/orders/${order.id}`}
       className="group flex h-full flex-col rounded-[1.5rem] border border-white/80 bg-white/90 p-5 shadow-sm transition-all hover:-translate-y-1 hover:bg-white hover:shadow-[0_24px_70px_-42px_rgba(15,23,42,0.75)] customer-focus-ring"
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
             {t("orders.orderNumber")} #{order.orderNumber}
@@ -40,7 +40,9 @@ export function OrderCard({ order }: OrderCardProps) {
           </h3>
           {firstItem?.capacity && <p className="mt-1 text-sm text-slate-500">{firstItem.capacity}</p>}
         </div>
-        <StatusBadge status={order.status} type="order" />
+        <div className="shrink-0 mt-0.5">
+  <StatusBadge status={order.status} type="order" />
+</div>
       </div>
 
       <div className="mt-5 grid gap-2 text-sm">
@@ -70,10 +72,10 @@ export function OrderCard({ order }: OrderCardProps) {
             <FileText className="size-4" />
             Documents
           </span>
-          <span className="inline-flex items-center gap-1">
-            Open
-            <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-          </span>
+          <span className="inline-flex shrink-0 items-center gap-1">
+  Open
+  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+</span>
         </div>
       </div>
     </Link>

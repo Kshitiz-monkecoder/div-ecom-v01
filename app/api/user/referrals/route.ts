@@ -61,3 +61,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Failed to submit referral" }, { status: 500 });
   }
 }
+
+export async function GET() {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  try {
+    const data = await divyEngineFetch<any[]>("/api/ecom/referrals", {
+      actor: { id: user.id, role: user.role },
+    });
+    return NextResponse.json(Array.isArray(data) ? data : []);
+  } catch (err) {
+    console.error("Failed to fetch referrals:", err);
+    return NextResponse.json([], { status: 200 });
+  }
+}
