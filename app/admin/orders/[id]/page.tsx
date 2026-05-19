@@ -18,7 +18,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OrderMaterialDeliveryToggle } from "@/components/order-material-delivery-toggle";
 import { OrderManualApprovalForm } from "@/components/order-manual-approval-form";
 import { parseStringArray } from "@/lib/json";
-import { OrderUseTokensForm } from "@/components/order-use-tokens-form";
 import { divyEngineFetch } from "@/lib/divy-engine-api";
 
 export default async function AdminOrderDetailPage({
@@ -265,24 +264,6 @@ export default async function AdminOrderDetailPage({
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Coins className="h-5 w-5 text-amber-500" />
-              Utilize Customer Tokens
-            </CardTitle>
-            <p className="text-sm text-muted-foreground font-normal">
-              Apply referral tokens as a discount or benefit on this order.
-            </p>
-          </CardHeader>
-          <CardContent>
-            <OrderUseTokensForm
-              orderId={order.id}
-              userId={order.user.id}
-              availableTokens={availableTokens}
-            />
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

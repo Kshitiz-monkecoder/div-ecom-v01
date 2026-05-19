@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CheckCircle2,
   Coins,
@@ -28,26 +28,27 @@ import { toast } from "sonner";
 interface Referral {
   id: number;
   name: string;
+  phone: string;
   product: string;
   status: string;
   tokensAwarded: number;
   submittedAt?: string;
 }
 
-interface Token {
+interface TokenHistory {
   id: string;
   amount: number;
-  status: "UNUSED" | "USED";
+  description: string;
   createdAt: string;
-  usedAt?: string | null;
 }
 
 export default function ReferralsClient() {
+  const refreshReferralsRef = useRef<(() => void) | null>(null);
   const [referralCode, setReferralCode] = useState("");
   const [loadingCode, setLoadingCode] = useState(true);
   const [shareLink, setShareLink] = useState("");
   const [referrals, setReferrals] = useState<Referral[]>([]);
-  const [tokens, setTokens] = useState<Token[]>([]);
+  const [tokenHistory, setTokenHistory] = useState<TokenHistory[]>([]);
   const [loadingReferrals, setLoadingReferrals] = useState(true);
 
   // WhatsApp send state
@@ -60,9 +61,7 @@ export default function ReferralsClient() {
     .filter((r) => r.status === "APPROVED")
     .reduce((sum, r) => sum + (r.tokensAwarded ?? 0), 0);
 
-  const utilized = tokens
-    .filter((t) => t.status === "USED")
-    .reduce((sum, t) => sum + t.amount, 0);
+  const utilized = tokenHistory.reduce((sum, t) => sum + t.amount, 0);
 
   const remaining = Math.max(0, totalEarned - utilized);
   const successfulCount = referrals.filter((r) => r.status === "APPROVED").length;
@@ -99,11 +98,14 @@ export default function ReferralsClient() {
       }
     };
 
-    const fetchTokens = async () => {
+    // expose for re-use after WhatsApp send
+    refreshReferralsRef.current = fetchReferrals;
+
+    const fetchTokenHistory = async () => {
       try {
-        const res = await fetch("/api/user/tokens");
+        const res = await fetch("/api/user/token-history");
         const data = await res.json();
-        setTokens(Array.isArray(data) ? data : []);
+        setTokenHistory(Array.isArray(data) ? data : []);
       } catch {
         /* non-fatal */
       }
@@ -111,7 +113,7 @@ export default function ReferralsClient() {
 
     fetchCode();
     fetchReferrals();
-    fetchTokens();
+    fetchTokenHistory();
   }, []);
 
   const handleSendWhatsApp = async () => {
@@ -136,6 +138,8 @@ export default function ReferralsClient() {
       toast.success("WhatsApp message sent!");
       setWaPhone("");
       setWaName("");
+      // Refresh referral history — the person may have already submitted
+      refreshReferralsRef.current?.();
     } catch {
       toast.error("Failed to send. Please try again.");
     } finally {
@@ -319,7 +323,7 @@ export default function ReferralsClient() {
           <CustomerCard className="p-5">
             <SectionHeader
               title="Referral history"
-              description={`${successfulCount} successful referrals and ${totalEarned} earned tokens.`}
+              description={`${referrals.length} referral${referrals.length !== 1 ? "s" : ""} submitted · ${successfulCount} approved · ${totalEarned} tokens earned.`}
             />
             {loadingReferrals ? (
               <div className="space-y-3">
@@ -346,10 +350,17 @@ export default function ReferralsClient() {
                       </span>
                       <div>
                         <p className="text-sm font-semibold text-orange-900">{referral.name}</p>
-                        <p className="mt-1 text-xs leading-5 text-slate-500">{referral.product}</p>
+                        {referral.phone && (
+                          <p className="mt-0.5 text-xs font-mono text-slate-500">{referral.phone}</p>
+                        )}
+                        <p className="mt-1 text-xs leading-5 text-slate-400">{referral.product}</p>
                         {referral.submittedAt && (
                           <p className="mt-1 text-xs text-slate-400">
-                            {new Date(referral.submittedAt).toLocaleDateString("en-IN")}
+                            {new Date(referral.submittedAt).toLocaleDateString("en-IN", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })}
                           </p>
                         )}
                       </div>
@@ -369,42 +380,52 @@ export default function ReferralsClient() {
             )}
           </CustomerCard>
 
-          {tokens.length > 0 && (
-            <CustomerCard className="p-5">
-              <SectionHeader title="Token usage history" />
+          <CustomerCard className="p-5">
+            <SectionHeader
+              title="Token utilization history"
+              description="Tokens utilized by the admin on your behalf."
+            />
+            {tokenHistory.length === 0 ? (
+              <EmptyState
+                title="No tokens utilized yet"
+                description="When tokens are applied to your account, the history will appear here."
+                icon={<Zap className="size-5" />}
+              />
+            ) : (
               <div className="space-y-2">
-                {tokens.map((token) => (
+                {tokenHistory.map((entry) => (
                   <div
-                    key={token.id}
-                    className="flex items-center justify-between rounded-2xl bg-slate-50 p-3 text-sm"
+                    key={entry.id}
+                    className="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-sm"
                   >
-                    <div className="flex items-center gap-2">
-                      <Zap
-                        className={`size-4 ${
-                          token.status === "USED" ? "text-amber-500" : "text-emerald-600"
-                        }`}
-                      />
-                      <span className="font-semibold text-orange-900">{token.amount} tokens</span>
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                          token.status === "USED"
-                            ? "bg-amber-100 text-amber-800"
-                            : "bg-emerald-100 text-orange-800"
-                        }`}
-                      >
-                        {token.status === "USED" ? "Utilized" : "Available"}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-amber-100">
+                          <Zap className="size-4 text-amber-600" />
+                        </span>
+                        <div>
+                          <p className="font-semibold text-orange-900">{entry.amount} tokens utilized</p>
+                          <p className="mt-0.5 text-xs leading-5 text-slate-500">{entry.description}</p>
+                        </div>
+                      </div>
+                      <span className="shrink-0 text-xs text-slate-400">
+                        {new Date(entry.createdAt).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                        {" · "}
+                        {new Date(entry.createdAt).toLocaleTimeString("en-IN", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </span>
                     </div>
-                    <span className="text-xs text-slate-500">
-                      {token.status === "USED" && token.usedAt
-                        ? new Date(token.usedAt).toLocaleDateString("en-IN")
-                        : new Date(token.createdAt).toLocaleDateString("en-IN")}
-                    </span>
                   </div>
                 ))}
               </div>
-            </CustomerCard>
-          )}
+            )}
+          </CustomerCard>
         </div>
       </section>
     </CustomerPage>
