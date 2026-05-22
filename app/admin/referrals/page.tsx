@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Check, X, Search, Eye, Coins, Users, ChevronRight, Loader2 } from "lucide-react";
+import { Check, X, Search, Eye, Coins, ChevronRight, Loader2, Plus } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
@@ -42,11 +41,51 @@ type Referral = {
   };
 };
 
+type ReferralCustomer = {
+  id: string;
+  name: string;
+  phone: string;
+  email?: string | null;
+  role?: string | null;
+  referralCode?: string | null;
+};
+
+const INITIAL_ADD_REFERRAL_FORM = {
+  name: "",
+  phone: "",
+  email: "",
+  product: "Residential rooftop",
+  billRange: "",
+  propertyType: "",
+  area: "",
+  referrerId: "",
+};
+
 const STATUS_STYLES: Record<string, string> = {
   pending: "bg-amber-100 text-amber-700",
   approved: "bg-green-100 text-green-700",
   rejected: "bg-red-100 text-red-700",
 };
+
+const BILL_RANGES = [
+  { value: "500-1000", label: "Rs 500 - 1,000" },
+  { value: "1000-2000", label: "Rs 1,000 - 2,000" },
+  { value: "2000-5000", label: "Rs 2,000 - 5,000" },
+  { value: "5000-8000", label: "Rs 5,000 - 8,000" },
+  { value: "8000+", label: "Rs 8,000+" },
+];
+
+const PROPERTY_TYPES = ["House", "Apartment", "Shop", "Factory"];
+
+const AREAS = [
+  "Indirapuram",
+  "Vasundhara",
+  "Rajendra Nagar",
+  "Kavi Nagar",
+  "Vaishali",
+  "Ghaziabad City",
+  "Other Ghaziabad area",
+];
 
 // ─── Referral Tab ────────────────────────────────────────────────────────────
 
@@ -61,6 +100,17 @@ function ReferralTab() {
   const [detailRef, setDetailRef] = useState<Referral | null>(null);
   const [showApproveInput, setShowApproveInput] = useState<Record<number, boolean>>({});
 
+  // ── Add Referral state ──
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [addForm, setAddForm] = useState(INITIAL_ADD_REFERRAL_FORM);
+  const [addSubmitting, setAddSubmitting] = useState(false);
+  const [addError, setAddError] = useState("");
+  const [customers, setCustomers] = useState<ReferralCustomer[]>([]);
+  const [customersLoading, setCustomersLoading] = useState(false);
+  const [customersLoaded, setCustomersLoaded] = useState(false);
+  const [customerLoadError, setCustomerLoadError] = useState("");
+  const [customerSearch, setCustomerSearch] = useState("");
+
   useEffect(() => {
     fetch("/api/admin/referrals")
       .then((r) => r.json())
@@ -68,6 +118,31 @@ function ReferralTab() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  const loadCustomers = () => {
+    if (customersLoaded || customersLoading) return;
+    setCustomersLoading(true);
+    setCustomerLoadError("");
+
+    fetch("/api/admin/users-for-assignment")
+      .then((r) => r.json())
+      .then((data) => {
+        const rows = Array.isArray(data) ? data : data?.users;
+        const customerRows = Array.isArray(rows) ? rows : [];
+
+        setCustomers(
+          customerRows
+            .filter((customer) => customer?.id && customer?.phone)
+            .filter((customer) => !customer.role || String(customer.role).toUpperCase() !== "ADMIN")
+        );
+        setCustomersLoaded(true);
+      })
+      .catch(() => {
+        setCustomers([]);
+        setCustomerLoadError("Failed to load customers.");
+      })
+      .finally(() => setCustomersLoading(false));
+  };
 
   const filtered = useMemo(() => {
     return referrals.filter((r) => {
@@ -84,6 +159,23 @@ function ReferralTab() {
       return matchStatus && matchSearch;
     });
   }, [referrals, statusFilter, search]);
+
+  const filteredCustomers = useMemo(() => {
+    const q = customerSearch.trim().toLowerCase();
+    if (!q) return customers;
+
+    return customers.filter(
+      (customer) =>
+        customer.name.toLowerCase().includes(q) ||
+        customer.phone.includes(q) ||
+        customer.email?.toLowerCase().includes(q) ||
+        customer.referralCode?.toLowerCase().includes(q)
+    );
+  }, [customers, customerSearch]);
+
+  const selectedReferrer = useMemo(() => {
+    return customers.find((customer) => customer.id === addForm.referrerId) || null;
+  }, [customers, addForm.referrerId]);
 
   const handleApprove = async (id: number) => {
     const amount = tokenAmounts[id] ?? 100;
@@ -123,6 +215,53 @@ function ReferralTab() {
     }
   };
 
+  const handleAddReferral = async () => {
+    setAddError("");
+
+    const productStr =
+      [addForm.product, addForm.billRange, addForm.propertyType, addForm.area]
+        .filter(Boolean)
+        .join(" | ") || addForm.product;
+
+    if (!addForm.name.trim() || !addForm.phone.trim() || !productStr) {
+      setAddError("Name, phone and product are required.");
+      return;
+    }
+    if (!addForm.referrerId) {
+      setAddError("Choose the customer who made the referral.");
+      return;
+    }
+
+    setAddSubmitting(true);
+    try {
+      const res = await fetch("/api/admin/referrals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: addForm.name.trim(),
+          phone: addForm.phone.trim(),
+          email: addForm.email.trim() || undefined,
+          product: productStr,
+          referrerId: addForm.referrerId,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setAddError(data?.error || "Failed to create referral.");
+        return;
+      }
+      // Prepend the new referral to the list
+      setReferrals((prev) => [data, ...prev]);
+      setShowAddDialog(false);
+      setAddForm(INITIAL_ADD_REFERRAL_FORM);
+      setCustomerSearch("");
+    } catch {
+      setAddError("Unexpected error. Please try again.");
+    } finally {
+      setAddSubmitting(false);
+    }
+  };
+
   const counts = {
     all: referrals.length,
     pending: referrals.filter((r) => r.status.toLowerCase() === "pending").length,
@@ -141,7 +280,7 @@ function ReferralTab() {
         {counts.pending} pending · {counts.approved} approved · {counts.rejected} rejected
       </p>
 
-      {/* Filters + Search */}
+      {/* Filters + Search + Add button */}
       <div className="flex flex-wrap gap-3 items-center">
         <div className="flex gap-2">
           {(["all", "pending", "approved", "rejected"] as const).map((s) => (
@@ -165,6 +304,19 @@ function ReferralTab() {
             className="pl-8 h-9"
           />
         </div>
+        <Button
+          size="sm"
+          className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5 shrink-0"
+          onClick={() => {
+            setAddError("");
+            setCustomerSearch("");
+            loadCustomers();
+            setShowAddDialog(true);
+          }}
+        >
+          <Plus className="h-4 w-4" />
+          Add Referral
+        </Button>
       </div>
 
       {/* Table */}
@@ -386,6 +538,215 @@ function ReferralTab() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* ── Add Referral Dialog ── */}
+      <Dialog
+        open={showAddDialog}
+        onOpenChange={(open) => {
+          setShowAddDialog(open);
+          if (!open) setAddError("");
+        }}
+      >
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Add Referral Manually</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-5 text-sm">
+            {addError && (
+              <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
+                {addError}
+              </p>
+            )}
+
+            {/* ── Referee section ── */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                Referee (New Lead)
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label>Name *</Label>
+                  <Input
+                    placeholder="Full name"
+                    value={addForm.name}
+                    onChange={(e) => {
+                      setAddForm((p) => ({ ...p, name: e.target.value }));
+                      setAddError("");
+                    }}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Phone *</Label>
+                  <Input
+                    placeholder="10-digit mobile"
+                    value={addForm.phone}
+                    onChange={(e) => {
+                      setAddForm((p) => ({
+                        ...p,
+                        phone: e.target.value.replace(/\D/g, "").slice(0, 10),
+                      }));
+                      setAddError("");
+                    }}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Email (optional)</Label>
+                  <Input
+                    placeholder="you@example.com"
+                    value={addForm.email}
+                    onChange={(e) => setAddForm((p) => ({ ...p, email: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Product *</Label>
+                  <Input
+                    value={addForm.product}
+                    onChange={(e) => setAddForm((p) => ({ ...p, product: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Bill Range (optional)</Label>
+                  <select
+                    className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm"
+                    value={addForm.billRange}
+                    onChange={(e) => setAddForm((p) => ({ ...p, billRange: e.target.value }))}
+                  >
+                    <option value="">Select range</option>
+                    {BILL_RANGES.map((r) => (
+                      <option key={r.value} value={r.value}>
+                        {r.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Property Type (optional)</Label>
+                  <select
+                    className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm"
+                    value={addForm.propertyType}
+                    onChange={(e) => setAddForm((p) => ({ ...p, propertyType: e.target.value }))}
+                  >
+                    <option value="">Select type</option>
+                    {PROPERTY_TYPES.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-1.5 col-span-2">
+                  <Label>Area (optional)</Label>
+                  <select
+                    className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm"
+                    value={addForm.area}
+                    onChange={(e) => setAddForm((p) => ({ ...p, area: e.target.value }))}
+                  >
+                    <option value="">Select area</option>
+                    {AREAS.map((a) => (
+                      <option key={a} value={a}>
+                        {a}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Referrer section ── */}
+            <div className="border-t pt-4">
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Referrer Customer *
+                </p>
+                {customersLoading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+              </div>
+              <div className="space-y-3">
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search customer by name, phone, email"
+                    value={customerSearch}
+                    onChange={(e) => setCustomerSearch(e.target.value)}
+                    className="pl-8 h-9"
+                  />
+                </div>
+                <div className="max-h-56 overflow-y-auto rounded-md border bg-background">
+                  {customerLoadError ? (
+                    <p className="px-3 py-4 text-sm text-red-600">{customerLoadError}</p>
+                  ) : customersLoading ? (
+                    <div className="flex items-center justify-center py-6 text-muted-foreground">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    </div>
+                  ) : filteredCustomers.length === 0 ? (
+                    <p className="px-3 py-4 text-sm text-muted-foreground">No customers found</p>
+                  ) : (
+                    filteredCustomers.map((customer) => {
+                      const selected = addForm.referrerId === customer.id;
+
+                      return (
+                        <button
+                          key={customer.id}
+                          type="button"
+                          className={`flex w-full items-center justify-between gap-3 px-3 py-2 text-left transition hover:bg-muted/60 ${
+                            selected ? "bg-blue-50 text-blue-900" : ""
+                          }`}
+                          onClick={() => {
+                            setAddForm((p) => ({ ...p, referrerId: customer.id }));
+                            setAddError("");
+                          }}
+                        >
+                          <span className="min-w-0">
+                            <span className="block truncate text-sm font-medium">{customer.name}</span>
+                            <span className="block truncate text-xs text-muted-foreground">
+                              {customer.phone}
+                              {customer.email ? ` - ${customer.email}` : ""}
+                            </span>
+                          </span>
+                          {selected && <Check className="h-4 w-4 shrink-0 text-blue-600" />}
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+                {selectedReferrer && (
+                  <div className="rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-900">
+                    <span className="font-medium">{selectedReferrer.name}</span>
+                    <span className="text-blue-700"> - {selectedReferrer.phone}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* ── Actions ── */}
+            <div className="flex gap-2 justify-end pt-1">
+              <Button
+                variant="outline"
+                onClick={() => setShowAddDialog(false)}
+                disabled={addSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleAddReferral}
+                disabled={addSubmitting || customersLoading}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                {addSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-1.5" />
+                    Creating…
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4 mr-1.5" />
+                    Create Referral
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -443,8 +804,17 @@ function TokenTab() {
   };
 
   useEffect(() => {
-    fetchUsers();
-    fetchHistory();
+    fetch("/api/admin/tokens/users")
+      .then((r) => r.json())
+      .then((d) => setUsers(Array.isArray(d) ? d : []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+
+    fetch("/api/admin/tokens/history")
+      .then((r) => r.json())
+      .then((d) => setHistory(Array.isArray(d) ? d : []))
+      .catch(() => {})
+      .finally(() => setHistoryLoading(false));
   }, []);
 
   const filtered = useMemo(() => {
@@ -495,8 +865,8 @@ function TokenTab() {
       setAmount("");
       setDescription("");
       setSelectedUser(null);
-      fetchUsers();    // refresh balances
-      fetchHistory();  // refresh history
+      fetchUsers();
+      fetchHistory();
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : "Failed to utilize tokens.");
     } finally {
