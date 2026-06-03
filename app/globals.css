@@ -317,6 +317,10 @@ input[type="range"]::-webkit-slider-thumb:hover {
     repeating-linear-gradient(90deg, rgba(15, 31, 29, 0.035) 0 1px, transparent 1px 72px),
     repeating-linear-gradient(0deg, rgba(15, 31, 29, 0.03) 0 1px, transparent 1px 72px);
 }
+.customer-portal {
+  background: #F8FAFC; /* override the gradient — matches the clean white design */
+  /* keep everything else unchanged */
+}
 
 .customer-portal button,
 .customer-portal a,

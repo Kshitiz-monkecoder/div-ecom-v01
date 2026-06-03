@@ -4,6 +4,7 @@ import { getUserOrders } from "@/app/actions/orders";
 import { requireAuth } from "@/lib/proxy";
 import { Role } from "@/types";
 import { LanguageProvider } from "@/components/language-provider";
+import CustomerLayout from "@/components/customer-layout";
 
 export default async function Home() {
   const user = await requireAuth();
@@ -23,11 +24,13 @@ export default async function Home() {
 
   return (
     <LanguageProvider>
-      <HomePageClient
-        userName={user.name}
-        referralCode={user.referralCode ?? ""}
-        orders={ordersSummary}
-      />
+      <CustomerLayout>
+        <HomePageClient
+          userName={user.name}
+          referralCode={user.referralCode ?? ""}
+          orders={ordersSummary}
+        />
+      </CustomerLayout>
     </LanguageProvider>
   );
 }

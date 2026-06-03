@@ -1,13 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/components/language-provider";
 import { Button } from "@/components/ui/button";
-import { CustomerCard, CustomerPage, CustomerPageHeader, MetricCard, SectionHeader } from "@/components/customer-portal-ui";
-import { Bell, Download, FileText, Globe, Lock, LogOut, Phone, ShieldCheck, UserRound } from "lucide-react";
+import {
+  Bell,
+  ChevronRight,
+  Download,
+  FileText,
+  Globe,
+  Lock,
+  LogOut,
+  Phone,
+  ShieldCheck,
+  UserRound,
+  Mail,
+  MapPin,
+  Edit2,
+  CheckCircle,
+  Activity,
+  KeyRound,
+  MonitorSmartphone,
+} from "lucide-react";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 type AccountPageClientProps = {
   name: string;
@@ -19,7 +36,14 @@ type AccountPageClientProps = {
 function formatDate(date: Date) {
   const d = new Date(date);
   if (isNaN(d.getTime())) return "--";
-  return format(d, "MMMM dd, yyyy");
+  return format(d, "dd MMM yyyy");
+}
+
+function memberDuration(date: Date) {
+  const now = new Date();
+  const years = now.getFullYear() - date.getFullYear();
+  if (years < 1) return "Less than 1 year with Divy Power";
+  return `${years} year${years > 1 ? "s" : ""} with Divy Power`;
 }
 
 export function AccountPageClient({ name, email, phone, createdAt }: AccountPageClientProps) {
@@ -40,134 +64,349 @@ export function AccountPageClient({ name, email, phone, createdAt }: AccountPage
     .toUpperCase();
 
   return (
-    <CustomerPage className="space-y-8">
-      <CustomerPageHeader
-        eyebrow="Account"
-        title={t("account.title")}
-        description="Manage your customer identity, language preference, document shortcuts, and secure session access."
-      />
+    <div className="flex-1 min-w-0 px-4 sm:px-6 py-5 space-y-5">
 
-      <section className="grid gap-4 md:grid-cols-3">
-        <MetricCard label="Member since" value={formatDate(createdAt)} icon={<ShieldCheck className="size-5" />} detail="Your customer account creation date." tone="green" />
-        <MetricCard label="Login method" value="WhatsApp OTP" icon={<Phone className="size-5" />} detail="Secure one-time code authentication." tone="blue" />
-        <MetricCard label="Language" value={locale === "hi" ? "Hindi" : "English"} icon={<Globe className="size-5" />} detail="Portal content preference." tone="solar" />
-      </section>
-
-      <section className="grid gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
-        <CustomerCard className="overflow-hidden">
-          <div className="bg-primary p-6 text-white">
-            <div className="flex size-16 items-center justify-center rounded-3xl bg-white/10 text-xl font-semibold">
-              {initials || <UserRound className="size-7" />}
-            </div>
-            <h2 className="mt-5 text-2xl font-semibold tracking-tight">{name}</h2>
-            <p className="mt-1 text-sm text-white/60">Divy Power customer</p>
-          </div>
-          <div className="space-y-3 p-5">
-            <ProfileRow label={t("account.phone")} value={phone} />
-            <ProfileRow label={t("account.email")} value={email || "--"} />
-            <ProfileRow label="Member since" value={formatDate(createdAt)} />
-          </div>
-        </CustomerCard>
-
-        <div className="space-y-6">
-          <CustomerCard className="p-5">
-            <SectionHeader
-              title="Document shortcuts"
-              description="Jump to the order workspace to open available warranty cards, invoices, and subsidy status."
-            />
-            <div className="grid gap-3 sm:grid-cols-2">
-              <ActionLink href="/orders" icon={<FileText className="size-5" />} title={t("account.downloadWarranty")} description="Open warranty documents from orders." />
-              <ActionLink href="/orders" icon={<Download className="size-5" />} title={t("account.downloadInvoice")} description="Find invoices and project files." />
-              <ActionLink href="/orders" icon={<ShieldCheck className="size-5" />} title={t("account.subsidyStatus")} description="Review subsidy and project status." />
-              <ActionLink href="/tickets" icon={<Bell className="size-5" />} title={t("account.notifications")} description="Use tickets as your active update stream." />
-            </div>
-          </CustomerCard>
-
-          <CustomerCard className="p-5">
-            <SectionHeader
-              title="Preferences and security"
-              description="Keep account actions clear and predictable."
-            />
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setLocale(locale === "hi" ? "en" : "hi")}
-                className="h-auto justify-start rounded-2xl border-slate-200 bg-white p-4 text-left"
-              >
-                <Globe className="size-5 text-orange-600" />
-                <span>
-                  <span className="block font-semibold">{t("account.changeLanguage")}</span>
-                  <span className="mt-1 block text-xs font-normal text-slate-500">Switch between English and Hindi.</span>
-                </span>
-              </Button>
-              <Button asChild variant="outline" className="h-auto justify-start rounded-2xl border-slate-200 bg-white p-4 text-left">
-                <Link href="/account">
-                  <Lock className="size-5 text-slate-500" />
-                  <span>
-                    <span className="block font-semibold">{t("account.changePassword")}</span>
-                    <span className="mt-1 block text-xs font-normal text-slate-500">OTP login keeps this account passwordless.</span>
-                  </span>
-                </Link>
-              </Button>
-            </div>
-          </CustomerCard>
-
-          <CustomerCard className="border-rose-100 bg-rose-50/80 p-5">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-lg font-semibold text-rose-950">Sign out securely</h2>
-                <p className="mt-1 text-sm leading-6 text-rose-800/75">End this session on the current device.</p>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleSignOut}
-                className="rounded-full border-rose-200 bg-white text-rose-700 hover:bg-rose-100 hover:text-rose-800"
-              >
-                <LogOut className="size-4" />
-                {t("account.signOut")}
-              </Button>
-            </div>
-          </CustomerCard>
+        {/* Page Title */}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">My Account</h1>
+          <p className="text-sm text-gray-400 mt-1">Manage your profile, preferences and account security.</p>
         </div>
-      </section>
-    </CustomerPage>
-  );
-}
 
-function ProfileRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl bg-slate-50 px-4 py-3">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{label}</p>
-      <p className="mt-1 break-words text-sm font-semibold text-slate-800">{value}</p>
+        {/* Profile Summary Strip */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Avatar Card */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
+            <div className="size-14 rounded-full bg-orange-500 flex items-center justify-center text-white text-lg font-bold shrink-0">
+              {initials || <UserRound className="size-6" />}
+            </div>
+            <div>
+              <p className="font-bold text-gray-900 text-base leading-tight">{name}</p>
+              <p className="text-xs text-gray-400 mt-0.5">{phone}</p>
+              <span className="inline-flex items-center gap-1 mt-1.5 text-[10px] font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
+                <CheckCircle className="size-3" /> Verified
+              </span>
+              <p className="text-[11px] text-gray-400 mt-1">Divy Power Customer</p>
+            </div>
+          </div>
+
+          {/* Member Since */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
+            <div className="size-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+              <ShieldCheck className="size-5 text-blue-500" />
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 font-medium">Member Since</p>
+              <p className="text-xl font-bold text-gray-900 mt-0.5">{formatDate(createdAt)}</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">{memberDuration(createdAt)}</p>
+            </div>
+          </div>
+
+          {/* Preferred Language */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
+            <div className="size-10 rounded-full bg-purple-50 flex items-center justify-center shrink-0">
+              <Globe className="size-5 text-purple-500" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-gray-400 font-medium">Preferred Language</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <p className="text-xl font-bold text-gray-900">{locale === "hi" ? "Hindi" : "English"}</p>
+                <button
+                  onClick={() => setLocale(locale === "hi" ? "en" : "hi")}
+                  className="inline-flex items-center gap-1 text-[10px] font-semibold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full hover:bg-orange-100 transition-colors"
+                >
+                  <Edit2 className="size-2.5" /> Edit
+                </button>
+              </div>
+              <p className="text-[11px] text-gray-400 mt-0.5">
+                You will see content in {locale === "hi" ? "Hindi" : "English"}
+              </p>
+            </div>
+          </div>
+
+          {/* Login Method */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
+            <div className="size-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+              <Phone className="size-5 text-orange-500" />
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 font-medium">Login Method</p>
+              <p className="text-xl font-bold text-gray-900 mt-0.5">WhatsApp OTP</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">Secure one-time code authentication</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Two-Column Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-6">
+
+          {/* ── Left Column ── */}
+          <div className="space-y-5">
+
+            {/* Contact Information */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-bold text-gray-900">Contact Information</h2>
+                <button className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-orange-600 transition-colors">
+                  <Edit2 className="size-3.5" /> Edit
+                </button>
+              </div>
+              <div className="space-y-3">
+                <ContactRow icon={<Phone className="size-4 text-gray-400" />} label="Phone Number" value={phone} />
+                <ContactRow icon={<Mail className="size-4 text-gray-400" />} label="Email Address" value={email || "--"} />
+                <ContactRow icon={<MapPin className="size-4 text-gray-400" />} label="Address" value="--" />
+              </div>
+            </div>
+
+            {/* Security & Preferences */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-bold text-gray-900">Security &amp; Preferences</h2>
+                <button className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-orange-600 transition-colors">
+                  <Edit2 className="size-3.5" /> Edit
+                </button>
+              </div>
+              <div className="space-y-3">
+                <SecurityRow
+                  icon={<Lock className="size-4 text-gray-500" />}
+                  label={t("account.changePassword")}
+                  value="Last changed on 12 May 2024"
+                  href="/account"
+                />
+                <SecurityRow
+                  icon={<ShieldCheck className="size-4 text-gray-500" />}
+                  label="Two-step Verification"
+                  value="Added protection to your account"
+                  badge="Enabled"
+                  href="/account"
+                />
+                <SecurityRow
+                  icon={<Globe className="size-4 text-gray-500" />}
+                  label={t("account.changeLanguage")}
+                  value={locale === "hi" ? "Hindi" : "English"}
+                  onClick={() => setLocale(locale === "hi" ? "en" : "hi")}
+                />
+              </div>
+            </div>
+
+            {/* Sign Out */}
+            <div className="bg-white rounded-2xl border border-orange-100 p-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <p className="text-sm font-bold text-orange-600">Sign out from all devices</p>
+                  <p className="text-xs text-orange-500/80 mt-1">This will sign you out from all active sessions on other devices.</p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleSignOut}
+                  className="rounded-full border-orange-200 text-orange-600 bg-white hover:bg-orange-50 hover:text-orange-700 shrink-0 gap-2"
+                >
+                  <LogOut className="size-4" />
+                  Sign out everywhere
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Right Column ── */}
+          <div className="space-y-5">
+
+            {/* Quick Actions */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+              <h2 className="text-base font-bold text-gray-900 mb-4">Quick Actions</h2>
+              <div className="space-y-2">
+                <QuickActionRow
+                  icon={<Download className="size-5 text-orange-500" />}
+                  iconBg="bg-orange-50"
+                  title={t("account.downloadWarranty")}
+                  description="View and download your warranty card"
+                  href="/orders"
+                />
+                <QuickActionRow
+                  icon={<FileText className="size-5 text-red-500" />}
+                  iconBg="bg-red-50"
+                  title={t("account.downloadInvoice")}
+                  description="Download invoices and payment receipts"
+                  href="/orders"
+                />
+                <QuickActionRow
+                  icon={<ShieldCheck className="size-5 text-blue-500" />}
+                  iconBg="bg-blue-50"
+                  title={t("account.subsidyStatus")}
+                  description="View your subsidy and application status"
+                  href="/orders"
+                />
+                <QuickActionRow
+                  icon={<Bell className="size-5 text-amber-500" />}
+                  iconBg="bg-amber-50"
+                  title={t("account.notifications")}
+                  description="Manage your alerts and notifications"
+                  href="/tickets"
+                />
+              </div>
+            </div>
+
+            {/* Account Activity */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-bold text-gray-900">Account Activity</h2>
+                <button className="text-xs font-semibold text-orange-500 hover:text-orange-700 transition-colors">
+                  View All
+                </button>
+              </div>
+              <div className="space-y-3">
+                <ActivityRow
+                  icon={<Activity className="size-4 text-green-500" />}
+                  iconBg="bg-green-50"
+                  label="Login Successful"
+                  time="18 May 2024, 10:30 AM"
+                  badge="WhatsApp OTP"
+                  badgeColor="bg-green-50 text-green-600"
+                />
+                <ActivityRow
+                  icon={<KeyRound className="size-4 text-blue-500" />}
+                  iconBg="bg-blue-50"
+                  label="Password Changed"
+                  time="12 May 2024, 09:45 AM"
+                  badge="Account"
+                  badgeColor="bg-blue-50 text-blue-600"
+                />
+                <ActivityRow
+                  icon={<UserRound className="size-4 text-orange-500" />}
+                  iconBg="bg-orange-50"
+                  label="Profile Updated"
+                  time="05 May 2024, 04:20 PM"
+                  badge="Profile"
+                  badgeColor="bg-orange-50 text-orange-600"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
   );
 }
 
-function ActionLink({
-  href,
+
+/* ── Sub-components ── */
+
+function ContactRow({
   icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-center gap-4 py-3 border-b border-gray-50 last:border-0">
+      <div className="size-9 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-gray-400 font-medium">{label}</p>
+        <p className="text-sm font-semibold text-gray-800 mt-0.5 truncate">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function SecurityRow({
+  icon,
+  label,
+  value,
+  badge,
+  href,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  badge?: string;
+  href?: string;
+  onClick?: () => void;
+}) {
+  const inner = (
+    <div className="flex items-center gap-4 py-3 border-b border-gray-50 last:border-0 hover:bg-gray-50 rounded-xl px-2 -mx-2 transition-colors cursor-pointer">
+      <div className="size-9 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-gray-800">{label}</p>
+        <p className="text-xs text-gray-400 mt-0.5">{value}</p>
+      </div>
+      {badge && (
+        <span className="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full shrink-0">
+          {badge}
+        </span>
+      )}
+      <ChevronRight className="size-4 text-gray-300 shrink-0" />
+    </div>
+  );
+
+  if (href) return <Link href={href}>{inner}</Link>;
+  if (onClick) return <button className="w-full text-left" onClick={onClick}>{inner}</button>;
+  return inner;
+}
+
+function QuickActionRow({
+  icon,
+  iconBg,
   title,
   description,
+  href,
 }: {
-  href: string;
-  icon: ReactNode;
+  icon: React.ReactNode;
+  iconBg: string;
   title: string;
   description: string;
+  href: string;
 }) {
   return (
     <Link
       href={href}
-      className="flex gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors hover:bg-white customer-focus-ring"
+      className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
     >
-      <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white text-orange-600">
+      <div className={cn("size-9 rounded-full flex items-center justify-center shrink-0", iconBg)}>
         {icon}
-      </span>
-      <span>
-        <span className="block text-sm font-semibold text-orange-900">{title}</span>
-        <span className="mt-1 block text-xs leading-5 text-slate-500">{description}</span>
-      </span>
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-gray-800">{title}</p>
+        <p className="text-xs text-gray-400 mt-0.5">{description}</p>
+      </div>
+      <ChevronRight className="size-4 text-gray-300 group-hover:text-gray-500 shrink-0 transition-colors" />
     </Link>
+  );
+}
+
+function ActivityRow({
+  icon,
+  iconBg,
+  label,
+  time,
+  badge,
+  badgeColor,
+}: {
+  icon: React.ReactNode;
+  iconBg: string;
+  label: string;
+  time: string;
+  badge: string;
+  badgeColor: string;
+}) {
+  return (
+    <div className="flex items-center gap-3 py-2">
+      <div className={cn("size-9 rounded-full flex items-center justify-center shrink-0", iconBg)}>
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-gray-800">{label}</p>
+        <p className="text-xs text-gray-400 mt-0.5">{time}</p>
+      </div>
+      <span className={cn("text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0", badgeColor)}>
+        {badge}
+      </span>
+    </div>
   );
 }

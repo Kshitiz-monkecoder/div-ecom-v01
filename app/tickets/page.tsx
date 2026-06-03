@@ -2,6 +2,7 @@ import { SupportPageClient } from "@/components/support-page-client";
 import { getUserTickets } from "@/app/actions/tickets";
 import { requireAuth } from "@/lib/proxy";
 import { LanguageProvider } from "@/components/language-provider";
+import CustomerLayout from "@/components/customer-layout";
 
 export default async function TicketsPage({
   searchParams,
@@ -21,6 +22,7 @@ export default async function TicketsPage({
   }
 
   return (
+    <CustomerLayout>
     <LanguageProvider>
       <SupportPageClient
         tickets={tickets}
@@ -29,5 +31,6 @@ export default async function TicketsPage({
         ticketCount={tickets.length}
       />
     </LanguageProvider>
+    </CustomerLayout>
   );
 }
