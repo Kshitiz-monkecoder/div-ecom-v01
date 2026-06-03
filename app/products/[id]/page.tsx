@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ProductImageCarousel } from "@/components/product-image-carousel";
 import { getCurrentUser } from "@/lib/auth";
 
+
 export default async function ProductDetailPage({
   params,
 }: {

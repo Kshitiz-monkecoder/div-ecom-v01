@@ -82,7 +82,6 @@ export async function getAllProducts() {
     actor: { id: user.id, role: user.role },
   });
 }
-console.log("Fetched products:", await getAllProducts());
 export async function createProduct(data: unknown) {
   const admin = await requireAdmin();
   const validated = productSchema.parse(data);
