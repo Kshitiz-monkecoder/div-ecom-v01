@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/proxy";
 import { filesToEnginePayload } from "@/lib/file-to-base64";
 import { divyEngineFetch } from "@/lib/divy-engine-api";
 import { z } from "zod";
+import { Role } from "@/types";
 
 const productSchema = z.object({
   name: z.string().min(1),
@@ -38,11 +39,14 @@ export async function getProducts(category?: string) {
   if (!user) {
     return [];
   }
-
   const query = category ? `?category=${encodeURIComponent(category)}` : "";
-  return divyEngineFetch<any[]>(`/api/ecom/products${query}`, {
-    actor: { id: user.id, role: user.role },
-  });
+  try {
+    return await divyEngineFetch<any[]>(`/api/ecom/products${query}`, {
+      actor: { id: user.id, role: user.role },
+    });
+  } catch {
+    return [];
+  }
 }
 
 export async function getProduct(id: string) {
@@ -70,13 +74,15 @@ export async function getProduct(id: string) {
 }
 
 export async function getAllProducts() {
-  const admin = await requireAdmin();
+  const user = await getCurrentUser();
+  if (!user) return [];
+  if (user.role !== Role.ADMIN) return [];  // ← safe return instead of requireAdmin
 
   return divyEngineFetch<any[]>("/api/ecom/admin/products", {
-    actor: { id: admin.id, role: admin.role },
+    actor: { id: user.id, role: user.role },
   });
 }
-
+console.log("Fetched products:", await getAllProducts());
 export async function createProduct(data: unknown) {
   const admin = await requireAdmin();
   const validated = productSchema.parse(data);

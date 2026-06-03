@@ -68,10 +68,13 @@ export async function createOrder(data: unknown) {
 
 export async function getUserOrders() {
   const user = await requireAuth();
-
-  return divyEngineFetch<any[]>("/api/ecom/orders", {
-    actor: { id: user.id, role: user.role },
-  });
+  try {
+    return await divyEngineFetch<any[]>("/api/ecom/orders", {
+      actor: { id: user.id, role: user.role },
+    });
+  } catch {
+    return [];
+  }
 }
 
 export async function getOrder(id: string) {

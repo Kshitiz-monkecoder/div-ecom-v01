@@ -2,10 +2,6 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { Role, type User } from "@/types";
 
-/**
- * Layout-level auth guards (server components).
- * These redirect instead of throwing, so layouts/pages can protect routes cleanly.
- */
 export async function requireAuth(): Promise<User> {
   const user = await getCurrentUser();
   if (!user) {
@@ -15,9 +11,12 @@ export async function requireAuth(): Promise<User> {
 }
 
 export async function requireAdmin(): Promise<User> {
-  const user = await requireAuth();
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect("/login");
+  }
   if (user.role !== Role.ADMIN) {
-    redirect("/orders");
+    redirect("/login");  // ← redirect instead of throw
   }
   return user;
 }

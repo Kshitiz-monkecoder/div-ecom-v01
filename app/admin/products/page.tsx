@@ -8,6 +8,7 @@ import { ProductActions } from "@/components/product-actions";
 export default async function AdminProductsPage() {
   const products = await getAllProducts();
 
+
   return (
     <div>
       <div className="flex justify-between items-center mb-8">

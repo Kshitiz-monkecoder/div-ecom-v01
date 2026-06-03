@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { createAdminOrder } from "@/app/actions/orders";
 import { getAllUsersForAssignment } from "@/app/actions/admin";
-import { getAllProducts } from "@/app/actions/products";
+import { getAllProducts } from "@/app/actions/admin";
 import { Trash2, Plus } from "lucide-react";
 import { type Product, type User } from "@/types";
 
