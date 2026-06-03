@@ -5,7 +5,13 @@ export const Role = {
 
 export type Role = (typeof Role)[keyof typeof Role];
 
-export type OrderStatus = "NEW" | "CONTACTED" | "CONFIRMED" | "INSTALLED" | "CANCELLED";
+export type OrderStatus =
+  | "NEW"
+  | "CONTACTED"
+  | "CONFIRMED"
+  | "INSTALLED"
+  | "COMPLETED"
+  | "CANCELLED";
 
 export type TicketStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
 
@@ -14,6 +20,7 @@ export const ORDER_STATUSES: OrderStatus[] = [
   "CONTACTED",
   "CONFIRMED",
   "INSTALLED",
+  "COMPLETED",
   "CANCELLED",
 ];
 

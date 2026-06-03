@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
-import CustomerLayout from "@/components/customer-layout";
 import { HomePageClient } from "@/components/home-page-client";
 import { getUserOrders } from "@/app/actions/orders";
 import { requireAuth } from "@/lib/proxy";
 import { Role } from "@/types";
+import { LanguageProvider } from "@/components/language-provider";
 
 export default async function Home() {
   const user = await requireAuth();
@@ -22,12 +22,12 @@ export default async function Home() {
   }));
 
   return (
-    <CustomerLayout>
+    <LanguageProvider>
       <HomePageClient
         userName={user.name}
         referralCode={user.referralCode ?? ""}
         orders={ordersSummary}
       />
-    </CustomerLayout>
+    </LanguageProvider>
   );
 }
