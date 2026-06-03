@@ -123,21 +123,10 @@ export function AccountPageClient({ name, email, phone, createdAt }: AccountPage
             </div>
           </div>
 
-          {/* Login Method */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-4">
-            <div className="size-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-              <Phone className="size-5 text-orange-500" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-400 font-medium">Login Method</p>
-              <p className="text-xl font-bold text-gray-900 mt-0.5">WhatsApp OTP</p>
-              <p className="text-[11px] text-gray-400 mt-0.5">Secure one-time code authentication</p>
-            </div>
-          </div>
         </div>
 
         {/* Main Two-Column Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-6">
+        <div className="">
 
           {/* ── Left Column ── */}
           <div className="space-y-5">
@@ -157,37 +146,6 @@ export function AccountPageClient({ name, email, phone, createdAt }: AccountPage
               </div>
             </div>
 
-            {/* Security & Preferences */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-bold text-gray-900">Security &amp; Preferences</h2>
-                <button className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-orange-600 transition-colors">
-                  <Edit2 className="size-3.5" /> Edit
-                </button>
-              </div>
-              <div className="space-y-3">
-                <SecurityRow
-                  icon={<Lock className="size-4 text-gray-500" />}
-                  label={t("account.changePassword")}
-                  value="Last changed on 12 May 2024"
-                  href="/account"
-                />
-                <SecurityRow
-                  icon={<ShieldCheck className="size-4 text-gray-500" />}
-                  label="Two-step Verification"
-                  value="Added protection to your account"
-                  badge="Enabled"
-                  href="/account"
-                />
-                <SecurityRow
-                  icon={<Globe className="size-4 text-gray-500" />}
-                  label={t("account.changeLanguage")}
-                  value={locale === "hi" ? "Hindi" : "English"}
-                  onClick={() => setLocale(locale === "hi" ? "en" : "hi")}
-                />
-              </div>
-            </div>
-
             {/* Sign Out */}
             <div className="bg-white rounded-2xl border border-orange-100 p-5">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -204,81 +162,6 @@ export function AccountPageClient({ name, email, phone, createdAt }: AccountPage
                   <LogOut className="size-4" />
                   Sign out everywhere
                 </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Right Column ── */}
-          <div className="space-y-5">
-
-            {/* Quick Actions */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
-              <h2 className="text-base font-bold text-gray-900 mb-4">Quick Actions</h2>
-              <div className="space-y-2">
-                <QuickActionRow
-                  icon={<Download className="size-5 text-orange-500" />}
-                  iconBg="bg-orange-50"
-                  title={t("account.downloadWarranty")}
-                  description="View and download your warranty card"
-                  href="/orders"
-                />
-                <QuickActionRow
-                  icon={<FileText className="size-5 text-red-500" />}
-                  iconBg="bg-red-50"
-                  title={t("account.downloadInvoice")}
-                  description="Download invoices and payment receipts"
-                  href="/orders"
-                />
-                <QuickActionRow
-                  icon={<ShieldCheck className="size-5 text-blue-500" />}
-                  iconBg="bg-blue-50"
-                  title={t("account.subsidyStatus")}
-                  description="View your subsidy and application status"
-                  href="/orders"
-                />
-                <QuickActionRow
-                  icon={<Bell className="size-5 text-amber-500" />}
-                  iconBg="bg-amber-50"
-                  title={t("account.notifications")}
-                  description="Manage your alerts and notifications"
-                  href="/tickets"
-                />
-              </div>
-            </div>
-
-            {/* Account Activity */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-bold text-gray-900">Account Activity</h2>
-                <button className="text-xs font-semibold text-orange-500 hover:text-orange-700 transition-colors">
-                  View All
-                </button>
-              </div>
-              <div className="space-y-3">
-                <ActivityRow
-                  icon={<Activity className="size-4 text-green-500" />}
-                  iconBg="bg-green-50"
-                  label="Login Successful"
-                  time="18 May 2024, 10:30 AM"
-                  badge="WhatsApp OTP"
-                  badgeColor="bg-green-50 text-green-600"
-                />
-                <ActivityRow
-                  icon={<KeyRound className="size-4 text-blue-500" />}
-                  iconBg="bg-blue-50"
-                  label="Password Changed"
-                  time="12 May 2024, 09:45 AM"
-                  badge="Account"
-                  badgeColor="bg-blue-50 text-blue-600"
-                />
-                <ActivityRow
-                  icon={<UserRound className="size-4 text-orange-500" />}
-                  iconBg="bg-orange-50"
-                  label="Profile Updated"
-                  time="05 May 2024, 04:20 PM"
-                  badge="Profile"
-                  badgeColor="bg-orange-50 text-orange-600"
-                />
               </div>
             </div>
           </div>

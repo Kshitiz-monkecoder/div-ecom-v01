@@ -249,6 +249,7 @@ export default function ReferralsClient() {
             </button>
           </div>
         </div>
+        
 
         {/* Share via */}
         <div className="lg:col-span-1 bg-white rounded-xl border border-gray-100 p-5 space-y-3">
@@ -261,13 +262,52 @@ export default function ReferralsClient() {
             className="w-full flex items-center justify-center gap-2.5 bg-[#1877F2] text-white text-sm font-bold py-3 rounded-xl hover:bg-[#166fe5] transition-colors disabled:opacity-50">
             <span className="text-base">📘</span> Facebook
           </button>
-          <button
-            onClick={() => { if (navigator.share && shareLink) { navigator.share({ title: "Join Divy Power", url: shareLink }); } else copyLink(); }}
-            disabled={!shareLink}
-            className="w-full flex items-center justify-center gap-2.5 bg-gray-100 text-gray-700 text-sm font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors disabled:opacity-50">
-            <MoreHorizontal className="size-4" /> More Options
-          </button>
+
+
+          {/* Send on WhatsApp — direct to person */}
+<div className="pt-2 border-t border-gray-100 space-y-2">
+  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+    Send directly to someone
+  </p>
+  <input
+    type="text"
+    placeholder="Their name"
+    value={waName}
+    onChange={(e) => { setWaName(e.target.value); setWaPhoneError(""); }}
+    className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-300"
+  />
+  <div className="flex gap-2">
+    <input
+      type="tel"
+      placeholder="10-digit mobile number"
+      value={waPhone}
+      onChange={(e) => { setWaPhone(e.target.value.replace(/\D/g, "")); setWaPhoneError(""); }}
+      onKeyDown={(e) => { if (e.key === "Enter") handleSendWhatsApp(); }}
+      maxLength={10}
+      className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2.5 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-300"
+    />
+    <button
+      onClick={handleSendWhatsApp}
+      disabled={!referralCode || !waPhone || !waName || waSending}
+      className="shrink-0 bg-[#25D366] text-white text-sm font-bold px-4 py-2.5 rounded-xl hover:bg-[#1db954] transition-colors disabled:opacity-50"
+    >
+      {waSending ? "…" : "Send"}
+    </button>
+  </div>
+  {waPhoneError && (
+    <p className="text-xs text-rose-600">{waPhoneError}</p>
+  )}
+</div>
+<button
+  onClick={() => { if (navigator.share && shareLink) { navigator.share({ title: "Join Divy Power", url: shareLink }); } else copyLink(); }}
+  disabled={!shareLink}
+  className="w-full flex items-center justify-center gap-2.5 bg-gray-100 text-gray-700 text-sm font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors disabled:opacity-50">
+  <MoreHorizontal className="size-4" /> More Options
+</button>
         </div>
+        
+
+        
 
         {/* How it works */}
         <div className="lg:col-span-1 bg-gray-50 border border-gray-100 rounded-xl p-5">
