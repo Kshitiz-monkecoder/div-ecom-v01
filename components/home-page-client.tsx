@@ -25,6 +25,7 @@ import { getStatusMeta } from "@/components/customer-status";
 import { useLanguage } from "@/components/language-provider";
 import { cn } from "@/lib/utils";
 
+
 interface OrderSummary {
   id: string;
   orderNumber: string;
@@ -40,17 +41,18 @@ interface Props {
 }
 
 function getGreeting() {
+    const { t } = useLanguage();
   const h = new Date().getHours();
   if (h < 12) return { text: "Good morning", emoji: "☀️" };
   if (h < 17) return { text: "Good afternoon", emoji: "🌤️" };
   return { text: "Good evening", emoji: "👋" };
 }
 
-function formatDelivery(date: string | null) {
-  if (!date) return "Schedule pending";
+function formatDelivery(date: string | null, t: (k: string) => string) {
+  if (!date) return t("common.schedulePending");
   const d = new Date(date);
-  if (isToday(d)) return "Today";
-  if (isTomorrow(d)) return "Tomorrow";
+  if (isToday(d)) return t("common.today");
+  if (isTomorrow(d)) return t("common.tomorrow");
   return format(d, "MMM d, yyyy");
 }
 
@@ -116,9 +118,10 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
         <section className="rounded-2xl bg-gradient-to-br from-orange-400 to-orange-500 p-6 relative overflow-hidden">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
-              <p className="text-orange-100 text-sm font-medium mb-2">
-                {greeting.text}, {firstName} {greeting.emoji}
-              </p>
+              <p className="text-sm font-medium text-emerald-200">
+  {t(`home.greeting${new Date().getHours() < 12 ? "Morning" : new Date().getHours() < 17 ? "Afternoon" : "Evening"}`)}
+  {t("home.greetingSuffix", { name: firstName })}
+</p>
               <h1 className="text-white text-2xl sm:text-3xl font-bold leading-tight mb-3">
                 Your solar journey,<br />made simple.
               </h1>
@@ -249,7 +252,7 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
                       <p className="text-sm font-semibold text-gray-800 truncate">
                         {firstItem?.name || "Solar project"}
                       </p>
-                      <p className="text-xs text-gray-400 mt-0.5">#{order.orderNumber} · {formatDelivery(order.deliveryDate)}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">#{order.orderNumber} · {formatDelivery(order.deliveryDate, t)}</p>
                     </div>
                     <StatusChip status={order.status} />
                     <ArrowRight className="size-4 text-gray-300 group-hover:text-gray-500 shrink-0 transition-colors" />

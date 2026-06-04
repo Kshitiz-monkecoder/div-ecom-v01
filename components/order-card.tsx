@@ -20,7 +20,7 @@ export function OrderCard({ order }: OrderCardProps) {
   const firstItem = order.items[0];
   const itemSummary =
     order.items.length === 0
-      ? "Solar order"
+      ? t("homePage.solarProject")
       : order.items.length === 1
       ? firstItem.name
       : `${firstItem.name} +${order.items.length - 1} more`;
@@ -64,16 +64,16 @@ export function OrderCard({ order }: OrderCardProps) {
 
       <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-5">
         <div>
-          <p className="text-xs text-slate-400">Project value</p>
+          <p className="text-xs text-slate-400">{t("homePage.projectValue")}</p>
           <p className="text-lg font-semibold text-orange-900">Rs {totalInRupees}</p>
         </div>
         <div className="flex items-center gap-3 text-sm font-semibold text-orange-600">
           <span className="hidden items-center gap-1 sm:inline-flex">
             <FileText className="size-4" />
-            Documents
+            {t("homePage.documents")}
           </span>
           <span className="inline-flex shrink-0 items-center gap-1">
-  Open
+  {t("homePage.open")}
   <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
 </span>
         </div>

@@ -6,12 +6,14 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Loader2 } from "lucide-react";
+import { useLanguage } from "@/components/language-provider";
 
 interface TicketReplyBoxProps {
   ticketId: string;
 }
 
 export function TicketReplyBox({ ticketId }: TicketReplyBoxProps) {
+  const { t } = useLanguage();
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -33,11 +35,11 @@ export function TicketReplyBox({ ticketId }: TicketReplyBoxProps) {
         throw new Error(data?.error || "Failed to send message");
       }
 
-      toast.success("Message sent. Our support team will respond shortly.");
+      toast.success(t("ticketReply.successToast"));
       setMessage("");
       router.refresh();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to send message");
+      toast.error(err instanceof Error ? err.message : t("ticketReply.errorToast"));
     } finally {
       setSending(false);
     }
@@ -46,7 +48,7 @@ export function TicketReplyBox({ ticketId }: TicketReplyBoxProps) {
   return (
     <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
       <Textarea
-        placeholder="Describe your follow-up issue or add more details..."
+        placeholder={t("ticketReply.placeholder")}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         rows={4}
@@ -58,7 +60,7 @@ export function TicketReplyBox({ ticketId }: TicketReplyBoxProps) {
       />
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted-foreground">
-          Our support team usually responds within 24 hours.
+          {t("ticketReply.responseTime")}
         </p>
         <Button
           onClick={handleSend}
@@ -70,7 +72,7 @@ export function TicketReplyBox({ ticketId }: TicketReplyBoxProps) {
           ) : (
             <Send className="h-4 w-4 mr-1.5" />
           )}
-          Send Message
+          {sending ? t("ticketReply.sending") : t("ticketReply.sendMessage")}
         </Button>
       </div>
     </div>

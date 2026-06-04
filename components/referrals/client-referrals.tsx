@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Gift, Copy, CheckCircle } from "lucide-react";
+import { useLanguage } from "@/components/language-provider";
 
 interface Referral {
   id: number;
@@ -14,6 +15,7 @@ interface Referral {
 }
 
 export default function ClientReferrals() {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [referralCode, setReferralCode] = useState("");
   const [loadingCode, setLoadingCode] = useState(true);
@@ -81,17 +83,17 @@ export default function ClientReferrals() {
 
   return (
     <div className="p-4 md:p-6 space-y-6">
-      <h1 className="text-2xl font-semibold">Referrals & Tokens</h1>
+      <h1 className="text-2xl font-semibold">{t("referrals.title")}</h1>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Gift className="h-5 w-5" />
-            Your Referral Code
+            {t("referrals.yourReferralCode")}
           </CardTitle>
 
           <div className="text-right">
-            <p className="text-sm text-muted-foreground">Total Tokens Awarded</p>
+            <p className="text-sm text-muted-foreground">{t("referrals.totalTokens")}</p>
             <p className="text-xl font-semibold">{totalTokens} 🪙</p>
           </div>
         </CardHeader>
@@ -100,7 +102,7 @@ export default function ClientReferrals() {
           <div className="flex flex-wrap items-start justify-between gap-6">
             <div className="flex items-start gap-3">
               <div className="inline-block px-4 py-2 rounded-md border text-lg font-mono bg-gray-50">
-                {loadingCode ? "Loading..." : errorCode ? `Error: ${errorCode}` : referralCode}
+                {loadingCode ? "{t("common.loading")}" : errorCode ? `Error: ${errorCode}` : referralCode}
               </div>
 
               <div className="flex items-center gap-3">
@@ -111,12 +113,12 @@ export default function ClientReferrals() {
                   {copied ? (
                     <>
                       <CheckCircle className="h-4 w-4 mr-2" />
-                      Copied
+                      {t("common.copied")}
                     </>
                   ) : (
                     <>
                       <Copy className="h-4 w-4 mr-2" />
-                      Copy
+                      {t("referrals.copyCode")}
                     </>
                   )}
                 </Button>
@@ -128,17 +130,17 @@ export default function ClientReferrals() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Referred Customers</CardTitle>
+          <CardTitle>{t("referrals.referredCustomers")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b text-left text-sm text-muted-foreground">
-                  <th className="py-2">Name</th>
-                  <th className="py-2">Product</th>
-                  <th className="py-2">Status</th>
-                  <th className="py-2 text-right">Tokens Awarded</th>
+                  <th className="py-2">{t("referrals.colName") }</th>
+                  <th className="py-2">{t("referrals.colProduct")}</th>
+                  <th className="py-2">{t("referrals.colStatus")}</th>
+                  <th className="py-2 text-right">{t("referrals.colTokens")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -152,7 +154,7 @@ export default function ClientReferrals() {
                   </tr>
                 ) : referrals.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="py-6 text-center text-sm">No referrals yet.</td>
+                    <td colSpan={4} className="py-6 text-center text-sm">{t("referrals.noReferrals") }</td>
                   </tr>
                 ) : (
                   referrals.map(r => (
@@ -167,7 +169,9 @@ export default function ClientReferrals() {
                               ? "bg-red-100 text-red-700"
                               : "bg-yellow-100 text-yellow-700"
                         }`}>
-                          {r.status}
+                          {r.status === "APPROVED" ? t("referrals.statusApproved") 
+              : r.status === "REJECTED" ? t("referrals.statusRejected") 
+              : t("referrals.statusPending")}
                         </span>
                       </td>
                       <td className="py-3 text-right font-medium">

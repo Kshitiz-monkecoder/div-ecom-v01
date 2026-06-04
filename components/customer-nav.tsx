@@ -25,8 +25,8 @@ const navItems = [
   { href: "/",           labelKey: "nav.home",    label: "Home",               icon: Home,          badge: undefined },
   { href: "/orders",     labelKey: "nav.myOrders", label: "My Orders",         icon: Package,       badge: undefined },
   { href: "/orders/new", labelKey: "nav.newOrder", label: "New Order",         icon: Box,           badge: undefined    },
-  { href: "/tickets",    labelKey: "nav.support",  label: "Help & Support",     icon: ClipboardList, badge: undefined },
-  { href: "/referrals",  labelKey: "nav.referral", label: "Referral & Rewards",icon: Users,         badge: undefined },
+  { href: "/tickets",    labelKey: "nav.helpSupport",  label: "Help & Support",     icon: ClipboardList, badge: undefined },
+  { href: "/referrals",  labelKey: "nav.referralRewards", label: "Referral & Rewards",icon: Users,         badge: undefined },
   { href: "/account",    labelKey: "nav.account",  label: "Account",           icon: User,          badge: undefined },
 ];
 
@@ -68,6 +68,7 @@ function getInitials(name: string) {
 // ─── Sidebar ───────────────────────────────────────────────────────────────
 export function CustomerSidebar() {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   return (
     <aside className="hidden xl:flex flex-col w-[220px] shrink-0 sticky top-0 h-screen bg-white border-r border-gray-100 py-6 px-3 overflow-hidden">
@@ -101,7 +102,7 @@ export function CustomerSidebar() {
               )}
             >
               <Icon className="size-4 shrink-0" />
-              <span className="flex-1">{item.label}</span>
+                <span className="flex-1">{t(item.labelKey)}</span>
               {item.badge && (
                 <span className="text-[10px] font-bold bg-orange-500 text-white px-1.5 py-0.5 rounded-full">
                   {item.badge}
@@ -115,13 +116,13 @@ export function CustomerSidebar() {
       {/* Support footer */}
       <div className="mt-auto pt-4 px-3 pb-2">
         <div className="rounded-xl bg-orange-50 border border-orange-100 p-3">
-          <p className="text-xs font-semibold text-orange-900">Need help?</p>
-          <p className="text-[11px] text-orange-600 mt-0.5">Mon–Sat, 9:00 AM – 6:00 PM</p>
+         <p className="text-xs font-semibold text-orange-900">{t("nav.needHelp")}</p>
+<p className="text-[11px] text-orange-600 mt-0.5">{t("nav.supportHours")}</p>
           <Link
             href="/tickets/new"
             className="mt-2 block w-full text-center text-xs font-bold bg-orange-500 text-white py-1.5 rounded-lg hover:bg-orange-600 transition-colors"
           >
-            Contact Support
+            {t("nav.contactSupport")}
           </Link>
         </div>
       </div>
@@ -134,7 +135,7 @@ export function CustomerHeader() {
   const router = useRouter();
   const isAdmin = useAdminStatus();
   const userInfo = useUserInfo();
-  const { locale, setLocale } = useLanguage();
+  const { locale, setLocale, t } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleSignOut = async () => {
@@ -174,7 +175,7 @@ export function CustomerHeader() {
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 text-xs text-gray-600 hover:bg-gray-50 transition-colors"
         >
           <Globe className="size-3.5" />
-          {locale === "hi" ? "हिन्दी" : "English"}
+          {locale === "hi" ? t("nav.english") : t("nav.hindi")}
         </button>
 
         {/* Bell */}
@@ -193,7 +194,7 @@ export function CustomerHeader() {
               {avatarLabel}
             </div>
             <div className="hidden sm:block text-left">
-              <p className="text-xs font-semibold text-gray-800 leading-tight">Hi, {firstName}</p>
+              <p className="text-xs font-semibold text-gray-800 leading-tight">{t("nav.hiUser", { name: firstName })}</p>
               <p className="text-[11px] text-gray-400 leading-tight">{userInfo?.phone ?? ""}</p>
             </div>
             <ChevronDown className="size-3.5 text-gray-400 hidden sm:block" />
@@ -207,7 +208,7 @@ export function CustomerHeader() {
                 className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
               >
                 <User className="size-4 text-gray-400" />
-                My Account
+                {t("nav.myAccount")}
               </Link>
               {isAdmin && (
                 <Link
@@ -216,7 +217,7 @@ export function CustomerHeader() {
                   className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
                 >
                   <LayoutDashboard className="size-4 text-gray-400" />
-                  Admin Panel
+                  {t("nav.adminPanel")}
                 </Link>
               )}
               <div className="my-1 border-t border-gray-100" />
@@ -224,7 +225,7 @@ export function CustomerHeader() {
                 onClick={() => { setMenuOpen(false); handleSignOut(); }}
                 className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50"
               >
-                Sign out
+                {t("nav.signOut")}
               </button>
             </div>
           )}
@@ -242,6 +243,7 @@ export function CustomerHeader() {
 // ─── Mobile bottom nav ─────────────────────────────────────────────────────
 export function CustomerMobileNav() {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   const mobileItems = navItems.filter((i) => i.href !== "/orders/new");
 
@@ -269,7 +271,7 @@ export function CustomerMobileNav() {
               )}>
                 <Icon className="size-4 shrink-0" />
               </span>
-              <span className="w-full truncate text-center leading-none">{item.label}</span>
+              <span className="w-full truncate text-center leading-none">{t(item.labelKey)}</span>
             </Link>
           );
         })}

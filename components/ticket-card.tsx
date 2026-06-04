@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { ArrowRight, CalendarDays, CheckCircle2, Clock, Package, MessageSquare, UserCheck } from "lucide-react";
 import { StatusBadge } from "@/components/status-badge";
 import { type Ticket } from "@/types";
+import { useLanguage } from "@/components/language-provider";
 
 interface TicketCardProps {
   ticket: Ticket & {
@@ -18,10 +19,11 @@ interface TicketCardProps {
 }
 
 export function TicketCard({ ticket }: TicketCardProps) {
+  const { t } = useLanguage();
   const orderLabel = ticket.order?.items?.length
     ? ticket.order.items.length === 1
       ? ticket.order.items[0]?.product?.name || ticket.order.items[0]?.name
-      : `${ticket.order.items.length} order items`
+      : `${t("ticketCard.orderItems", { count: ticket.order.items.length })}`
     : null;
 
   const agentAssigned = !!ticket.assignedAgentEmpId;
@@ -75,7 +77,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
 
       <div className="mt-auto flex items-center justify-end border-t border-slate-100 pt-5">
         <span className="inline-flex items-center gap-1 text-sm font-semibold text-orange-600">
-          Open ticket
+          {t("ticketCard.openTicket")}
           <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
         </span>
       </div>

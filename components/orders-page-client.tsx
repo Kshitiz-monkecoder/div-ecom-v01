@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { formatStatusLabel, getStatusMeta } from "@/components/customer-status";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/components/language-provider";
 import type { Order, OrderItem, ParsedProduct } from "@/types";
 
 type OrderWithItems = Order & { items: OrderItem[] };
@@ -74,6 +75,7 @@ function getStatusNote(order: OrderWithItems): string {
 }
 
 export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientProps) {
+  const { t } = useLanguage();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [typeFilter, setTypeFilter] = useState("ALL");
