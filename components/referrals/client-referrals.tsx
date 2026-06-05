@@ -102,7 +102,11 @@ export default function ClientReferrals() {
           <div className="flex flex-wrap items-start justify-between gap-6">
             <div className="flex items-start gap-3">
               <div className="inline-block px-4 py-2 rounded-md border text-lg font-mono bg-gray-50">
-                {loadingCode ? "{t("common.loading")}" : errorCode ? `Error: ${errorCode}` : referralCode}
+                {loadingCode
+  ? t("common.loading")
+  : errorCode
+    ? `Error: ${errorCode}`
+    : referralCode}
               </div>
 
               <div className="flex items-center gap-3">
