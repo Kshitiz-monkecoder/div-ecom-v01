@@ -145,6 +145,7 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
   const [supportImages, setSupportImages] = useState<File[]>([]);
 
   const minDescriptionLength = 100;
+  const maxDescriptionLength = 5000;
   const descriptionLength = description.trim().length;
 
   const categoryConfig = [
@@ -250,9 +251,7 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
         const cooldownMs = 2 * 60 * 1000;
         localStorage.setItem("ticketCreateCooldownUntil", String(Date.now() + cooldownMs));
       }
-      
-      router.push(`/tickets/${ticket.id}`);
-      router.refresh();
+router.push(`/tickets/${ticket.id}`);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : t("toasts.error"));
     } finally {
@@ -408,15 +407,25 @@ export function CreateTicketForm({ orders }: CreateTicketFormProps) {
                 id="description"
                 required
                 minLength={minDescriptionLength}
+                 maxLength={maxDescriptionLength}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe the issue, when it started, what you tried, and anything visible in the photos..."
                 rows={6}
                 className="min-h-40 rounded-2xl border-slate-200 bg-white shadow-none"
               />
-              <p className={`text-xs ${descriptionLength >= minDescriptionLength ? "text-orange-600" : "text-slate-500"}`}>
-                {descriptionLength}/{minDescriptionLength} characters minimum
-              </p>
+              <div className="flex justify-between text-xs">
+  {descriptionLength < minDescriptionLength && (
+    <p className="text-slate-500">
+      {descriptionLength}/{minDescriptionLength} characters minimum
+    </p>
+  )}
+  {descriptionLength >= maxDescriptionLength && (
+    <p className="text-red-500 ml-auto">
+      Maximum {maxDescriptionLength} characters reached
+    </p>
+  )}
+</div>
             </div>
 
             <div className="space-y-2">
