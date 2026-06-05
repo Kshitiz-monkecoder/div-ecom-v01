@@ -39,11 +39,11 @@ function formatDate(date: Date) {
   return format(d, "dd MMM yyyy");
 }
 
-function memberDuration(date: Date) {
+function memberDuration(date: Date, t: (k: string, vars?: Record<string, string>) => string) {
   const now = new Date();
   const years = now.getFullYear() - date.getFullYear();
-  if (years < 1) return "Less than 1 year with Divy Power";
-  return `${years} year${years > 1 ? "s" : ""} with Divy Power`;
+  if (years < 1) return t("account.lessThanOneYear");
+  return t("account.yearsWithDivy", { years: String(years) });
 }
 
 export function AccountPageClient({ name, email, phone, createdAt }: AccountPageClientProps) {
@@ -68,8 +68,8 @@ export function AccountPageClient({ name, email, phone, createdAt }: AccountPage
 
         {/* Page Title */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Account</h1>
-          <p className="text-sm text-gray-400 mt-1">Manage your profile, preferences and account security.</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t("account.pageTitle")}</h1>
+          <p className="text-sm text-gray-400 mt-1">{t("account.pageDesc")}</p>
         </div>
 
         {/* Profile Summary Strip */}
@@ -83,9 +83,9 @@ export function AccountPageClient({ name, email, phone, createdAt }: AccountPage
               <p className="font-bold text-gray-900 text-base leading-tight">{name}</p>
               <p className="text-xs text-gray-400 mt-0.5">{phone}</p>
               <span className="inline-flex items-center gap-1 mt-1.5 text-[10px] font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
-                <CheckCircle className="size-3" /> Verified
+                <CheckCircle className="size-3" /> {t("account.verified")}
               </span>
-              <p className="text-[11px] text-gray-400 mt-1">Divy Power Customer</p>
+              <p className="text-[11px] text-gray-400 mt-1">{t("account.divyPowerCustomer")}</p>
             </div>
           </div>
 
@@ -95,9 +95,9 @@ export function AccountPageClient({ name, email, phone, createdAt }: AccountPage
               <ShieldCheck className="size-5 text-blue-500" />
             </div>
             <div>
-              <p className="text-xs text-gray-400 font-medium">Member Since</p>
+              <p className="text-xs text-gray-400 font-medium">{t("account.memberSince")}</p>
               <p className="text-xl font-bold text-gray-900 mt-0.5">{formatDate(createdAt)}</p>
-              <p className="text-[11px] text-gray-400 mt-0.5">{memberDuration(createdAt)}</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">{memberDuration(createdAt, t)}</p>
             </div>
           </div>
 
@@ -107,18 +107,18 @@ export function AccountPageClient({ name, email, phone, createdAt }: AccountPage
               <Globe className="size-5 text-purple-500" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-gray-400 font-medium">Preferred Language</p>
+              <p className="text-xs text-gray-400 font-medium">{t("account.preferredLanguage")}</p>
               <div className="flex items-center gap-2 mt-0.5">
                 <p className="text-xl font-bold text-gray-900">{locale === "hi" ? "Hindi" : "English"}</p>
                 <button
                   onClick={() => setLocale(locale === "hi" ? "en" : "hi")}
                   className="inline-flex items-center gap-1 text-[10px] font-semibold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full hover:bg-orange-100 transition-colors"
                 >
-                  <Edit2 className="size-2.5" /> Edit
+                  <Edit2 className="size-2.5" /> {t("account.edit")}
                 </button>
               </div>
               <p className="text-[11px] text-gray-400 mt-0.5">
-                You will see content in {locale === "hi" ? "Hindi" : "English"}
+                {locale === "hi" ? t("account.contentInHindi") : t("account.contentInEnglish")}
               </p>
             </div>
           </div>
@@ -134,15 +134,15 @@ export function AccountPageClient({ name, email, phone, createdAt }: AccountPage
             {/* Contact Information */}
             <div className="bg-white rounded-2xl border border-gray-100 p-5">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-bold text-gray-900">Contact Information</h2>
+                <h2 className="text-base font-bold text-gray-900">{t("account.contactInformation")}</h2>
                 <button className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-orange-600 transition-colors">
-                  <Edit2 className="size-3.5" /> Edit
+                  <Edit2 className="size-3.5" /> {t("account.edit")}
                 </button>
               </div>
               <div className="space-y-3">
-                <ContactRow icon={<Phone className="size-4 text-gray-400" />} label="Phone Number" value={phone} />
-                <ContactRow icon={<Mail className="size-4 text-gray-400" />} label="Email Address" value={email || "--"} />
-                <ContactRow icon={<MapPin className="size-4 text-gray-400" />} label="Address" value="--" />
+                <ContactRow icon={<Phone className="size-4 text-gray-400" />} label={t("account.phoneNumber")} value={phone} />
+                <ContactRow icon={<Mail className="size-4 text-gray-400" />} label={t("account.emailAddress")} value={email || "--"} />
+                <ContactRow icon={<MapPin className="size-4 text-gray-400" />} label={t("account.address2")} value="--" />
               </div>
             </div>
 
@@ -150,8 +150,8 @@ export function AccountPageClient({ name, email, phone, createdAt }: AccountPage
             <div className="bg-white rounded-2xl border border-orange-100 p-5">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <p className="text-sm font-bold text-orange-600">Sign out from all devices</p>
-                  <p className="text-xs text-orange-500/80 mt-1">This will sign you out from all active sessions on other devices.</p>
+                  <p className="text-sm font-bold text-orange-600">{t("account.signOutFromAll")}</p>
+                  <p className="text-xs text-orange-500/80 mt-1">{t("account.signOutFromAllDesc")}</p>
                 </div>
                 <Button
                   type="button"
@@ -160,7 +160,7 @@ export function AccountPageClient({ name, email, phone, createdAt }: AccountPage
                   className="rounded-full border-orange-200 text-orange-600 bg-white hover:bg-orange-50 hover:text-orange-700 shrink-0 gap-2"
                 >
                   <LogOut className="size-4" />
-                  Sign out everywhere
+                  {t("account.signOutEverywhere")}
                 </Button>
               </div>
             </div>

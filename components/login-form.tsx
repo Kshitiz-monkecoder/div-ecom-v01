@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useLanguage } from "@/components/language-provider";
 
 export function LoginForm() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
@@ -32,14 +34,14 @@ export function LoginForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        toast.error(data.error || "Failed to send OTP");
+        toast.error(data.error || t("login.sendFailed"));
         return;
       }
 
-      toast.success("OTP sent to your WhatsApp");
+      toast.success(t("login.otpSent"));
       setStep("otp");
     } catch {
-      toast.error("Failed to send OTP. Please try again.");
+      toast.error(t("login.sendFailedRetry"));
     } finally {
       setLoading(false);
     }
@@ -61,12 +63,12 @@ export function LoginForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        toast.error(data.error || "Invalid OTP");
+        toast.error(data.error || t("login.invalidOtp"));
         return;
       }
 
-      toast.success("Login successful");
-      
+      toast.success(t("login.loginSuccess"));
+
       if (data.user?.role === "ADMIN") {
         router.push("/admin");
       } else {
@@ -74,7 +76,7 @@ export function LoginForm() {
       }
       router.refresh();
     } catch {
-      toast.error("Failed to verify OTP. Please try again.");
+      toast.error(t("login.verifyFailed"));
     } finally {
       setLoading(false);
     }
@@ -89,12 +91,12 @@ export function LoginForm() {
           <ShieldCheck className="size-6" />
         </div>
         <h2 className="mt-4 text-2xl font-semibold tracking-tight text-orange-900">
-          {step === "phone" ? "Sign in securely" : "Enter verification code"}
+          {step === "phone" ? t("login.signInTitle") : t("login.enterCodeTitle")}
         </h2>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
           {step === "phone"
-            ? "Use your registered mobile number. We will send a one-time code on WhatsApp."
-            : `We sent a 6-digit code to ${maskedPhone}.`}
+            ? t("login.phoneDesc")
+            : t("login.codeDesc", { phone: maskedPhone })}
         </p>
       </div>
 
@@ -103,7 +105,7 @@ export function LoginForm() {
           <div className="space-y-2">
             <Label htmlFor="phone" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
               <Phone className="size-4 text-slate-400" />
-              Phone number
+              {t("login.phoneLabel")}
             </Label>
             <Input
               id="phone"
@@ -116,14 +118,14 @@ export function LoginForm() {
               disabled={loading}
               className="h-12 rounded-2xl border-slate-200 bg-white text-base shadow-none"
             />
-            <p className="text-xs text-slate-500">Enter your 10-digit Indian mobile number.</p>
+            <p className="text-xs text-slate-500">{t("login.phoneHint")}</p>
           </div>
           <Button
             type="submit"
             className="h-12 w-full rounded-2xl bg-primary font-semibold text-white hover:bg-slate-800"
             disabled={loading || phone.length !== 10}
           >
-            {loading ? "Sending code..." : "Send code via WhatsApp"}
+            {loading ? t("login.sending") : t("login.sendCode")}
           </Button>
         </form>
       ) : (
@@ -131,7 +133,7 @@ export function LoginForm() {
           <div className="space-y-2">
             <Label htmlFor="otp" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
               <MessageCircle className="size-4 text-slate-400" />
-              Verification code
+              {t("login.verifyTitle")}
             </Label>
             <Input
               id="otp"
@@ -146,7 +148,7 @@ export function LoginForm() {
               autoFocus
               className="h-12 rounded-2xl border-slate-200 bg-white text-center font-mono text-xl tracking-[0.35em] shadow-none"
             />
-            <p className="text-xs text-slate-500">Code sent to WhatsApp. It expires after a few minutes.</p>
+            <p className="text-xs text-slate-500">{t("login.codeHint")}</p>
           </div>
           <div className="grid grid-cols-[auto_1fr] gap-3">
             <Button
@@ -160,14 +162,14 @@ export function LoginForm() {
               disabled={loading}
             >
               <ArrowLeft className="size-4" />
-              Back
+              {t("login.back")}
             </Button>
             <Button
               type="submit"
               className="h-12 rounded-2xl bg-emerald-700 font-semibold text-white hover:bg-emerald-800"
               disabled={loading || otp.length !== 6}
             >
-              {loading ? "Verifying..." : "Verify and continue"}
+              {loading ? t("login.verifying") : t("login.verify")}
             </Button>
           </div>
         </form>

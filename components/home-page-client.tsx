@@ -123,10 +123,10 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
   {t("home.greetingSuffix", { name: firstName })}
 </p>
               <h1 className="text-white text-2xl sm:text-3xl font-bold leading-tight mb-3">
-                Your solar journey,<br />made simple.
+                {t("homePage.solarJourneyTitle")}
               </h1>
               <p className="text-orange-100 text-sm leading-relaxed mb-5">
-                Track orders, get support, check rewards and manage everything in one place.
+                {t("homePage.solarJourneyDesc")}
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link
@@ -134,14 +134,14 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
                   className="inline-flex items-center gap-2 bg-white text-orange-600 font-semibold text-sm px-4 py-2.5 rounded-full hover:bg-orange-50 transition-colors"
                 >
                   <ClipboardList className="size-4" />
-                  View My Orders
+                  {t("homePage.viewMyOrders")}
                 </Link>
                 <Link
                   href="/tickets/new"
                   className="inline-flex items-center gap-2 border border-white/40 text-white font-semibold text-sm px-4 py-2.5 rounded-full hover:bg-white/10 transition-colors"
                 >
                   <Headphones className="size-4" />
-                  Need Help?
+                  {t("homePage.needHelp")}
                 </Link>
               </div>
             </div>
@@ -171,15 +171,15 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
         {/* Quick Actions */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-bold text-gray-800">Quick Actions</h2>
-            <p className="text-xs text-gray-400">Shortcuts to important tasks</p>
+            <h2 className="text-sm font-bold text-gray-800">{t("homePage.quickActions")}</h2>
+            <p className="text-xs text-gray-400">{t("homePage.shortcutsToTasks")}</p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { href: "/orders",      icon: Package,     color: "bg-orange-100 text-orange-600", label: "Track Orders",    desc: "Check status of your projects and orders" },
-              { href: "/orders/new",  icon: Box,         color: "bg-teal-100 text-teal-600",     label: "New Order",       desc: "Request for new solar installation" },
-              { href: "/tickets/new", icon: ClipboardList,color: "bg-blue-100 text-blue-600",    label: "Raise Complaint", desc: "Report an issue or get support" },
-              { href: "/referrals",   icon: Gift,        color: "bg-purple-100 text-purple-600", label: "Refer & Earn",    desc: "Share link and earn rewards" },
+              { href: "/orders",      icon: Package,      color: "bg-orange-100 text-orange-600", labelKey: "homePage.trackOrders2",    descKey: "homePage.trackOrdersShortDesc" },
+              { href: "/orders/new",  icon: Box,          color: "bg-teal-100 text-teal-600",     labelKey: "homePage.newOrder2",       descKey: "homePage.newOrderDesc" },
+              { href: "/tickets/new", icon: ClipboardList,color: "bg-blue-100 text-blue-600",     labelKey: "homePage.raiseComplaint",  descKey: "homePage.raiseComplaintDesc" },
+              { href: "/referrals",   icon: Gift,         color: "bg-purple-100 text-purple-600", labelKey: "homePage.referEarn",       descKey: "homePage.referEarnDesc" },
             ].map((action) => (
               <Link
                 key={action.href}
@@ -189,8 +189,8 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
                 <div className={cn("size-10 rounded-full flex items-center justify-center mb-3", action.color)}>
                   <action.icon className="size-5" />
                 </div>
-                <p className="text-sm font-semibold text-gray-800">{action.label}</p>
-                <p className="text-xs text-gray-400 mt-1 leading-relaxed">{action.desc}</p>
+                <p className="text-sm font-semibold text-gray-800">{t(action.labelKey)}</p>
+                <p className="text-xs text-gray-400 mt-1 leading-relaxed">{t(action.descKey)}</p>
                 <ArrowRight className="size-4 text-gray-300 mt-2 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
               </Link>
             ))}
@@ -199,21 +199,21 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
 
         {/* At a Glance */}
         <section>
-          <h2 className="text-sm font-bold text-gray-800 mb-3">At a Glance</h2>
+          <h2 className="text-sm font-bold text-gray-800 mb-3">{t("homePage.atAGlance")}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { icon: Package,     color: "text-orange-500 bg-orange-50", label: "Total Orders",       value: orders.length,          sub: "All time orders"    },
-              { icon: Zap,         color: "text-teal-500 bg-teal-50",     label: "Active Projects",    value: activeOrders.length,    sub: "In progress"        },
-              { icon: CheckCircle2,color: "text-blue-500 bg-blue-50",     label: "Completed Installs", value: completedOrders.length, sub: "Successfully done"  },
-              { icon: Gift,        color: "text-purple-500 bg-purple-50", label: "Reward Tokens",      value: 0,                      sub: "Total earned"       },
+              { icon: Package,     color: "text-orange-500 bg-orange-50", labelKey: "homePage.totalOrders2",       value: orders.length,          subKey: "homePage.allTimeOrders"    },
+              { icon: Zap,         color: "text-teal-500 bg-teal-50",     labelKey: "homePage.activeProjects2",    value: activeOrders.length,    subKey: "homePage.inProgress"        },
+              { icon: CheckCircle2,color: "text-blue-500 bg-blue-50",     labelKey: "homePage.completedInstalls2", value: completedOrders.length, subKey: "homePage.successfullyDone"  },
+              { icon: Gift,        color: "text-purple-500 bg-purple-50", labelKey: "homePage.rewardTokens",       value: 0,                      subKey: "homePage.totalEarned"       },
             ].map((metric) => (
-              <div key={metric.label} className="bg-white rounded-xl border border-gray-100 p-4">
+              <div key={metric.labelKey} className="bg-white rounded-xl border border-gray-100 p-4">
                 <div className={cn("size-9 rounded-full flex items-center justify-center mb-3", metric.color)}>
                   <metric.icon className="size-4" />
                 </div>
                 <p className="text-2xl font-bold text-gray-800">{metric.value}</p>
-                <p className="text-xs font-semibold text-gray-700 mt-1">{metric.label}</p>
-                <p className="text-[11px] text-gray-400">{metric.sub}</p>
+                <p className="text-xs font-semibold text-gray-700 mt-1">{t(metric.labelKey)}</p>
+                <p className="text-[11px] text-gray-400">{t(metric.subKey)}</p>
               </div>
             ))}
           </div>
@@ -222,9 +222,9 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
         {/* Recent Orders */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-bold text-gray-800">Recent Orders</h2>
+            <h2 className="text-sm font-bold text-gray-800">{t("homePage.recentOrders2")}</h2>
             <Link href="/orders" className="text-xs font-semibold text-orange-500 hover:text-orange-700 inline-flex items-center gap-1">
-              View All Orders <ArrowRight className="size-3" />
+              {t("homePage.viewAllOrders2")} <ArrowRight className="size-3" />
             </Link>
           </div>
           {recentOrders.length === 0 ? (
@@ -274,30 +274,30 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
               <Sun className="size-5 text-amber-500" />
             </div>
             <div>
-              <p className="text-sm font-bold text-gray-800">PM Surya Ghar Subsidy</p>
-              <p className="text-xs text-gray-400 mt-0.5">Eligible customers can receive up to Rs 78,000.</p>
+              <p className="text-sm font-bold text-gray-800">{t("homePage.pmSuryaGharTitle")}</p>
+              <p className="text-xs text-gray-400 mt-0.5">{t("homePage.pmSuryaGharDesc")}</p>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2 mb-4">
             {[
-              { val: "Rs 78k", label: "Max Subsidy" },
-              { val: "25 yr",  label: "Panel Life"  },
-              { val: "95%",    label: "Bill Savings" },
+              { val: "Rs 78k", labelKey: "homePage.maxSubsidy2" },
+              { val: "25 yr",  labelKey: "homePage.panelLife2"  },
+              { val: "95%",    labelKey: "homePage.billSavings2" },
             ].map((item) => (
-              <div key={item.label} className="text-center">
+              <div key={item.labelKey} className="text-center">
                 <p className="text-base font-bold text-orange-500">{item.val}</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">{item.label}</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">{t(item.labelKey)}</p>
               </div>
             ))}
           </div>
           <div className="bg-gray-50 rounded-xl p-3">
-            <p className="text-xs font-bold text-gray-800">Need a new consultation?</p>
-            <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">Share your details and our team will connect with you.</p>
+            <p className="text-xs font-bold text-gray-800">{t("homePage.needConsultation2")}</p>
+            <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">{t("homePage.consultationDesc2")}</p>
             <Link
               href="/refer"
               className="mt-3 inline-flex items-center gap-1.5 bg-teal-600 text-white text-xs font-semibold px-4 py-2 rounded-full hover:bg-teal-700 transition-colors"
             >
-              Request Consultation <ArrowRight className="size-3" />
+              {t("homePage.requestConsultation")} <ArrowRight className="size-3" />
             </Link>
           </div>
         </div>
@@ -308,7 +308,7 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
             <div className="size-9 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
               <Gift className="size-4 text-orange-500" />
             </div>
-            <p className="text-sm font-bold text-gray-800">Your Referral Code</p>
+            <p className="text-sm font-bold text-gray-800">{t("homePage.yourReferralCode2")}</p>
           </div>
           <div className="flex items-center justify-between bg-orange-50 rounded-xl px-4 py-3 mb-4">
             <span className="font-mono text-lg font-bold tracking-widest text-orange-600">
@@ -329,7 +329,7 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
               className="flex items-center justify-center gap-1.5 border border-gray-200 text-gray-600 text-xs font-semibold py-2.5 rounded-full hover:bg-gray-50 transition-colors"
             >
               <Copy className="size-3.5" />
-              Copy Link
+              {t("homePage.copyLink2")}
             </button>
             <button
               onClick={shareWhatsApp}
@@ -337,14 +337,14 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
               className="flex items-center justify-center gap-1 bg-[#25D366] text-white text-xs font-semibold p-2 rounded-full hover:bg-[#1db954] transition-colors"
             >
               <Share2 className="size-3.5" />
-              Share on WhatsApp
+              {t("homePage.shareOnWhatsApp2")}
             </button>
           </div>
           <Link
             href="/referrals"
             className="inline-flex items-center gap-1 text-xs font-semibold text-orange-500 hover:text-orange-700"
           >
-            View Referral Dashboard <ArrowRight className="size-3" />
+            {t("homePage.viewReferralDashboard")} <ArrowRight className="size-3" />
           </Link>
         </div>
 
@@ -355,8 +355,8 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
               <Headphones className="size-4 text-blue-500" />
             </div>
             <div>
-              <p className="text-sm font-bold text-gray-800">Support Center</p>
-              <p className="text-xs text-gray-400">We're here to help you anytime.</p>
+              <p className="text-sm font-bold text-gray-800">{t("homePage.supportCenter2")}</p>
+              <p className="text-xs text-gray-400">{t("homePage.supportCenterDesc2")}</p>
             </div>
           </div>
           <div className="space-y-3">
@@ -364,26 +364,26 @@ export function HomePageClient({ userName, referralCode, orders }: Props) {
               <div className="size-8 rounded-full bg-gray-100 flex items-center justify-center">
                 <Phone className="size-3.5 text-gray-500" />
               </div>
-              <div className="flex-1"><p className="text-xs font-semibold">Call Now</p></div>
+              <div className="flex-1"><p className="text-xs font-semibold">{t("homePage.callNow2")}</p></div>
               <p className="text-xs text-gray-400">+91 12345 67890</p>
             </a>
             <a href="https://wa.me/911234567890" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-gray-700 hover:text-green-600 transition-colors">
               <div className="size-8 rounded-full bg-gray-100 flex items-center justify-center">
                 <MessageCircle className="size-3.5 text-gray-500" />
               </div>
-              <div className="flex-1"><p className="text-xs font-semibold">Chat on WhatsApp</p></div>
-              <p className="text-xs text-gray-400">Quick support</p>
+              <div className="flex-1"><p className="text-xs font-semibold">{t("homePage.chatOnWhatsApp2")}</p></div>
+              <p className="text-xs text-gray-400">{t("homePage.quickSupport2")}</p>
             </a>
             <Link href="/tickets/new" className="flex items-center gap-3 text-sm text-gray-700 hover:text-orange-600 transition-colors">
               <div className="size-8 rounded-full bg-gray-100 flex items-center justify-center">
                 <TicketIcon className="size-3.5 text-gray-500" />
               </div>
-              <div className="flex-1"><p className="text-xs font-semibold">Create a Ticket</p></div>
-              <p className="text-xs text-gray-400">Get help via ticket</p>
+              <div className="flex-1"><p className="text-xs font-semibold">{t("homePage.createTicket2")}</p></div>
+              <p className="text-xs text-gray-400">{t("homePage.getHelpViaTicket2")}</p>
             </Link>
           </div>
           <p className="text-[11px] text-gray-400 mt-3 border-t border-gray-50 pt-3">
-            Support Hours: Mon – Sat, 9:00 AM – 6:00 PM
+            {t("homePage.supportHours2")}
           </p>
         </div>
       </aside>

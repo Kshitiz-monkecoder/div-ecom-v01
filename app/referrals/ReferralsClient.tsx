@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/components/language-provider";
 
 interface Referral {
   id: number;
@@ -59,6 +60,7 @@ const ACTIVE_TAB_KEY = "referral_history";
 
 export default function ReferralsClient() {
   const refreshRef = useRef<(() => void) | null>(null);
+  const { t } = useLanguage();
   const [referralCode, setReferralCode] = useState("");
   const [loadingCode, setLoadingCode]   = useState(true);
   const [shareLink, setShareLink]       = useState("");
@@ -163,29 +165,29 @@ export default function ReferralsClient() {
 
       {/* Title */}
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Referral &amp; Rewards</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Invite friends, help them go solar and earn exciting rewards.</p>
+        <h1 className="text-xl font-bold text-gray-900">{t("referrals.pageTitle")}</h1>
+        <p className="text-sm text-gray-500 mt-0.5">{t("referrals.pageDesc")}</p>
       </div>
 
       {/* Hero Banner */}
       <div className="bg-orange-50 border border-orange-100 rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-6 overflow-hidden relative">
         <div className="flex-1">
-          <p className="text-base font-semibold text-gray-700">Share DILVY Power and</p>
-          <p className="text-3xl font-bold text-orange-500 mt-1">Earn Rewards</p>
+          <p className="text-base font-semibold text-gray-700">{t("referrals.heroBannerLine1")}</p>
+          <p className="text-3xl font-bold text-orange-500 mt-1">{t("referrals.heroBannerLine2")}</p>
           <p className="text-sm text-gray-500 mt-3 leading-relaxed">
-            Your friend gets clean energy.<br />You earn reward tokens.
+            {t("referrals.heroBannerDesc")}
           </p>
           <button
             onClick={shareWhatsApp}
             className="mt-5 inline-flex items-center gap-2 bg-orange-500 text-white text-sm font-bold px-5 py-2.5 rounded-full hover:bg-orange-600 transition-colors shadow-sm"
           >
-            <Share2 className="size-4" /> Share Now
+            <Share2 className="size-4" /> {t("referrals.shareNow")}
           </button>
         </div>
         <div className="shrink-0 hidden sm:flex items-end gap-8 pr-4">
           <div className="flex flex-col items-center gap-2">
             <div className="size-16 rounded-full bg-orange-200 flex items-center justify-center text-3xl">🧑</div>
-            <p className="text-[11px] font-semibold text-gray-500">You Share</p>
+            <p className="text-[11px] font-semibold text-gray-500">{t("referrals.youShare")}</p>
           </div>
           <div className="flex flex-col items-center justify-center mb-4">
             <div className="size-10 rounded-full bg-white border-2 border-orange-200 flex items-center justify-center text-xl shadow-sm">🎁</div>
@@ -195,7 +197,7 @@ export default function ReferralsClient() {
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="size-16 rounded-full bg-green-200 flex items-center justify-center text-3xl">🧑</div>
-            <p className="text-[11px] font-semibold text-gray-500">They Order</p>
+            <p className="text-[11px] font-semibold text-gray-500">{t("referrals.theyOrder")}</p>
           </div>
         </div>
       </div>
@@ -203,19 +205,19 @@ export default function ReferralsClient() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { icon: "👥", bg: "bg-green-50",  label: "Total Referrals",      value: referrals.length, sub: "All time" },
-          { icon: "✅", bg: "bg-blue-50",   label: "Successful Referrals", value: successfulCount,  sub: "Approved & completed" },
-          { icon: "🪙", bg: "bg-purple-50", label: "Reward Tokens Earned", value: totalEarned,      sub: "All time" },
-          { icon: "⚡", bg: "bg-orange-50", label: "Tokens Utilized",      value: tokensUtilized,   sub: "Used on new orders" },
+          { icon: "👥", bg: "bg-green-50",  labelKey: "referrals.totalReferrals2",      value: referrals.length, subKey: "referrals.allTime3" },
+          { icon: "✅", bg: "bg-blue-50",   labelKey: "referrals.successfulReferrals2", value: successfulCount,  subKey: "referrals.approvedCompleted" },
+          { icon: "🪙", bg: "bg-purple-50", labelKey: "referrals.rewardTokensEarned",   value: totalEarned,      subKey: "referrals.allTime4" },
+          { icon: "⚡", bg: "bg-orange-50", labelKey: "referrals.tokensUtilized",        value: tokensUtilized,   subKey: "referrals.usedOnNewOrders" },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-3">
+          <div key={stat.labelKey} className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-3">
             <div className={cn("size-11 rounded-full flex items-center justify-center text-xl shrink-0", stat.bg)}>
               {stat.icon}
             </div>
             <div>
-              <p className="text-xs text-gray-500 font-medium leading-tight">{stat.label}</p>
-              <p className="text-2xl font-bold text-gray-800 leading-tight">{loadingCode && stat.label.includes("Tokens") ? "—" : stat.value}</p>
-              <p className="text-[11px] text-gray-400">{stat.sub}</p>
+              <p className="text-xs text-gray-500 font-medium leading-tight">{t(stat.labelKey)}</p>
+              <p className="text-2xl font-bold text-gray-800 leading-tight">{loadingCode && stat.labelKey.includes("Tokens") ? "—" : stat.value}</p>
+              <p className="text-[11px] text-gray-400">{t(stat.subKey)}</p>
             </div>
           </div>
         ))}
@@ -226,8 +228,8 @@ export default function ReferralsClient() {
         {/* Referral Link Box */}
         <div className="lg:col-span-1 bg-white rounded-xl border border-gray-100 p-5 space-y-4">
           <div>
-            <p className="text-sm font-bold text-gray-800">Your Referral Link</p>
-            <p className="text-xs text-gray-400 mt-0.5">Share your link with friends and family.</p>
+            <p className="text-sm font-bold text-gray-800">{t("referrals.yourReferralLink2")}</p>
+            <p className="text-xs text-gray-400 mt-0.5">{t("referrals.shareWithFriends")}</p>
           </div>
           <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5">
             <span className="flex-1 text-xs text-gray-600 truncate font-mono">
@@ -238,7 +240,7 @@ export default function ReferralsClient() {
               <Copy className="size-3.5" />
             </button>
           </div>
-          <p className="text-xs text-gray-400">or use your referral code</p>
+          <p className="text-xs text-gray-400">{t("referrals.orUseCode")}</p>
           <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5">
             <span className="flex-1 font-mono text-base font-bold tracking-widest text-gray-800">
               {loadingCode ? "——" : referralCode || "——"}
@@ -253,7 +255,7 @@ export default function ReferralsClient() {
 
         {/* Share via */}
         <div className="lg:col-span-1 bg-white rounded-xl border border-gray-100 p-5 space-y-3">
-          <p className="text-sm font-bold text-gray-800">Share via</p>
+          <p className="text-sm font-bold text-gray-800">{t("referrals.shareVia")}</p>
           <button onClick={shareWhatsApp} disabled={!shareLink}
             className="w-full flex items-center justify-center gap-2.5 bg-[#25D366] text-white text-sm font-bold py-3 rounded-xl hover:bg-[#1db954] transition-colors disabled:opacity-50">
             <span className="text-base">💬</span> WhatsApp
@@ -267,7 +269,7 @@ export default function ReferralsClient() {
           {/* Send on WhatsApp — direct to person */}
 <div className="pt-2 border-t border-gray-100 space-y-2">
   <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-    Send directly to someone
+    {t("referrals.sendDirectlyTo")}
   </p>
   <input
     type="text"
@@ -291,7 +293,7 @@ export default function ReferralsClient() {
       disabled={!referralCode || !waPhone || !waName || waSending}
       className="shrink-0 bg-[#25D366] text-white text-sm font-bold px-4 py-2.5 rounded-xl hover:bg-[#1db954] transition-colors disabled:opacity-50"
     >
-      {waSending ? "…" : "Send"}
+      {waSending ? "…" : t("referrals.send")}
     </button>
   </div>
   {waPhoneError && (
@@ -302,7 +304,7 @@ export default function ReferralsClient() {
   onClick={() => { if (navigator.share && shareLink) { navigator.share({ title: "Join Divy Power", url: shareLink }); } else copyLink(); }}
   disabled={!shareLink}
   className="w-full flex items-center justify-center gap-2.5 bg-gray-100 text-gray-700 text-sm font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors disabled:opacity-50">
-  <MoreHorizontal className="size-4" /> More Options
+  <MoreHorizontal className="size-4" /> {t("referrals.moreOptions")}
 </button>
         </div>
         
@@ -313,14 +315,14 @@ export default function ReferralsClient() {
         <div className="lg:col-span-1 bg-gray-50 border border-gray-100 rounded-xl p-5">
           <div className="flex items-center gap-2 mb-4">
             <div className="size-8 rounded-full bg-green-100 flex items-center justify-center text-lg">🏆</div>
-            <p className="text-sm font-bold text-gray-800">How it works?</p>
+            <p className="text-sm font-bold text-gray-800">{t("referrals.howItWorks")}</p>
           </div>
           <div className="space-y-3">
             {[
-              "Share your referral link or code",
-              "Your friend places a solar order",
-              "Order gets approved & installed",
-              "You earn reward tokens",
+              t("referrals.step1How"),
+              t("referrals.step2How"),
+              t("referrals.step3How"),
+              t("referrals.step4How"),
             ].map((step, i) => (
               <div key={i} className="flex items-start gap-3">
                 <span className="size-5 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-600 shrink-0 mt-0.5">{i + 1}</span>
@@ -329,7 +331,7 @@ export default function ReferralsClient() {
             ))}
           </div>
           <button className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-orange-500 hover:text-orange-700">
-            View Terms &amp; Conditions <ArrowRight className="size-3" />
+            {t("referrals.viewTerms")} <ArrowRight className="size-3" />
           </button>
         </div>
       </div>
@@ -338,8 +340,8 @@ export default function ReferralsClient() {
       <div>
         <div className="flex gap-1 border-b border-gray-200 mb-4">
           {[
-            { key: "history", label: "Referral History" },
-            { key: "tokens",  label: "Token Utilization" },
+            { key: "history", label: t("referrals.referralHistoryTab") },
+            { key: "tokens",  label: t("referrals.tokenUtilizationTab") },
           ].map((tab) => (
             <button key={tab.key} onClick={() => setActiveTab(tab.key as "history" | "tokens")}
               className={cn("px-4 py-2.5 text-sm font-semibold transition-colors border-b-2 -mb-px",
@@ -357,11 +359,11 @@ export default function ReferralsClient() {
             ) : referrals.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
                 <div className="size-16 rounded-2xl bg-gray-100 flex items-center justify-center text-3xl mb-4">👥</div>
-                <p className="text-sm font-semibold text-gray-600">No referrals yet</p>
-                <p className="text-xs text-gray-400 mt-1 max-w-xs">Share your referral link to start building your reward history.</p>
+                <p className="text-sm font-semibold text-gray-600">{t("referrals.noReferralsYet")}</p>
+                <p className="text-xs text-gray-400 mt-1 max-w-xs">{t("referrals.shareToStartHistory")}</p>
                 <button onClick={shareWhatsApp} disabled={!shareLink}
                   className="mt-5 inline-flex items-center gap-2 bg-orange-500 text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-orange-600 transition-colors disabled:opacity-50">
-                  <Share2 className="size-4" /> Share Now
+                  <Share2 className="size-4" /> {t("referrals.shareNow")}
                 </button>
               </div>
             ) : (
@@ -449,12 +451,12 @@ export default function ReferralsClient() {
       <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-4">
         <div className="size-12 rounded-2xl bg-blue-100 flex items-center justify-center text-2xl shrink-0">🎁</div>
         <div className="flex-1 text-center sm:text-left">
-          <p className="text-sm font-bold text-gray-800">Use your tokens on new orders</p>
-          <p className="text-xs text-gray-500 mt-0.5">You can use your earned tokens while placing a new solar order.</p>
+          <p className="text-sm font-bold text-gray-800">{t("referrals.useTokensOnOrders")}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{t("referrals.useTokensDesc")}</p>
         </div>
         <Link href="/orders/new"
           className="shrink-0 inline-flex items-center gap-2 bg-blue-600 text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-colors">
-          <Plus className="size-4" /> New Order
+          <Plus className="size-4" /> {t("referrals.newOrderCta")}
         </Link>
       </div>
 

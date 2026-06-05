@@ -7,12 +7,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LayoutDashboard, LogOut, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/language-provider";
 
 export function Navbar() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetch("/api/check-admin")
@@ -51,37 +53,39 @@ export function Navbar() {
             className="h-10 w-auto"
             priority
           />
-          <span className="hidden text-xs font-semibold uppercase tracking-[0.18em] text-orange-600 sm:inline">Solar customer portal</span>
+          <span className="hidden text-xs font-semibold uppercase tracking-[0.18em] text-orange-600 sm:inline">
+            {t("nav.solarPortal")}
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-2 md:flex">
           {isSignedIn ? (
             <>
               <Button asChild variant="ghost" className="rounded-full text-muted-foreground hover:bg-slate-100 hover:text-orange-900">
-                <Link href="/orders">My orders</Link>
+                <Link href="/orders">{t("nav.myOrders")}</Link>
               </Button>
               <Button asChild variant="ghost" className="rounded-full text-muted-foreground hover:bg-slate-100 hover:text-orange-900">
-                <Link href="/tickets">Support</Link>
+                <Link href="/tickets">{t("nav.support")}</Link>
               </Button>
               <Button asChild variant="ghost" className="rounded-full text-muted-foreground hover:bg-slate-100 hover:text-orange-900">
-                <Link href="/account">Account</Link>
+                <Link href="/account">{t("nav.account")}</Link>
               </Button>
               {isAdmin && (
                 <Button asChild variant="outline" className="rounded-full bg-white">
                   <Link href="/admin">
                     <LayoutDashboard className="size-4" />
-                    Admin
+                    {t("nav.adminPanel")}
                   </Link>
                 </Button>
               )}
               <Button variant="ghost" onClick={handleSignOut} className="rounded-full text-slate-500 hover:bg-rose-50 hover:text-rose-700">
                 <LogOut className="size-4" />
-                Sign out
+                {t("nav.signOut")}
               </Button>
             </>
           ) : (
             <Button asChild className="rounded-full bg-primary px-5 text-white hover:bg-slate-800">
-              <Link href="/login">Sign in</Link>
+              <Link href="/login">{t("nav.signOut")}</Link>
             </Button>
           )}
         </nav>
@@ -100,10 +104,10 @@ export function Navbar() {
           <div className="mx-auto flex max-w-7xl flex-col gap-2">
             {isSignedIn ? (
               <>
-                <MobileLink href="/orders" onClick={() => setIsMobileMenuOpen(false)}>My orders</MobileLink>
-                <MobileLink href="/tickets" onClick={() => setIsMobileMenuOpen(false)}>Support</MobileLink>
-                <MobileLink href="/account" onClick={() => setIsMobileMenuOpen(false)}>Account</MobileLink>
-                {isAdmin && <MobileLink href="/admin" onClick={() => setIsMobileMenuOpen(false)}>Admin</MobileLink>}
+                <MobileLink href="/orders" onClick={() => setIsMobileMenuOpen(false)}>{t("nav.myOrders")}</MobileLink>
+                <MobileLink href="/tickets" onClick={() => setIsMobileMenuOpen(false)}>{t("nav.support")}</MobileLink>
+                <MobileLink href="/account" onClick={() => setIsMobileMenuOpen(false)}>{t("nav.account")}</MobileLink>
+                {isAdmin && <MobileLink href="/admin" onClick={() => setIsMobileMenuOpen(false)}>{t("nav.adminPanel")}</MobileLink>}
                 <button
                   className="rounded-2xl px-4 py-3 text-left text-sm font-semibold text-rose-700 hover:bg-rose-50"
                   onClick={() => {
@@ -111,7 +115,7 @@ export function Navbar() {
                     handleSignOut();
                   }}
                 >
-                  Sign out
+                  {t("nav.signOut")}
                 </button>
               </>
             ) : (

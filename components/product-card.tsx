@@ -1,21 +1,26 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, BatteryCharging, Gauge, ShieldCheck, SunMedium } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ParsedProduct } from "@/types";
 import { SafeImage } from "@/components/safe-image";
+import { useLanguage } from "@/components/language-provider";
 
 interface ProductCardProps {
   product: ParsedProduct;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const { t } = useLanguage();
+
   const priceInRupees = (product.price / 100).toLocaleString("en-IN", {
     maximumFractionDigits: 0,
   });
   const specs = [
-    product.capacity && { label: "Capacity", value: product.capacity, icon: Gauge },
-    product.solarBrand && { label: "Panel", value: product.solarBrand, icon: SunMedium },
-    product.inverter && { label: "Inverter", value: product.inverter, icon: BatteryCharging },
+    product.capacity && { label: t("productCard.capacity"), value: product.capacity, icon: Gauge },
+    product.solarBrand && { label: t("productCard.panel"), value: product.solarBrand, icon: SunMedium },
+    product.inverter && { label: t("productCard.inverter"), value: product.inverter, icon: BatteryCharging },
   ].filter(Boolean) as { label: string; value: string; icon: typeof Gauge }[];
 
   return (
@@ -32,7 +37,7 @@ export function ProductCard({ product }: ProductCardProps) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-sm text-slate-400">
-            No product image
+            {t("productCard.noImage")}
           </div>
         )}
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/55 to-transparent" />
@@ -71,11 +76,11 @@ export function ProductCard({ product }: ProductCardProps) {
 
         <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-5">
           <div>
-            <p className="text-xs text-slate-400">Estimated value</p>
+            <p className="text-xs text-slate-400">{t("productCard.estimatedValue")}</p>
             <p className="text-lg font-semibold text-orange-900">Rs {priceInRupees}</p>
           </div>
           <span className="inline-flex items-center gap-1 text-sm font-semibold text-orange-600">
-            Details
+            {t("productCard.details")}
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
           </span>
         </div>

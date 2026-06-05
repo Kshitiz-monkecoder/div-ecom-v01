@@ -82,7 +82,7 @@ export function CustomerSidebar() {
           className="h-9 w-auto"
           priority
         />
-        <p className="text-[10px] text-gray-400 mt-1">Solar operations, made simple</p>
+        <p className="text-[10px] text-gray-400 mt-1">{t("nav.solarPortal")}</p>
       </div>
 
       {/* Nav links */}
@@ -162,8 +162,8 @@ export function CustomerHeader() {
           priority
         />
         <div className="hidden xl:block">
-          <p className="text-sm font-semibold text-gray-800">Customer Portal</p>
-          <p className="text-xs text-gray-400">Solar operations, made simple</p>
+          <p className="text-sm font-semibold text-gray-800">{t("nav.customerPortalLabel")}</p>
+          <p className="text-xs text-gray-400">{t("nav.solarPortal")}</p>
         </div>
       </div>
 

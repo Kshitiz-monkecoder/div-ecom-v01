@@ -61,10 +61,10 @@ function StatusPill({ status }: { status: string }) {
   );
 }
 
-function getStatusNote(order: OrderWithItems): string {
+function getStatusNote(order: OrderWithItems, t: (k: string) => string): string {
   const d = order.deliveryDate ? format(new Date(order.deliveryDate), "d MMM yyyy") : null;
   switch (order.status) {
-    case "NEW": return "Order placed";
+    case "NEW": return t("ordersPage.orderPlaced");
     case "CONTACTED": return "Team contacted you";
     case "CONFIRMED": return d ? `Installation scheduled\n${d}` : "Installation scheduled";
     case "INSTALLED": return d ? `Completed on\n${d}` : "Installation complete";
@@ -120,8 +120,8 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
     <div className="px-4 sm:px-6 py-6 space-y-5">
       {/* Page Title */}
       <div>
-        <h1 className="text-xl font-bold text-gray-900">My Orders</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Track and manage all your solar projects and orders.</p>
+        <h1 className="text-xl font-bold text-gray-900">{t("ordersPage.title2")}</h1>
+        <p className="text-sm text-gray-500 mt-0.5">{t("ordersPage.titleDesc")}</p>
       </div>
 
       {/* Stats Cards */}
@@ -130,40 +130,40 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
           {
             icon: <Package className="size-5 text-orange-500" />,
             bg: "bg-orange-50",
-            label: "Total Orders",
+            labelKey: "ordersPage.totalOrders2",
             value: totalOrders,
-            sub: "All time",
+            subKey: "ordersPage.allTime2",
           },
           {
             icon: <svg className="size-5 text-teal-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>,
             bg: "bg-teal-50",
-            label: "Active Projects",
+            labelKey: "ordersPage.activeProjects2",
             value: activeOrders,
-            sub: "In progress",
+            subKey: "ordersPage.inProgress2",
           },
           {
             icon: <CheckCircle2 className="size-5 text-blue-500" />,
             bg: "bg-blue-50",
-            label: "Completed",
+            labelKey: "ordersPage.completed2",
             value: completedOrders,
-            sub: "Successfully done",
+            subKey: "ordersPage.successfullyDone2",
           },
           {
             icon: <XCircle className="size-5 text-purple-400" />,
             bg: "bg-purple-50",
-            label: "Cancelled",
+            labelKey: "ordersPage.cancelled2",
             value: cancelledOrders,
-            sub: "Cancelled orders",
+            subKey: "ordersPage.cancelledOrders",
           },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-3">
+          <div key={stat.labelKey} className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-3">
             <div className={cn("size-11 rounded-full flex items-center justify-center shrink-0", stat.bg)}>
               {stat.icon}
             </div>
             <div>
-              <p className="text-xs text-gray-500 font-medium">{stat.label}</p>
+              <p className="text-xs text-gray-500 font-medium">{t(stat.labelKey)}</p>
               <p className="text-2xl font-bold text-gray-800 leading-tight">{stat.value}</p>
-              <p className="text-[11px] text-gray-400">{stat.sub}</p>
+              <p className="text-[11px] text-gray-400">{t(stat.subKey)}</p>
             </div>
           </div>
         ))}
@@ -177,7 +177,7 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
             type="text"
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            placeholder="Search by order ID, project name or location..."
+            placeholder={t("ordersPage.searchPlaceholder2")}
             className="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-400"
           />
           {search && (
@@ -193,7 +193,7 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
             onChange={(e) => handleFilterChange(e.target.value)}
             className="appearance-none pl-3 pr-8 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-200 cursor-pointer"
           >
-            <option value="ALL">All Status</option>
+            <option value="ALL">{t("ordersPage.allStatus")}</option>
             {statuses.map((s) => (
               <option key={s} value={s}>{formatStatusLabel(s)}</option>
             ))}
@@ -207,8 +207,8 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
             onChange={(e) => setTypeFilter(e.target.value)}
             className="appearance-none pl-3 pr-8 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-200 cursor-pointer"
           >
-            <option value="ALL">All Types</option>
-            <option value="ROOFTOP">Rooftop Solar</option>
+            <option value="ALL">{t("ordersPage.allTypes")}</option>
+            <option value="ROOFTOP">{t("ordersPage.rooftopSolar")}</option>
           </select>
           <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none" />
         </div>
@@ -220,8 +220,8 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
             onChange={(e) => setSortBy(e.target.value)}
             className="appearance-none pl-9 pr-8 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-200 cursor-pointer"
           >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
+            <option value="newest">{t("ordersPage.newestFirst")}</option>
+            <option value="oldest">{t("ordersPage.oldestFirst")}</option>
           </select>
           <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 size-4 text-gray-400 pointer-events-none" />
         </div>
@@ -234,16 +234,16 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
             <Package className="size-8 text-gray-400" />
           </div>
           <p className="text-base font-semibold text-gray-600">
-            {orders.length === 0 ? "No orders yet" : "No matching orders"}
+            {orders.length === 0 ? t("ordersPage.noOrdersYet2") : t("ordersPage.noMatchingOrders")}
           </p>
           <p className="text-sm text-gray-400 mt-1 max-w-xs">
             {orders.length === 0
-              ? "Your solar project orders will appear here when the Divy Power team creates them."
-              : "Try adjusting your search or filter."}
+              ? t("ordersPage.noOrdersDesc2")
+              : t("ordersPage.tryAdjusting")}
           </p>
           {orders.length === 0 && (
             <Link href="/tickets/new" className="mt-5 inline-flex items-center gap-2 bg-orange-500 text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-orange-600 transition-colors">
-              Contact Support
+              {t("ordersPage.contactSupport2")}
             </Link>
           )}
         </div>
@@ -256,7 +256,7 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
               const orderType = "Rooftop Solar";
               const imgSrc = getOrderImage(order.orderNumber);
               const placedDate = format(new Date(order.createdAt), "dd MMM yyyy • hh:mm aa");
-              const note = getStatusNote(order);
+              const note = getStatusNote(order, t);
 
               return (
                 <div key={order.id} className="flex items-center gap-4 px-4 py-4 hover:bg-gray-50 transition-colors group">
@@ -273,7 +273,7 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
 
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-gray-800">
-                      Order ID: {order.orderNumber}
+                      {t("ordersPage.orderId")}: {order.orderNumber}
                     </p>
                     <div className="flex items-center gap-1 mt-1 text-xs text-gray-500">
                       <MapPin className="size-3 shrink-0" />
@@ -281,18 +281,18 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
                     </div>
                     <div className="flex items-center gap-1 mt-0.5 text-xs text-gray-400">
                       <CalendarDays className="size-3 shrink-0" />
-                      <span>Placed on {placedDate}</span>
+                      <span>{t("ordersPage.placedOn")} {placedDate}</span>
                     </div>
                   </div>
 
                   <div className="hidden md:block text-center shrink-0 w-20">
-                    <p className="text-[11px] text-gray-400 font-medium">System Size</p>
+                    <p className="text-[11px] text-gray-400 font-medium">{t("ordersPage.systemSize")}</p>
                     <p className="text-sm font-bold text-gray-800 mt-0.5">{systemSize}</p>
                   </div>
 
                   <div className="hidden md:block text-center shrink-0 w-28">
-                    <p className="text-[11px] text-gray-400 font-medium">Order Type</p>
-                    <p className="text-sm font-bold text-gray-800 mt-0.5">{orderType}</p>
+                    <p className="text-[11px] text-gray-400 font-medium">{t("ordersPage.orderType")}</p>
+                    <p className="text-sm font-bold text-gray-800 mt-0.5">{t("ordersPage.rooftopSolar")}</p>
                   </div>
 
                   <div className="hidden sm:block shrink-0 w-36">
@@ -304,7 +304,7 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
                     href={`/orders/${order.id}`}
                     className="shrink-0 inline-flex items-center gap-1.5 border border-orange-300 text-orange-600 text-xs font-semibold px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors"
                   >
-                    View Details <ArrowRight className="size-3" />
+                    {t("ordersPage.viewDetails2")} <ArrowRight className="size-3" />
                   </Link>
                 </div>
               );
@@ -314,7 +314,11 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
           {/* Pagination Footer */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-gray-100 bg-gray-50/50">
             <p className="text-xs text-gray-500">
-              Showing {filtered.length === 0 ? 0 : (page - 1) * perPage + 1} to {Math.min(page * perPage, filtered.length)} of {filtered.length} orders
+              {t("ordersPage.showing", {
+                from: String(filtered.length === 0 ? 0 : (page - 1) * perPage + 1),
+                to: String(Math.min(page * perPage, filtered.length)),
+                total: String(filtered.length),
+              })}
             </p>
             <div className="flex items-center gap-2">
               <button
@@ -358,7 +362,7 @@ export function OrdersPageClient({ orders, assignedProducts }: OrdersPageClientP
                   className="appearance-none pl-2 pr-7 py-1.5 border border-gray-200 rounded-lg text-xs text-gray-600 bg-white focus:outline-none focus:ring-1 focus:ring-orange-300 cursor-pointer"
                 >
                   {ITEMS_PER_PAGE_OPTIONS.map((n) => (
-                    <option key={n} value={n}>{n} per page</option>
+                    <option key={n} value={n}>{n} {t("ordersPage.perPage")}</option>
                   ))}
                 </select>
                 <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 size-3 text-gray-400 pointer-events-none" />
