@@ -6,6 +6,19 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+function resolveOrderTotal(order: any): number {
+  const fromItems = order.items.reduce(
+    (sum: number, item: any) =>
+      sum + (Number(item.unitPrice) || 0) * (Number(item.quantity) || 0),
+    0
+  );
+  if (fromItems > 0) return fromItems;
+
+  // Vritika-imported orders have unitPrice=0 but store total_price in sourcePayload (in rupees)
+  const fallback = Number(order.sourcePayload?.order?.total_price);
+  return fallback > 0 ? Math.round(fallback * 100) : 0;
+}
+
 export default async function AdminOrdersPage() {
   const orders = await getAllOrders();
 
@@ -37,11 +50,7 @@ export default async function AdminOrdersPage() {
             </TableHeader>
             <TableBody>
               {orders.map((order: any) => {
-                const totalAmount = order.items.reduce(
-                  (sum: number, item: any) =>
-                    sum + (Number(item.unitPrice) || 0) * (Number(item.quantity) || 0),
-                  0
-                );
+                const totalAmount = resolveOrderTotal(order);
                 const itemCount = order.items.length;
                 return (
                   <TableRow key={order.id}>

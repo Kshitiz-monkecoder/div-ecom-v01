@@ -163,6 +163,13 @@ export interface Order {
   userId?: string;
   user?: User | null;
   items?: OrderItem[];
+  sourcePayload?: {
+    order?: {
+      total_price?: number;
+      [key: string]: any;
+    };
+    [key: string]: any;
+  } | null;
   canonicalStages?: Array<{
     id: string;
     stageNumber: number;

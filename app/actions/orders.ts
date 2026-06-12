@@ -97,9 +97,12 @@ export async function getAllOrders(status?: OrderStatus) {
   const admin = await requireAdmin();
 
   const query = status ? `?status=${encodeURIComponent(status)}` : "";
-  return divyEngineFetch<any[]>(`/api/ecom/admin/orders${query}`, {
+  const orders = await divyEngineFetch<any[]>(`/api/ecom/admin/orders${query}`, {
     actor: { id: admin.id, role: admin.role },
   });
+
+  // ADD THIS LINE:
+  return orders;
 }
 
 export async function updateOrderStatus(

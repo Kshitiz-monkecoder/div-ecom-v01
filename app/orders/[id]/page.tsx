@@ -41,11 +41,18 @@ export default async function OrderDetailPage({
     notFound();
   }
 
-  const totalAmount = order.items.reduce(
+  const totalAmount = (() => {
+  const fromItems = order.items.reduce(
     (sum: number, item: any) =>
       sum + (Number(item.unitPrice) || 0) * (Number(item.quantity) || 0),
     0
   );
+  if (fromItems > 0) return fromItems;
+
+  // Fallback: sourcePayload.order.total_price is in rupees, convert to paise
+  const fallback = Number(order.sourcePayload?.order?.total_price);
+  return fallback > 0 ? Math.round(fallback * 100) : 0;
+})();
   const totalInRupees = (totalAmount / 100).toLocaleString("en-IN", { maximumFractionDigits: 0 });
 
   const additionalFiles = parseStringArray(order.additionalFiles);

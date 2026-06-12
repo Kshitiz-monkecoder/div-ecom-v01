@@ -15,8 +15,18 @@ interface OrderCardProps {
 
 export function OrderCard({ order }: OrderCardProps) {
   const { t } = useLanguage();
-  const totalAmount = order.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
-  const totalInRupees = (totalAmount / 100).toLocaleString("en-IN", { maximumFractionDigits: 0 });
+const totalAmount = (() => {
+  const fromItems = order.items.reduce(
+    (sum: number, item: any) =>
+      sum + (Number(item.unitPrice) || 0) * (Number(item.quantity) || 0),
+    0
+  );
+  if (fromItems > 0) return fromItems;
+
+  // Fallback: sourcePayload.order.total_price is in rupees, convert to paise
+  const fallback = Number(order.sourcePayload?.order?.total_price);
+  return fallback > 0 ? Math.round(fallback * 100) : 0;
+})();  const totalInRupees = (totalAmount / 100).toLocaleString("en-IN", { maximumFractionDigits: 0 });
   const firstItem = order.items[0];
   const itemSummary =
     order.items.length === 0

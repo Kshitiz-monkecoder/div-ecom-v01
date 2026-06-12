@@ -20,6 +20,31 @@ import { OrderManualApprovalForm } from "@/components/order-manual-approval-form
 import { parseStringArray } from "@/lib/json";
 import { divyEngineFetch } from "@/lib/divy-engine-api";
 
+function resolveOrderTotal(order: any): number {
+  const fromItems = order.items.reduce(
+    (sum: number, item: any) =>
+      sum + (Number(item.unitPrice) || 0) * (Number(item.quantity) || 0),
+    0
+  );
+  if (fromItems > 0) return fromItems;
+
+  // Vritika-imported orders have unitPrice=0 but store total_price in sourcePayload (in rupees)
+  const fallback = Number(order.sourcePayload?.order?.total_price);
+  return fallback > 0 ? Math.round(fallback * 100) : 0;
+}
+
+function resolveItemPrice(item: any, order: any): number {
+  if ((Number(item.unitPrice) || 0) > 0) {
+    return Number(item.unitPrice);
+  }
+  // For Vritika single-item orders, spread total_price across the item
+  const fallback = Number(order.sourcePayload?.order?.total_price);
+  if (fallback > 0 && order.items.length === 1) {
+    return Math.round(fallback * 100);
+  }
+  return 0;
+}
+
 export default async function AdminOrderDetailPage({
   params,
 }: {
@@ -40,11 +65,7 @@ export default async function AdminOrderDetailPage({
     .filter((t: any) => t.status === "UNUSED")
     .reduce((sum: number, t: any) => sum + t.amount, 0);
 
-  const totalAmount = order.items.reduce(
-    (sum: number, item: any) =>
-      sum + (Number(item.unitPrice) || 0) * (Number(item.quantity) || 0),
-    0
-  );
+  const totalAmount = resolveOrderTotal(order);
   const totalInRupees = (totalAmount / 100).toFixed(2);
 
   const additionalFiles = parseStringArray(order.additionalFiles);
@@ -140,17 +161,21 @@ export default async function AdminOrderDetailPage({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {order.items.map((item: any) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{item.capacity}</TableCell>
-                    <TableCell>{item.quantity}</TableCell>
-                    <TableCell>₹{((Number(item.unitPrice) || 0) / 100).toFixed(2)}</TableCell>
-                    <TableCell className="text-right font-semibold">
-                      ₹{(((Number(item.unitPrice) || 0) * (Number(item.quantity) || 0)) / 100).toFixed(2)}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {order.items.map((item: any) => {
+                  const resolvedPrice = resolveItemPrice(item, order);
+                  const qty = Number(item.quantity) || 1;
+                  return (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-medium">{item.name}</TableCell>
+                      <TableCell>{item.capacity}</TableCell>
+                      <TableCell>{qty}</TableCell>
+                      <TableCell>₹{(resolvedPrice / 100).toFixed(2)}</TableCell>
+                      <TableCell className="text-right font-semibold">
+                        ₹{((resolvedPrice * qty) / 100).toFixed(2)}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
                 <TableRow className="font-bold">
                   <TableCell colSpan={4} className="text-right">
                     Total Amount:
