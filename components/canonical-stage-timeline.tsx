@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { CheckCircle2 } from "lucide-react";
 
 type CanonicalStage = {
@@ -48,7 +48,11 @@ export function CanonicalStageTimeline({ stages }: CanonicalStageTimelineProps) 
               <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-sm font-semibold text-orange-900">{prettyStageName(stage.stageName)}</p>
                 <p className="text-xs text-slate-500">
-                  {format(new Date(stage.completedAt as string | Date), "MMM dd, yyyy 'at' HH:mm")}
+                  {formatInTimeZone(
+                    new Date(stage.completedAt as string | Date),
+                    "Asia/Kolkata",
+                    "MMM dd, yyyy 'at' hh:mm aa"
+                  )}
                 </p>
               </div>
               <p className="mt-1 text-xs font-medium text-orange-600">Completed</p>

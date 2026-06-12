@@ -2,7 +2,7 @@ import { getOrder } from "@/app/actions/orders";
 import { notFound } from "next/navigation";
 import { StatusBadge } from "@/components/status-badge";
 import { OrderStatusForm } from "@/components/order-status-form";
-import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
@@ -41,7 +41,8 @@ export default async function AdminOrderDetailPage({
     .reduce((sum: number, t: any) => sum + t.amount, 0);
 
   const totalAmount = order.items.reduce(
-    (sum: number, item: any) => sum + item.unitPrice * item.quantity,
+    (sum: number, item: any) =>
+      sum + (Number(item.unitPrice) || 0) * (Number(item.quantity) || 0),
     0
   );
   const totalInRupees = (totalAmount / 100).toFixed(2);
@@ -70,7 +71,12 @@ export default async function AdminOrderDetailPage({
           <div>
             <h1 className="text-3xl font-bold mb-2">Order {order.orderNumber}</h1>
             <p className="text-gray-500">
-              Created on {format(new Date(order.createdAt), "MMMM dd, yyyy 'at' HH:mm")}
+              Created on{" "}
+              {formatInTimeZone(
+                new Date(order.createdAt),
+                "Asia/Kolkata",
+                "MMMM dd, yyyy 'at' hh:mm aa"
+              )}
             </p>
           </div>
           <StatusBadge status={order.status} type="order" />
@@ -139,9 +145,9 @@ export default async function AdminOrderDetailPage({
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell>{item.capacity}</TableCell>
                     <TableCell>{item.quantity}</TableCell>
-                    <TableCell>₹{(item.unitPrice / 100).toFixed(2)}</TableCell>
+                    <TableCell>₹{((Number(item.unitPrice) || 0) / 100).toFixed(2)}</TableCell>
                     <TableCell className="text-right font-semibold">
-                      ₹{((item.unitPrice * item.quantity) / 100).toFixed(2)}
+                      ₹{(((Number(item.unitPrice) || 0) * (Number(item.quantity) || 0)) / 100).toFixed(2)}
                     </TableCell>
                   </TableRow>
                 ))}

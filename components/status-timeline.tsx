@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { StatusBadge } from "@/components/status-badge";
 import { SafeImage } from "@/components/safe-image";
 import { type OrderStatus, type TicketStatus } from "@/types";
@@ -45,7 +45,7 @@ export function StatusTimeline({ items, type, title = "Status history" }: Status
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <StatusBadge status={item.status} type={type} />
               <div className="text-xs text-slate-500">
-                {format(new Date(item.createdAt), "MMM dd, yyyy 'at' HH:mm")}
+                {formatInTimeZone(new Date(item.createdAt), "Asia/Kolkata", "MMM dd, yyyy 'at' hh:mm aa")}
                 {item.createdBy?.name ? ` by ${item.createdBy.name}` : ""}
               </div>
             </div>

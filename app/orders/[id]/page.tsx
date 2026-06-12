@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
+import { formatInTimeZone } from "date-fns-tz";
 import { format } from "date-fns";
 import {
   ArrowLeft,
@@ -41,7 +42,8 @@ export default async function OrderDetailPage({
   }
 
   const totalAmount = order.items.reduce(
-    (sum: number, item: any) => sum + item.unitPrice * item.quantity,
+    (sum: number, item: any) =>
+      sum + (Number(item.unitPrice) || 0) * (Number(item.quantity) || 0),
     0
   );
   const totalInRupees = (totalAmount / 100).toLocaleString("en-IN", { maximumFractionDigits: 0 });
@@ -96,7 +98,7 @@ export default async function OrderDetailPage({
         <CustomerPageHeader
           eyebrow="Order detail"
           title={`Order #${order.orderNumber}`}
-          description={`Placed ${format(new Date(order.createdAt), "MMMM dd, yyyy 'at' HH:mm")}. Review materials, documents, delivery timing, and support linked to this project.`}
+          description={`Placed ${formatInTimeZone(new Date(order.createdAt), "Asia/Kolkata", "MMMM dd, yyyy 'at' hh:mm aa")}. Review materials, documents, delivery timing, and support linked to this project.`}
           actions={<StatusBadge status={order.status} type="order" />}
         />
 
@@ -125,8 +127,8 @@ export default async function OrderDetailPage({
                         {item.description && <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p>}
                       </div>
                       <div className="shrink-0 text-left sm:text-right">
-                        <p className="text-lg font-semibold text-stone-900">Rs {((item.unitPrice * item.quantity) / 100).toLocaleString("en-IN")}</p>
-                        <p className="mt-1 text-xs text-slate-500">Rs {(item.unitPrice / 100).toLocaleString("en-IN")} x {item.quantity}</p>
+                        <p className="text-lg font-semibold text-stone-900">Rs {(((Number(item.unitPrice) || 0) * (Number(item.quantity) || 0)) / 100).toLocaleString("en-IN")}</p>
+                        <p className="mt-1 text-xs text-slate-500">Rs {((Number(item.unitPrice) || 0) / 100).toLocaleString("en-IN")} x {item.quantity}</p>
                       </div>
                     </div>
                   </div>

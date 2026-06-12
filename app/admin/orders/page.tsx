@@ -1,7 +1,7 @@
 import { getAllOrders } from "@/app/actions/orders";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
-import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,7 +38,8 @@ export default async function AdminOrdersPage() {
             <TableBody>
               {orders.map((order: any) => {
                 const totalAmount = order.items.reduce(
-                  (sum: number, item: any) => sum + item.unitPrice * item.quantity,
+                  (sum: number, item: any) =>
+                    sum + (Number(item.unitPrice) || 0) * (Number(item.quantity) || 0),
                   0
                 );
                 const itemCount = order.items.length;
@@ -70,7 +71,7 @@ export default async function AdminOrdersPage() {
                       <StatusBadge status={order.status} type="order" />
                     </TableCell>
                     <TableCell>
-                      {format(new Date(order.createdAt), "MMM dd, yyyy")}
+                      {formatInTimeZone(new Date(order.createdAt), "Asia/Kolkata", "MMM dd, yyyy")}
                     </TableCell>
                     <TableCell>
                       <Link
@@ -93,4 +94,3 @@ export default async function AdminOrdersPage() {
     </div>
   );
 }
-

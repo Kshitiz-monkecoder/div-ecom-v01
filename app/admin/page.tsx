@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
 import { requireAdmin } from "@/lib/proxy";
-import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import Link from "next/link";
 
 export default async function AdminDashboard() {
@@ -65,7 +65,8 @@ export default async function AdminDashboard() {
             <TableBody>
               {stats.recentOrders.map((order: any) => {
                 const totalAmount = order.items.reduce(
-                  (sum: number, item: any) => sum + item.unitPrice * item.quantity,
+                  (sum: number, item: any) =>
+                    sum + (Number(item.unitPrice) || 0) * (Number(item.quantity) || 0),
                   0
                 );
                 const itemCount = order.items.length;
@@ -83,7 +84,7 @@ export default async function AdminDashboard() {
                       <StatusBadge status={order.status} type="order" />
                     </TableCell>
                     <TableCell>
-                      {format(new Date(order.createdAt), "MMM dd, yyyy")}
+                      {formatInTimeZone(new Date(order.createdAt), "Asia/Kolkata", "MMM dd, yyyy")}
                     </TableCell>
                     <TableCell>
                       <Link href={`/admin/orders/${order.id}`}>
@@ -129,7 +130,7 @@ export default async function AdminDashboard() {
                     <StatusBadge status={ticket.status} type="ticket" />
                   </TableCell>
                   <TableCell>
-                    {format(new Date(ticket.createdAt), "MMM dd, yyyy")}
+                    {formatInTimeZone(new Date(ticket.createdAt), "Asia/Kolkata", "MMM dd, yyyy")}
                   </TableCell>
                   <TableCell>
                     <Link href={`/admin/tickets/${ticket.id}`}>
@@ -150,4 +151,3 @@ export default async function AdminDashboard() {
     </div>
   );
 }
-
